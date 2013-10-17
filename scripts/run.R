@@ -1,11 +1,12 @@
 ###### PRECIPITATION ANALYSIS: COMPARISON OF GROUND DATA ######
 
-#Set correct wd! set.wd()
+## run.R executes the analysis ##
 
-source("scripts/functions.R")
-source("scripts/load.R")
-source("scripts/summaries.R")
-source("scripts/plot.R")
+#!! "Set correct wd! set.wd()
 
-#### END ####
+source("scripts/functions.R")	## functions.R contains own functions for the analysis ##
+source("scripts/load.R") 	## load.R loads in all the data and converts to appropriate formats ##
+source("scripts/summaries.R")	## summaries.R creates all necessary summaries and variables to be analysed ##
+source("scripts/plot.R")	## plot.R plots summaries to output ##
 
+########## END #############

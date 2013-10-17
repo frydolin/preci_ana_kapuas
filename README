@@ -1,0 +1,62 @@
+###### 	R code for: 
+###### 	PRECIPITATION ANALYSIS: COMPARISON OF GROUND DATA ######
+
+
+### R FILES ###
+## load.R 	loads in all the data and converts to appropriate formats ##
+## summaries.R 	creates all necessary summaries and variables to be analysed ##
+## plot.R 	plots summaries to output ##
+## run.R 	executes the analysis ##
+## functions.R 	contains own functions for the analysis ##
+
+### VARIABLE NAME ABBREVIATIONS ###
+# d=day(ly) (usually not explicitly stated)
+# m=month(ly)
+# y=year(ly)
+# rs=rainy season
+# ds=dry season
+# ts=time series (zoo object)
+# df=data frame/matrix (usually not explicity stated)
+
+### NECESSARY FOLDER STRUCTURE ###
+# /input	# contains input data
+# /output	# where output is written to
+# /output/plots	# plot output
+# /scripts 	# all R scripts
+
+### REQUIRED PACKAGES ###
+attached base packages:
+      grid
+      stats     
+      graphics  
+      grDevices 
+      utils     
+      datasets  
+      methods  
+      base     
+
+other attached packages:
+	corrgram_1.4     
+	seriation_1.0-9  
+	colorspace_1.2-0 
+	gclus_1.3.1     
+	TSP_1.0-7        
+	cluster_1.14.3   
+	hydroTSM_0.4-1   
+	xts_0.9-7       
+	zoo_1.7-10      
+
+loaded via a namespace (and not attached):
+	 automap_1.0-14   
+	 class_7.3-5      
+	 e1071_1.6-1     
+	 gstat_1.0-17    
+	 intervals_0.14.0 
+	 lattice_0.20-13  
+	 reshape_0.8.4    
+	 sp_1.0-13       
+	 spacetime_1.0-9  
+	 tools_2.15.1
+	 
+	 
+########## END #############

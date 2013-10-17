@@ -1,19 +1,8 @@
 ####### PRECIPITATION ANALYSIS: COMPARISON OF GROUND DATA #######
 
-# VARIABLE NAME ABBREVIATIONS
-# d=day(ly) (usually not explicitly stated)
-# m=month(ly)
-# y=year(ly)
-# rs=rainy season
-# ds=dry season
-# ts=time series (zoo object)
-# df=data frame/matrix (usually not explicity stated)
+## summaries.R creates all necessary summaries and variables to be analysed ##
 
-
-#### MAKE CORRECT STATION NAME LIST ####
-#needs to be modified if file names change!!
-  stnames<<-substr(toupper(fnames), 2,6) #global!
-
+## see README for variable naming convention ##
 
 #### MAKE SUMMARIES ####
 library("hydroTSM")
