@@ -22,7 +22,7 @@
   rm(files_tmp) 
 
 # check
-  str(gdata)
+  #str(gdata)
   fnames
 
 ### END LOAD DATA ###
@@ -35,8 +35,8 @@
 
 #### CONVERT TO ZOO (TIME SERIES) OBJECTS ####
   library(zoo)
-  ts_gdata=lapply(gdata, function(x) zoo(x$rain, order.by=as.Date(x$date)))
-  str(ts_gdata) #just to check
+  d_ts=lapply(gdata, function(x) zoo(x$rain, order.by=as.Date(x$date)))
+  str(d_ts) #just to check
 
 ### END ZOO OBJECTS ###
 

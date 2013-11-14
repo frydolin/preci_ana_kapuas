@@ -25,10 +25,14 @@ graphics.off() #Completely shuts down the printing to file
 
 ### END CORRGRAMS ###
 
-##### Daily TS for each station #####
-for i in 
-name=paste("output/plots/dts_",stname[i])
-png(filename=name, width=1000, height=700, units="px")
+##### TS for each station #####
+  tsplot.pst(d_ts, type="daily")
+  tsplot.pst(w_ts, type="weekly")
+  tsplot.pst(m_ts, type="monthly")
+  tsplot.pst(y_ts, type="yearly")
+
+graphics.off() #Completely shuts down the printing to file
+### END TS per Station ###
 
 ##### Monthly Averages #####
   name="output/plots/dav_by_month.png"
@@ -58,6 +62,17 @@ png(filename=name, width=1000, height=700, units="px")
   graphics.off() #Completely shuts down the printing to file
 
 ### END MONTHLY AVERAGES ###
+
+
+#### Cumulative Sums ####
+  for (i in 1:length(cumfun_ts)) {
+    name=paste("output/plots/cumfun_",stnames[i],".png", sep="")
+    png(filename=name, width=800, height=500, units="px")
+    plot(cumfun_ts[[i]], type="l",lty=1, lwd=2, col=hexcolors[i], ylab="rainfall in mm", main=paste("Cumulative rainfall amounts for", stnames[i]), xlab="date") 
+  }
+
+####
+
 
 ########## END #############
   
