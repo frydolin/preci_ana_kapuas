@@ -22,13 +22,22 @@ graphics.off() #Completely shuts down the printing to file
 ### END CORRGRAMS ###
 
 ##### Monthly Averages #####
-  name="/output/plots/dav_by_month"
+  name="output/plots/dav_by_month.png"
   png(filename=name, width=1000, height=700, units="px")	
   plot(df_mav[,1], type="b", lwd=2,col=1, ylim=c(0,max(df_mav)), xaxt = "n", ylab="Daily Average Rain per Month", xlab="Month")
   axis(1,1:12,labels=row.names(df_mav))
   for (i in 2:ncol(df_mav)) lines(df_mav[,i], type="b", col=i, lwd=2)
   legend(x="bottomright", legend=stnames, col=1:ncol(df_mav), lwd=3, cex=0.8)
   
+##### YEARLY TS ####
+name="output/plots/yearly_ts.png"
+png(filename=name, width=1000, height=700, units="px")  
+plot(y_gdata[,1], type="b", lwd=2, col=1, ylim=c(500,5000), xaxt = "n", ylab="Yearly Time Series", xlab="Year")
+axis(1,1:31,labels=row.names(y_gdata))
+for (i in 2:ncol(y_gdata)) lines(y_gdata[,i], type="b", col=i, lwd=2)
+legend(x="bottomright", legend=stnames, col=1:ncol(y_gdata), lwd=3, cex=0.8)
+
+
   #shut down
   rm(name)
   dev.off()

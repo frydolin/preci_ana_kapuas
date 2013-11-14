@@ -15,7 +15,7 @@
   
 # Convert format to date and numeric
   for (i in 1:length(gdata)) gdata[[i]]$date=as.Date(gdata[[i]]$date)
-  for (j in 1:length(gdata)) gdata[[j]]$rain=as.numeric(gdata[[j]]$rain)
+  for (j in 1:length(gdata)) gdata[[j]]$rainfall=as.numeric(gdata[[j]]$rainfall)
  
 # remove variables not needed anymore
   rm(i,j)
@@ -29,7 +29,7 @@
 
 #### MAKE CORRECT STATION NAME LIST ####
 #!! needs to be modified if file names convention changes
-  stnames<<-substr(toupper(fnames), 2,6) #!! global variable
+  stnames<<-substr(toupper(fnames), 3,7) #!! global variable
 
 ### END STATION NAME LIST ###
 
