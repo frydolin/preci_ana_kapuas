@@ -25,10 +25,14 @@ graphics.off() #Completely shuts down the printing to file
 
 ### END CORRGRAMS ###
 
-##### Daily TS for each station #####
-for i in 
-name=paste("output/plots/dts_",stname[i])
-png(filename=name, width=1000, height=700, units="px")
+##### TS for each station #####
+  tsplot.pst(d_ts, type="daily")
+  tsplot.pst(w_ts, type="weekly")
+  tsplot.pst(m_ts, type="monthly")
+  tsplot.pst(y_ts, type="yearly")
+
+graphics.off() #Completely shuts down the printing to file
+### END TS per Station ###
 
 ##### Monthly Averages #####
   name="output/plots/dav_by_month.png"
@@ -58,6 +62,10 @@ png(filename=name, width=1000, height=700, units="px")
   graphics.off() #Completely shuts down the printing to file
 
 ### END MONTHLY AVERAGES ###
+
+
+#### Cumulative Sums ####
+plot(cum_df[,1],type="l")
 
 ########## END #############
   

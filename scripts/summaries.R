@@ -9,50 +9,60 @@ library("hydroTSM")
 source("scripts/functions.R") #functions such as mdf, . As defined in the file.
 
 #Daily
-  ts_gdata
-  str(ts_gdata)
-  df_gdata=mdf(ts_gdata)
+  #d_ts          #make time series
+  #str(d_ts)     #check structure
+  d_df=mdf(d_ts)  #make data frame for better plotting
 
 #Weekly
-  wts_gdata <- lapply(ts_gdata, function(x) aggregate(x, by=as.Date(cut.Date(index(x), "7 day")), sum, na.rm=F))
-  str(wts_gdata)
-  w_gdata=mdf(wts_gdata)
+  w_ts <- lapply(d_ts, function(x) aggregate(x, by=as.Date(cut.Date(index(x), "7 day")), sum, na.rm=F))
+  #str(w_ts)
+  w_df=mdf(w_ts)
   
 #Monthly
-  mts_gdata <- lapply(ts_gdata, daily2monthly, sum, na.rm=F)
-  str(mts_gdata)
-  m_gdata=mdf(mts_gdata)
+  m_ts <- lapply(d_ts, daily2monthly, sum, na.rm=F)
+  #str(m_ts)
+  m_df=mdf(m_ts)
 
 #Monthly average by Month
-  mav <- lapply(ts_gdata, monthlyfunction, mean)
-  str(mav)
-  df_mav=mdf(mav)
+  davbm <- lapply(d_ts, monthlyfunction, mean)
+  #str(davbm)
+  davbm_df=mdf(davbm)
 
 #Yearly
-  yts_gdata <- lapply(ts_gdata, daily2annual, sum, na.rm=F)
-  str(yts_gdata)
-  y_gdata=mdf(yts_gdata)
+  y_ts <- lapply(d_ts, daily2annual, sum, na.rm=F)
+  #str(y_ts)
+  y_df=mdf(y_ts)
 
 #Daily by Season
   #RS
-  rsts_gdata <- lapply(ts_gdata, function(x) x[as.numeric(format.Date(time(x), "%m")) %in% c(1,10,11,12)]) 
-  str(rsts_gdata)
-  rs_gdata=mdf(rsts_gdata)
+  rs_ts <- lapply(d_ts, function(x) x[as.numeric(format.Date(time(x), "%m")) %in% c(1,10,11,12)]) 
+  #str(rs_ts)
+  rs_df=mdf(rs_ts)
 
   #DS
-  dsts_gdata <- lapply(ts_gdata, function(x) x[as.numeric(format.Date(time(x), "%m")) %in% c(5,6,7,8)]) 
-  str(dsts_gdata)
-  ds_gdata=mdf(dsts_gdata)
+  ds_ts <- lapply(d_ts, function(x) x[as.numeric(format.Date(time(x), "%m")) %in% c(5,6,7,8)]) 
+  #str(ds_ts)
+  ds_df=mdf(ds_ts)
 
 #Monthly by Season
   #RS
-  mrsts_gdata<- lapply(rsts_gdata, daily2monthly, sum, na.rm=F)
-  str(mts_gdata)
-  mrs_gdata=mdf(mrsts_gdata)
+  mrs_ts<- lapply(rs_ts, daily2monthly, sum, na.rm=F)
+  #str(m_ts_gdata)
+  mrs_df=mdf(mrs_ts)
 
   #DS
-  mdsts_gdata<- lapply(dsts_gdata, daily2monthly, sum, na.rm=F)
-  str(mts_gdata)
-  mds_gdata=mdf(mdsts_gdata)
+  mds_ts<- lapply(ds_ts, daily2monthly, sum, na.rm=F)
+  #str(mds_ts)
+  mds_df=mdf(mds_ts)
 
+#### Cumulative Daily Sums ####
+
+cumlist=lapply(d_ts, cumul)
+
+plot(cumlist[[10]], type="l")
+
+c=NA
+c+1
+sum(0, NA, na.rm=TRUE)
+cum_df=mdf(cumlist)
 ########## END #############
