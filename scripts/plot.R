@@ -2,43 +2,57 @@
 
 ## plot.R plots summaries to output ##
 
+# COLOR SCHEME #
+  #currently for 11
+  hexcolors=c("#A6CEE3", "#1F78B4", "#B2DF8A", "#33A02C", "#FB9A99", "#E31A1C", "#FDBF6F", "#FF7F00" ,"#CAB2D6","#6A3D9A", "#FFFF99") 
+
 #### Correlograms ####
 library(corrgram)
 source("scripts/functions.R") #functions such as mdf,corgr,.. . As defined in the file.
 
-corgr(df_gdata, type="daily")
-corgr(w_gdata, type="weekly")
-corgr(m_gdata, type="monthly")
-corgr(y_gdata, type="yearly")
+corgr(d_df, type="daily")
+corgr(w_df, type="weekly")
+corgr(m_df, type="monthly")
+corgr(y_df, type="yearly")
 
-corgr(rs_gdata, type="rainseason daily")
-corgr(ds_gdata, type="dryseason daily")
-corgr(mrs_gdata, type="rainseason monthly")
-corgr(mds_gdata, type="dryseason monthly")
+corgr(rs_df, type="rainseason daily")
+corgr(ds_df, type="dryseason daily")
+corgr(mrs_df, type="rainseason monthly")
+corgr(mds_df, type="dryseason monthly")
 
 
 graphics.off() #Completely shuts down the printing to file
 
 ### END CORRGRAMS ###
 
+##### Daily TS for each station #####
+for i in 
+name=paste("output/plots/dts_",stname[i])
+png(filename=name, width=1000, height=700, units="px")
+
 ##### Monthly Averages #####
   name="output/plots/dav_by_month.png"
   png(filename=name, width=1000, height=700, units="px")	
-  plot(df_mav[,1], type="b", lwd=2,col=1, ylim=c(0,max(df_mav)), xaxt = "n", ylab="Daily Average Rain per Month", xlab="Month")
-  axis(1,1:12,labels=row.names(df_mav))
-  for (i in 2:ncol(df_mav)) lines(df_mav[,i], type="b", col=i, lwd=2)
-  legend(x="bottomright", legend=stnames, col=1:ncol(df_mav), lwd=3, cex=0.8)
+  matplot(davbm_df, type = c("b"),pch=1, lty=c(1), lwd=2, col = hexcolors, xaxt = "n", ylab="rainfall in mm/day", main="Daily Average Rain per Month", xlab="Year")
+  axis(1,1:12,labels=row.names(davbm_df))
+  legend(x="bottomright", legend=stnames, col=hexcolors, lwd=3, cex=0.8)
   
+#### Monthly TS ####
+  name="output/plots/monthly_ts.png"
+  png(filename=name, width=1000, height=700, units="px")
+  matplot(m_df, type = c("l"),pch=1, lwd=2, lty=c(1), col = hexcolors, xaxt = "n", ylab="rainfall in mm/year", main="Yearly Time Series", xlab="Year")
+  axis(1,1:372,labels=substr(row.names(m_df),1,7))  
+  legend(x="bottomleft", legend=stnames, col=hexcolors, lwd=3, cex=0.8)
+
+
 ##### YEARLY TS ####
-name="output/plots/yearly_ts.png"
-png(filename=name, width=1000, height=700, units="px")  
-plot(y_gdata[,1], type="b", lwd=2, col=1, ylim=c(500,5000), xaxt = "n", ylab="Yearly Time Series", xlab="Year")
-axis(1,1:31,labels=row.names(y_gdata))
-for (i in 2:ncol(y_gdata)) lines(y_gdata[,i], type="b", col=i, lwd=2)
-legend(x="bottomright", legend=stnames, col=1:ncol(y_gdata), lwd=3, cex=0.8)
+  name="output/plots/yearly_ts.png"
+  png(filename=name, width=1000, height=700, units="px")
+  matplot(y_df, type = c("b"),pch=1, lwd=2, lty=c(1), col = hexcolors, xaxt = "n", ylab="rainfall in mm/year", main="Yearly Time Series", xlab="Year")
+  axis(1,1:31,labels=substr(row.names(y_df),1,4))  
+  legend(x="bottomright", legend=stnames, col=hexcolors, lwd=3, cex=0.8)
 
-
-  #shut down
+#shut down
   rm(name)
   dev.off()
   graphics.off() #Completely shuts down the printing to file
