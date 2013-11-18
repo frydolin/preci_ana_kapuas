@@ -63,4 +63,5 @@ cumfun_df=mdf(cumfun_ts)
 #row.names(cumfun_df)=as.character(index(d_ts[[1]]))
 write.csv2(cumfun_ts, file="output/files/cumulative_funct.xls", quote=F, na = "NA")
 
+
 ########## END #############

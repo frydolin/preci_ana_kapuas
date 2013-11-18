@@ -65,6 +65,7 @@ graphics.off() #Completely shuts down the printing to file
 
 
 #### Cumulative Sums ####
+
   for (i in 1:length(cumfun_ts)) {
     name=paste("output/plots/cumfun_",stnames[i],".png", sep="")
     png(filename=name, width=800, height=500, units="px")
@@ -72,7 +73,6 @@ graphics.off() #Completely shuts down the printing to file
   }
 
 ####
-
 
 ########## END #############
   
