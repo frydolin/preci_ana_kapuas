@@ -16,7 +16,7 @@ mdf=function(x){
 ## type: is only for naming e.g. daily, monthly 
 corgr=function(x, type){
   require(corrgram)
-  name=paste("output/plots/",type,"_corgr.png", sep ="")	# filename
+  name=paste("output/plots/correlograms/",type,"_corgr.png", sep ="")	# filename
   png(filename=name, width=800, height=800, units="px")		# open *.png write
   corrgram(x, lower.panel=panel.pie, upper.panel=panel.pts, main=paste("Correlation between", type, "rainfall amounts"))
   dev.off()							# close write
@@ -25,15 +25,14 @@ corgr=function(x, type){
 
 # Make  time series plots for each station
 tsplot.pst=function(x, type) {
+  if (type=="yearly") ptype="b" else ptype="l"
   for (i in 1:length(x)) {
-    name=paste("output/plots/",type,"_ts_",stnames[i],".png", sep="")
-    png(filename=name, width=800, height=500, units="px")
-    plot(x[[i]], type="l",lty=1, lwd=2, col=hexcolors[i], ylab="rainfall in mm/day", main=paste("Time series of", type, "rainfall amounts for", stnames[i]), xlab=substr(type,1, (nchar(type)-2))) 
-    }
+    name=paste("output/plots/time_series/",type,"_ts_",stnames[i],".png", sep="")
+    png(filename=name, width=900, height=500, units="px")
+    plot(x[[i]], type=ptype, lty=1, lwd=2, col=hexcolors[i], ylab="rainfall in mm/day", main=paste("Time series of", type, "rainfall amounts for", stnames[i]), xlab=substr(type,1, (nchar(type)-2))) 
+    dev.off()
+  }
 }
-
-
-
 #
 
 #cumulative function: calculates yearly cumulative sums, accepts NA

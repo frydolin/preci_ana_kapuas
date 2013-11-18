@@ -3,10 +3,10 @@
 
 
 ### R FILES ###
-## load.R 	loads in all the data and converts to appropriate formats ##
+## load.R 		loads in all the data and converts to appropriate formats ##
 ## summaries.R 	creates all necessary summaries and variables to be analysed ##
-## plot.R 	plots summaries to output ##
-## run.R 	executes the analysis ##
+## plot.R 		plots summaries to output ##
+## run.R 			executes the analysis ##
 ## functions.R 	contains own functions for the analysis ##
 
 ### VARIABLE NAME ABBREVIATIONS ###
@@ -16,13 +16,20 @@
 # rs=rainy season
 # ds=dry season
 # ts=time series (zoo object)
-# df=data frame/matrix (usually not explicity stated)
+# df=data frame/matrix 
 
 ### NECESSARY FOLDER STRUCTURE ###
-# /input	# contains input data
-# /output	# where output is written to
-# /output/plots	# plot output
+# /input		# contains input data
+# /output		# where output is written to
 # /scripts 	# all R scripts
+# all other folders are created automatically
+
+### REQUIRED INPUT DATA FORMAT###
+# times series of precipitation
+# .csv files with two columns:
+# date	rainfall
+# seperator is ; 
+# missing value flag is NA
 
 ### REQUIRED PACKAGES ###
 attached base packages:
