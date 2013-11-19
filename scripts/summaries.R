@@ -4,10 +4,12 @@
 
 ## see README for variable naming convention ##
 
-#### MAKE SUMMARIES ####
+## SET UP ##
+library(zoo)
 library("hydroTSM")
 source("scripts/functions.R") #functions such as mdf, . As defined in the file.
 
+#### MAKE SUMMARIES ####
 #Daily
   #d_ts          #make time series
   #str(d_ts)     #check structure

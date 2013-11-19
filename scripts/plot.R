@@ -115,6 +115,19 @@ dir.create("output/plots/cumulative")
 
 ### END Cumulative Sums ###
 
+#### BY MONTH time series ####
+dir.create("output/plots/time_series/bymonth")
+for (i in 1:length(bymonth_ts)) {
+  for (j in 1:12){
+    mname=as.character(format.Date(time(bymonth_ts[[i]][[j]][1]), "%B"))
+    title=paste("Time series of rainfall amounts for",stnames[i],"by month:",mname)
+    name=paste("output/plots/time_series/bymonth/ts_",stnames[i],"_",j,"_",mname,".png", sep="")
+    png(filename=name, width=900, height=500, units="px")
+    plot(bymonth_ts[[i]][[j]], type="b", lty=1, lwd=2, col=hexcolors[i], ylab="rainfall in mm", main=title)
+    dev.off()
+      }
+}
+
 #shut down
 rm(name)
 dev.off()
