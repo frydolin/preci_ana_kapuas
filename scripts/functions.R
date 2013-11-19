@@ -11,6 +11,14 @@ mdf=function(x){
   return(dfr)
 }
 
+# Make times series for each month i.e. Jan 1970, Jan 1971...
+ts.bymonth=function(x){
+  for (i in 1:12){
+    bymonth[i]=list(x[as.numeric(format.Date(time(x), "%m")) %in% c(i)])
+  }
+  return(bymonth)
+}
+
 # own version of correlograms: corgr. creates *.png files in output/plots/ # 
 ## x: should be a data matrix (as in the normal corrgram() function)
 ## type: is only for naming e.g. daily, monthly 
@@ -34,6 +42,18 @@ tsplot.pst=function(x, type) {
   }
 }
 #
+# TS plot for time series by month
+tsplot.bymonth.pst=function(x) {
+   for (i in 1:length(x)) {
+          for (j in 1:12){
+            mname=format.Date(time(x[[i]][[j]]), "%m")
+    name=paste("output/plots/time_series/bymonth/ts_",stnames[i],"_",mname,".png", sep="")
+    png(filename=name, width=900, height=500, units="px")
+    plot(x[[i]][[j]], type="l", lty=1, lwd=2, col=hexcolors[i], ylab="rainfall in mm", main=paste("Time series of rainfall amounts for", stnames[i],"by month:", mname)) 
+    dev.off()
+     }
+  }
+}
 
 #cumulative function: calculates yearly cumulative sums, accepts NA
 ## x: time series object
