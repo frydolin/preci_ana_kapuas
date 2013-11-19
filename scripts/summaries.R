@@ -62,8 +62,12 @@ source("scripts/functions.R") #functions such as mdf, . As defined in the file.
 cumlist=lapply(d_ts, cumul)
 cumfun_ts=lapply(cumlist, function(x) zoo(x, order.by=time(d_ts[[1]])))
 cumfun_df=mdf(cumfun_ts)
-#row.names(cumfun_df)=as.character(index(d_ts[[1]]))
-write.csv2(cumfun_ts, file="output/files/cumulative_funct.xls", quote=F, na = "NA")
+#write.csv2(cumfun_ts, file="output/files/cumulative_funct.xls", quote=F, na = "NA")
+
+
+#### Time Series by months i.e. Jan, Feb,  ####
+
+bymonth_ts=lapply(m_ts, ts.bymonth)
 
 
 ########## END #############
