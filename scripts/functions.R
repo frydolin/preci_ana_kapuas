@@ -13,6 +13,7 @@ mdf=function(x){
 
 # Make times series for each month i.e. Jan 1970, Jan 1971...
 ts.bymonth=function(x){
+  bymonth=0
   for (i in 1:12){
     bymonth[i]=list(x[as.numeric(format.Date(time(x), "%m")) %in% c(i)])
   }
@@ -84,3 +85,19 @@ cumul=function(x){
   return(cum)
 }
 #
+
+#### MOVING AVERAGES PLOT####
+
+#by month
+test=0
+inp=0
+par(mfrow=c(4,3))
+for (i in 1:12){
+  inp=na.fill(bymonth_ts[[2]][[i]], "extend")
+  test=rollmean(inp, 5, fill = "extend", align = "center")
+  plot(bymonth_ts[[2]][[i]], col="red")
+  lines(test, col="blue")
+}
+
+
+###### END #############

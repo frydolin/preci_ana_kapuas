@@ -3,9 +3,11 @@
 ## summaries.R creates all necessary summaries and variables to be analysed ##
 
 ## see README for variable naming convention ##
-
+## ACHTUNG Z.T. mean und zum Teil summen aggregation!!! ##
 ## SET UP ##
-library(zoo)
+Sys.setlocale("LC_TIME", "en_US.UTF-8") #set up time locale to get english names 
+
+library("zoo")
 library("hydroTSM")
 source("scripts/functions.R") #functions such as mdf, . As defined in the file.
 
@@ -21,7 +23,7 @@ source("scripts/functions.R") #functions such as mdf, . As defined in the file.
   w_df=mdf(w_ts)
   
 #Monthly
-  m_ts <- lapply(d_ts, daily2monthly, sum, na.rm=F)
+  m_ts <- lapply(d_ts, daily2monthly, mean, na.rm=F)
   #str(m_ts)
   m_df=mdf(m_ts)
 
@@ -31,7 +33,7 @@ source("scripts/functions.R") #functions such as mdf, . As defined in the file.
   davbm_df=mdf(davbm)
 
 #Yearly
-  y_ts <- lapply(d_ts, daily2annual, sum, na.rm=F)
+  y_ts <- lapply(d_ts, daily2annual, mean, na.rm=F)
   #str(y_ts)
   y_df=mdf(y_ts)
 
