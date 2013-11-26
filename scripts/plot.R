@@ -1,18 +1,20 @@
 ###### PRECIPITATION ANALYSIS: COMPARISON OF GROUND DATA ######
 
-## plot.R plots summaries to output ##
+## plot.R plots summaries to output files ##
 
 #### SET UP ####
-Sys.setlocale("LC_TIME", "en_US.UTF-8") #set up time locale to get english names 
+
+## set up time locale to get english names 
+Sys.setlocale("LC_TIME", "en_US.UTF-8") 
 
 ##  load functions such as mdf,corgr,.. . As defined in the file.
 source("scripts/functions.R")
 
-## create directory ##
+## create plot output directory ##
 dir.create("output/plots", recursive = FALSE)
 
-## COLOR SCHEME ##
-  #currently for 11
+## COLOR SCHEME for plots##
+  # currently for 11 stations
   hexcolors=c(
     "#222222",
     "#0EC20E",
@@ -25,8 +27,63 @@ dir.create("output/plots", recursive = FALSE)
     "#F31D11",
     "#0B9B7F",
     "#F36A11")
+### END SET UP ###
 
-#### Correlograms ####
+##### TS for each station #####
+dir.create("output/plots/time_series")
+
+  tsplot.pst(d_ts, type="daily")
+  tsplot.pst(w_ts, type="weekly")
+  tsplot.pst(m_ts, type="monthly")
+  tsplot.pst(y_ts, type="yearly")
+
+graphics.off() #Completely shuts down the printing to file
+### END TS per Station ###
+
+#### COMPARATIVE TS ####
+  ### Monthly TS ###
+  name="output/plots/time_series/monthly_ts.png"
+  png(filename=name, width=1000, height=700, units="px")
+  matplot(m_df, type = c("l"),pch=1, lwd=2, lty=c(1), col = hexcolors, xaxt = "n", ylab="rainfall in mm/year", main="Yearly Time Series", xlab="Year")
+  axis(1,1:372,labels=substr(row.names(m_df),1,7))  
+  legend(x="bottomleft", legend=stnames, col=hexcolors, lwd=3, cex=0.8)
+  dev.off()
+
+  ### YEARLY TS ###
+  name="output/plots/time_series/yearly_ts.png"
+  png(filename=name, width=1000, height=700, units="px")
+  matplot(y_df, type = c("b"),pch=1, lwd=2, lty=c(1), col = hexcolors, xaxt = "n", ylab="rainfall in mm/year", main="Yearly Time Series", xlab="Year")
+  axis(1,1:31,labels=substr(row.names(y_df),1,4))  
+  legend(x="bottomright", legend=stnames, col=hexcolors, lwd=3, cex=0.8)
+  dev.off()
+  
+  ### Comparison PTK11- KPH01 ###
+  plot(window(m_ts[[1]], start=as.Date('2002-01-01'), end=as.Date('2010-12-31')),  type="l", lty=1, lwd=2, col=hexcolors[1], ylab="rainfall in mm/day", main=paste("Time series of daily rainfall amounts for",stnames[c(1,11)], collapse=" "), xlab="Time") 
+  lines(window(m_ts[[11]], start=as.Date('2002-01-01'), end=as.Date('2010-12-31')), col=hexcolors[11])
+
+### END ALL STATION TS ###
+
+#### Box plot for station comparison ####
+# year
+  boxplot(y_df, outline=FALSE)
+  abline(mean(y_df,  na.rm=TRUE),0)
+  beeswarm(y_ts, col=hexcolors, add=TRUE)
+
+#monthly per month i.e. Jan
+  bplot(m_df[format.Date(as.Date(row.names(m_df)),format="%m")=="01",])
+  abline(mean(m_df, na.rm=TRUE),0)
+### END BOX PLOTS ###
+
+##### Monthly Averages #####
+  name="output/plots/dav_by_month.png"
+  png(filename=name, width=1000, height=700, units="px")	
+  matplot(davbm_df, type = c("b"),pch=1, lty=c(1), lwd=2, col = hexcolors, xaxt = "n", ylab="rainfall in mm/day", main="Daily Average Rain per Month", xlab="Year")
+  axis(1,1:12,labels=row.names(davbm_df))
+  legend(x="bottomright", legend=stnames, col=hexcolors, lwd=3, cex=0.8)
+  dev.off()
+### END MONTHLY AVERAGES ###
+
+#### CORRELOGRAMS ####
 library(corrgram)
 dir.create("output/plots/correlograms")
 
@@ -41,68 +98,7 @@ corgr(mrs_df, type="rainseason monthly")
 corgr(mds_df, type="dryseason monthly")
 
 graphics.off() #Completely shuts down the printing to file
-
 ### END CORRGRAMS ###
-
-##### TS for each station #####
-
-dir.create("output/plots/time_series")
-
-  tsplot.pst(d_ts, type="daily")
-  tsplot.pst(w_ts, type="weekly")
-  tsplot.pst(m_ts, type="monthly")
-  tsplot.pst(y_ts, type="yearly")
-
-graphics.off() #Completely shuts down the printing to file
-
-### END TS per Station ###
-
-#### ALL STATION TS ####
-
-### Monthly TS ###
-name="output/plots/time_series/monthly_ts.png"
-png(filename=name, width=1000, height=700, units="px")
-matplot(m_df, type = c("l"),pch=1, lwd=2, lty=c(1), col = hexcolors, xaxt = "n", ylab="rainfall in mm/year", main="Yearly Time Series", xlab="Year")
-axis(1,1:372,labels=substr(row.names(m_df),1,7))  
-legend(x="bottomleft", legend=stnames, col=hexcolors, lwd=3, cex=0.8)
-dev.off()
-
-### YEARLY TS ###
-name="output/plots/time_series/yearly_ts.png"
-png(filename=name, width=1000, height=700, units="px")
-matplot(y_df, type = c("b"),pch=1, lwd=2, lty=c(1), col = hexcolors, xaxt = "n", ylab="rainfall in mm/year", main="Yearly Time Series", xlab="Year")
-axis(1,1:31,labels=substr(row.names(y_df),1,4))  
-legend(x="bottomright", legend=stnames, col=hexcolors, lwd=3, cex=0.8)
-dev.off()
-
-### Comparison PTK11- KPH01 ###
-plot(window(m_ts[[1]], start=as.Date('2002-01-01'), end=as.Date('2010-12-31')),  type="l", lty=1, lwd=2, col=hexcolors[1], ylab="rainfall in mm/day", main=paste("Time series of daily rainfall amounts for",stnames[c(1,11)], collapse=" "), xlab="Time") 
-lines(window(m_ts[[11]], start=as.Date('2002-01-01'), end=as.Date('2010-12-31')), col=hexcolors[11])
-
-#### END ALL STATION TS ####
-
-#### Box plot for station comparison ####
-# year
-  boxplot(y_df, outline=FALSE)
-  abline(mean(y_df,  na.rm=TRUE),0)
-  beeswarm(y_ts, col=hexcolors, add=TRUE)
-
-#monthly per month i.e. Jan
-  bplot(m_df[format.Date(as.Date(row.names(m_df)),format="%m")=="01",])
-  abline(mean(m_df, na.rm=TRUE),0)
-
-#### END BOX PLOTS ####
-
-
-##### Monthly Averages #####
-  name="output/plots/dav_by_month.png"
-  png(filename=name, width=1000, height=700, units="px")	
-  matplot(davbm_df, type = c("b"),pch=1, lty=c(1), lwd=2, col = hexcolors, xaxt = "n", ylab="rainfall in mm/day", main="Daily Average Rain per Month", xlab="Year")
-  axis(1,1:12,labels=row.names(davbm_df))
-  legend(x="bottomright", legend=stnames, col=hexcolors, lwd=3, cex=0.8)
-  dev.off()
-
-### END MONTHLY AVERAGES ###
   
 #### Cumulative Sums ####
 dir.create("output/plots/cumulative")
@@ -141,22 +137,46 @@ stnamestring=paste(stnames[c(1,3,9,11)], collapse=" ")
   dev.off()
 ### END Cumulative Sums ###
 
-#### BY MONTH time series ####
-dir.create("output/plots/time_series/bymonth")
-for (i in 1:length(bymonth_ts)) {
-  for (j in 1:12){
-    mname=as.character(format.Date(time(bymonth_ts[[i]][[j]][1]), "%B"))
-    title=paste("Time series of rainfall amounts for",stnames[i],"by month:",mname)
-    name=paste("output/plots/time_series/bymonth/ts_",stnames[i],"_",j,"_",mname,".png", sep="")
-    png(filename=name, width=900, height=500, units="px")
-    plot(bymonth_ts[[i]][[j]], type="b", lty=1, lwd=2, col=hexcolors[i], ylab="rainfall in mm", main=title)
-    dev.off()
-      }
-}
+#### BY MONTH time series with linear trendline ####
+  require("zoo")
+  dir.create("output/plots/time_series/bymonth") # new directory
 
-#shut down
+  #1. Per station: comparison of month within a station
+  # Creates a plot matrix with all "by month" time series (Jan 1982, Jan 1983, ..)
+  # for each station
+for (i in 1:length(bymonth_ts)) { #loop trough station
+    name=paste("output/plots/time_series/bymonth/ts_",stnames[i],".png", sep="")
+    png(filename=name, width=2000, height=1200, units="px")
+    par(mfrow=c(4,3))
+  for (j in 1:12){ #loop trough month
+    mname=as.character(format.Date(time(bymonth_ts[[i]][[j]][1]), "%B"))
+    title=paste("TS of rainfall sum for",stnames[i],"and month:",mname)
+    plot(bymonth_ts[[i]][[j]], type="b", lty=1, lwd=2, col=hexcolors[i], ylab="rainfall in mm", main=title)
+    abline(lm(bymonth_ts[[i]][[j]]~time(bymonth_ts[[i]][[j]]))) #trendline
+    }
+  dev.off()
+}
+  # 2. Per month: comparison of stations for every month
+  # Creates a plot matrix for all stations of a particular month 
+  # of the "by month" time series (Jan 1982, Jan 1983, ..)
+for (j in 1:12){  # loop through month
+  mname=as.character(format.Date(time(bymonth_ts[[1]][[j]][1]), "%B"))
+  name=paste("output/plots/time_series/bymonth/ts_",mname,".png", sep="")
+  png(filename=name, width=2000, height=1200, units="px")
+  par(mfrow=c(4,3))
+  for (i in 1:length(bymonth_ts)) {    #loop trough station
+    title=paste("TS of rain sum for",stnames[i],"and month:",mname)
+    plot(bymonth_ts[[i]][[j]], type="b", lty=1, lwd=2, col=hexcolors[i], ylab="rainfall in mm", main=title)
+    abline(lm(bymonth_ts[[i]][[j]]~time(bymonth_ts[[i]][[j]]))) #trendline
+  }
+  dev.off()
+}
+### END BY MONTH TS ###
+
+#### shut down ####
 rm(name)
 dev.off()
 graphics.off() #Completely shuts down the printing to file
+### END SHUT DOWN ###
 
-########## END #############
+########## END OF plot.R #############
