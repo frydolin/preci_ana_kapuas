@@ -96,25 +96,32 @@ for (j in 1:12){  # loop through month
 ### Monthly Averages ###
   name="output/plots/dav_by_month.png"
   png(filename=name, width=1000, height=700, units="px")	
-  matplot(davbm_df, type = c("b"),pch=1, lty=c(1), lwd=2, col = hexcolors, xaxt = "n", ylab="rainfall in mm/day", main="Daily Average Rain per Month", xlab="Year")
+  matplot(davbm_df, type = c("b"),pch=1, lty=c(1), lwd=2, col = hexcolors, xaxt = "n", ylab="rainfall in mm/day", main="Daily Average Rain per Month", xlab="Month")
   axis(1,1:12,labels=row.names(davbm_df))
   legend(x="bottomright", legend=stnames, col=hexcolors, lwd=3, cex=0.8)
   dev.off()
+  #boxplot version
+  name="output/plots/dav_by_month_boxplot.png"
+  png(filename=name, width=1000, height=700, units="px")
+  boxplot(t(davbm_df), outline=TRUE, main="Station average of daily average Rain per Month", xlab="Month", ylab="mm/day")
+  abline(mean(t(davbm_df), na.rm=TRUE),0, lwd="2", col="blue")
+  dev.off()
 ### END MONTHLY AVERAGES ###
+
 
 ### END ALL STATION TS ### 
   
-#### Cumulative Sums for each station####
-dir.create("output/plots/cumulative")
-
-  for (i in 1:length(cumfun_ts)) {
-    name=paste("output/plots/cumulative/cumfun_",stnames[i],".png", sep="")
-    png(filename=name, width=800, height=500, units="px")
-    plot(cumfun_ts[[i]], type="l",lty=1, lwd=2, col=hexcolors[i], ylab="rainfall in mm", main=paste("Cumulative rainfall amounts for", stnames[i]), xlab="date") 
-    dev.off()
-  }
-
-### END Cumulative Sums ###
+# #### Cumulative Sums for each station####
+# dir.create("output/plots/cumulative")
+# 
+#   for (i in 1:length(cumfun_ts)) {
+#     name=paste("output/plots/cumulative/cumfun_",stnames[i],".png", sep="")
+#     png(filename=name, width=800, height=500, units="px")
+#     plot(cumfun_ts[[i]], type="l",lty=1, lwd=2, col=hexcolors[i], ylab="rainfall in mm", main=paste("Cumulative rainfall amounts for", stnames[i]), xlab="date") 
+#     dev.off()
+#   }
+# 
+# ### END Cumulative Sums ###
 
 #### shut down ####
 rm(name)
