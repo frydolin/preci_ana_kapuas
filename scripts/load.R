@@ -3,7 +3,7 @@
 ## load.R loads in all the data and converts to appropriate formats ##
 
 #### LOAD IN ALL GROUND DATA ####
-#!! Remember to set correct working directory: setwd(directory path) 
+# You need to be in the correct working directory: setwd(directory path) 
 
 # Get file names
   fpath='input/'
@@ -19,7 +19,7 @@
  
 # remove variables not needed anymore
   rm(i,j)
-  rm(files_tmp) 
+  rm(files_tmp, fpath) 
 
 # check
   #str(gdata)
@@ -40,5 +40,5 @@
 
 ### END ZOO OBJECTS ###
 
-########## END #############
+########## END load.R #############
 

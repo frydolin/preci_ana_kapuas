@@ -1,6 +1,6 @@
 ###### PRECIPITATION ANALYSIS: COMPARISON OF GROUND DATA ######
 
-## sp_plot.R plots spatial summaries to output files ##
+## sp_plot.R plots spatial and comparative summaries to output files ##
 
 #### SET UP ####
 
@@ -11,7 +11,7 @@ Sys.setlocale("LC_TIME", "en_US.UTF-8")
 source("scripts/functions.R")
 
 ## create plot output directory ##
-dir.create("output/plots", recursive = FALSE)
+dir.create("output/plots", recursive = FALSE) 
 
 ## COLOR SCHEME for plots##
 # currently for 11 stations
@@ -29,13 +29,8 @@ hexcolors=c(
   "#F36A11")
 ### END SET UP ###
 
-### Comparison PTK11- KPH01 ###
-plot(window(m_ts[[1]], start=as.Date('2002-01-01'), end=as.Date('2010-12-31')),  type="l", lty=1, lwd=2, col=hexcolors[1], ylab="rainfall in mm/day", main=paste("Time series of daily rainfall amounts for",stnames[c(1,11)], collapse=" "), xlab="Time") 
-lines(window(m_ts[[11]], start=as.Date('2002-01-01'), end=as.Date('2010-12-31')), col=hexcolors[11])
-
-### END ALL STATION TS ###
-
 #### Box plot for station comparison ####
+library(beeswarm)
 # year
 boxplot(y_df, outline=FALSE)
 abline(mean(y_df,  na.rm=TRUE),0)
@@ -45,15 +40,6 @@ beeswarm(y_ts, col=hexcolors, add=TRUE)
 bplot(m_df[format.Date(as.Date(row.names(m_df)),format="%m")=="01",])
 abline(mean(m_df, na.rm=TRUE),0)
 ### END BOX PLOTS ###
-
-##### Monthly Averages #####
-name="output/plots/dav_by_month.png"
-png(filename=name, width=1000, height=700, units="px")  
-matplot(davbm_df, type = c("b"),pch=1, lty=c(1), lwd=2, col = hexcolors, xaxt = "n", ylab="rainfall in mm/day", main="Daily Average Rain per Month", xlab="Year")
-axis(1,1:12,labels=row.names(davbm_df))
-legend(x="bottomright", legend=stnames, col=hexcolors, lwd=3, cex=0.8)
-dev.off()
-### END MONTHLY AVERAGES ###
 
 #### CORRELOGRAMS ####
 library(corrgram)
@@ -74,13 +60,6 @@ graphics.off() #Completely shuts down the printing to file
 
 #### Cumulative Sums ####
 dir.create("output/plots/cumulative")
-
-for (i in 1:length(cumfun_ts)) {
-  name=paste("output/plots/cumulative/cumfun_",stnames[i],".png", sep="")
-  png(filename=name, width=800, height=500, units="px")
-  plot(cumfun_ts[[i]], type="l",lty=1, lwd=2, col=hexcolors[i], ylab="rainfall in mm", main=paste("Cumulative rainfall amounts for", stnames[i]), xlab="date") 
-  dev.off()
-}
 
 ### Comparison of cumulative sums ###
 ## 1. Comparison of SGU 1, 19, 17 since they are spatially close
@@ -108,6 +87,13 @@ axis(1,at=seq(0, 1105, by=365), labels=c(2003:2006)  )
 legend(x="topleft", legend=stnames[c(1,3,9,11)], col=hexcolors[c(1,3,9,11)], lwd=3, cex=0.8)
 dev.off()
 ### END Cumulative Sums ###
+
+### Comparison PTK11- KPH01 ###
+plot(window(m_ts[[1]], start=as.Date('2002-01-01'), end=as.Date('2010-12-31')),  type="l", lty=1, lwd=2, col=hexcolors[1], ylab="rainfall in mm/day", main=paste("Time series of daily rainfall amounts for",stnames[c(1,11)], collapse=" "), xlab="Time") 
+lines(window(m_ts[[11]], start=as.Date('2002-01-01'), end=as.Date('2010-12-31')), col=hexcolors[11])
+
+###  ###
+
 
 #### shut down ####
 rm(name)
