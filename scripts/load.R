@@ -7,7 +7,7 @@
 
 # Get file names
   fpath='input/'
-  fnames = list.files(path=fpath, pattern="*.csv")
+  fnames = list.files(path=fpath, pattern="[0-9]+.+.csv+")
   files_tmp=paste(fpath,fnames, sep='')
 
 # Read in
@@ -37,8 +37,15 @@
   library(zoo)
   d_ts=lapply(gdata, function(x) zoo(x$rain, order.by=as.Date(x$date)))
   str(d_ts) #just to check
-
 ### END ZOO OBJECTS ###
+
+#### LOAD ENSO DATA ####
+  soi=read.csv("input/soi.csv", sep=";", dec=",", na.strings = "NA")
+  soi$date=as.Date(soi$date)
+  soi$soi=as.numeric(soi$soi)
+  library(zoo)
+  soi_ts=zoo(soi$soi, order.by=as.Date(soi$date))
+### END LOAD ENSO DATA ###
 
 ########## END load.R #############
 

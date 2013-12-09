@@ -12,7 +12,7 @@ source("scripts/functions.R")
 require(zoo)
 
 ## create plot output directory ##
-dir.create("output/plots", recursive = FALSE) 
+#dir.create("output/plots", recursive = FALSE) 
 
 ## COLOR SCHEME for plots##
 # currently for 11 stations
@@ -28,20 +28,18 @@ hexcolors=c(
   "#F31D11",
   "#0B9B7F",
   "#F36A11")
-# reset plotter
-  dev.off()
 ### END SET UP ###
 
 #### Box plot for station comparison ####
   library(beeswarm)
   dir.create("output/plots/boxplots")
 # year
-  name=paste("output/plots/boxplots/yearly_boxplot.png", sep="")
-  png(filename=name, width=2000, height=1200, units="px")
-  boxplot(y_df, outline=FALSE, main="Average daily rainfall per year",xlab="Station", ylab="mm/day")
-  abline(mean(y_df,  na.rm=TRUE),0, lwd="2", col="blue")
-  beeswarm(y_ts, col=hexcolors, add=TRUE)
-
+    name=paste("output/plots/boxplots/yearly_boxplot.png", sep="")
+    png(filename=name, width=1200, height=800, units="px")
+    boxplot(y_df, outline=FALSE, main="Average daily rainfall per year",xlab="Station", ylab="mm/day")
+    abline(mean(y_df,  na.rm=TRUE),0, lwd="2", col="blue")
+    beeswarm(y_ts, col=hexcolors, add=TRUE)
+    dev.off()
 #monthly per month i.e. Jan
     name=paste("output/plots/boxplots/monthly_boxplot.png", sep="")
     png(filename=name, width=2000, height=1200, units="px")

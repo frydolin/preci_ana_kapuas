@@ -123,9 +123,33 @@ for (j in 1:12){  # loop through month
 # 
 # ### END Cumulative Sums ###
 
+#### COMPARISON WITH ENSO ####
+  dev.off()
+  plot.new()
+  par(mar=c(5, 4, 4, 6) + 0.1)
+## Plot SOI plot and put axis scale on right
+  plot(soi_ts, xlab="", ylab="", main="PTK11 onthly comparison with equatorial SOI", 
+       ylim=c(-3.5,3.5), xaxt = "n", yaxt = "n", type="l", col="red")
+  polygon(c(min(index(soi_ts)), index(soi_ts), max(index(soi_ts))), 
+          c( 0, soi_ts, 0), density=50, col="red") 
+  abline(0,0, col="red")
+  axis(4, ylim=c(-3,3), col="red",col.axis="red",las=1)
+  mtext("SOI INDEX",side=4,col="red",line=3)
+## Plot rainfall data and draw its axis
+  par(new=TRUE)
+  ymid=mean(m_ts[[1]], na.rm=TRUE)
+  plot(m_ts[[1]], ylim=c(ymid-12,ymid+12), 
+       xaxt = "n", yaxt = "n", xlab="", ylab="", 
+       type="l", col="black")
+  axis(2, ylim=c(ymid-12,ymid+12),col="black",las=1)  ## las=1 makes horizontal labels
+  mtext("raifall [mm/day]",side=2,line=2.5)
+## Draw the time axis
+axis(1,at=time(y_ts[[1]]), labels=format.Date(time(y_ts[[1]]), "%Y"))
+box()
+### END ENSO ###
+
 #### shut down ####
 rm(name)
-dev.off()
 graphics.off() #Completely shuts down the printing to file
 ### END SHUT DOWN ###
 
