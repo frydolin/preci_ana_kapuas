@@ -14,6 +14,15 @@ mdf=function(x){
 }
 ###
 
+####mextract ####
+#extract values of certain month 
+mextract=function(x, what){
+  month=as.numeric(format.Date(time(x), "%m"))
+  index <- which(month %in% what)
+  return(x[index])
+}
+###
+
 #### ts.bymonth ####
 # Make times series for each month i.e. Jan 1970, Jan 1971...
 ## x: zoo time series object
@@ -54,6 +63,48 @@ cumul=function(x){
     }    
   }
   return(cum)
+}
+###
+
+#### daily 2 season ####
+# calculates seasonal sums/averages from daily zoo TS
+# RS defined as Jan, Nov, Dec. DS defined as Jun, Jul, Aug
+daily2season=function(x, season, FUN, na.rm){
+  
+  if ( !is.zoo(x) ) stop("Invalid argument: 'class(x)' must be zoo")
+  if (!(season %in% c("RS","DS"))) stop("season must be either RS or DS")
+  
+  if (season=="RS"){
+    s                 <- mextract(x, c(1,11,12))
+    # Moving forward all the Nov and Dec values, in order that
+    # Nov and Dec of 1991 be used together with Jan/92 and Feb/92,
+    # instead of with Jan/91 and Feb/91
+    syears            <- as.numeric(format(time(s), "%Y" ))
+    dec.index         <- which(format(time(s), "%m") == c(11,12))
+   dec.years         <- syears[dec.index]
+   dec.years         <- dec.years + 1
+   syears[dec.index] <- dec.years
+   
+   s.a <- aggregate(s, by= syears, FUN=FUN, na.rm= na.rm)
+   
+   # Removing the last RS, because it is outside of the analysis period
+   s.a <- s.a[1:(length(s.a)-1)]
+  }
+  
+  else{
+    s     <- mextract(x, c(6,7,8))
+    s.a   <- aggregate(s, by=format(time(s), "%Y"), FUN=FUN, na.rm= na.rm )  
+  }
+  
+  # Replacing the NaNs by 'NA.
+  # mean(NA:NA, na.rm=TRUE) == NaN
+  nan.index <- which(is.nan(s.a))
+  if (length(nan.index) > 0) s.a[nan.index] <- NA 
+  
+  time(s.a) <- as.Date(paste(time(s.a), "-01-01", sep=""))
+  
+  return(s.a)
+  
 }
 ###
 

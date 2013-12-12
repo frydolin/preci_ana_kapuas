@@ -42,12 +42,13 @@
 
 #Daily by Season
   #RS
-  rs_ts <- lapply(d_ts, function(x) x[as.numeric(format.Date(time(x), "%m")) %in% c(1,10,11,12)]) 
-  #str(rs_ts)
+  rs_ts<- lapply(d_ts, mextract, c(1,10:12))
+
+#str(rs_ts)
   rs_df=mdf(rs_ts)
 
   #DS
-  ds_ts <- lapply(d_ts, function(x) x[as.numeric(format.Date(time(x), "%m")) %in% c(5,6,7,8)]) 
+  ds_ts <- lapply(d_ts, mextract, c(5:8))
   #str(ds_ts)
   ds_df=mdf(ds_ts)
 
@@ -61,6 +62,14 @@
   mds_ts<- lapply(ds_ts, daily2monthly, mean, na.rm=F)
   #str(mds_ts)
   mds_df=mdf(mds_ts)
+
+
+# Daily to season 
+rsav_ts=lapply(d_ts, daily2season, season="RS", mean, na.rm=TRUE)
+rsav_df=mdf(rsav_ts)
+
+dsav_ts=lapply(d_ts, daily2season, season="DS", mean, na.rm=TRUE)
+dsav_df=mdf(dsav_ts)
 
 ### END MAKE SUMMARIES ###
 

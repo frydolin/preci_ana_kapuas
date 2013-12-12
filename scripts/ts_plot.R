@@ -40,6 +40,8 @@
   graphics.off() #Completely shuts down the printing to file
 ### END TS per Station ###
 
+##### TREND ANALYSIS #####
+
 #### BY MONTH time series with linear trendline ####
   require("zoo")
   dir.create("output/plots/time_series/bymonth") # new directory
@@ -75,6 +77,27 @@ for (j in 1:12){  # loop through month
   dev.off()
 }
 ### END BY MONTH TS ###
+
+#### BY SEASON TIME SERIES ####
+dir.create("output/plots/time_series/byseason") # new directory
+
+# Per station: comparison of Seasons within a station
+# Creates a plot matrix with othe season time series (RS 1982, DS 1983, ..)
+# for each station
+for (i in 1:length(rsav_ts)) { #loop trough station
+  name=paste("output/plots/time_series/byseason/ts_",stnames[i],".png", sep="")
+  png(filename=name, width=1000, height=1200, units="px")
+  par(mfrow=c(2,1))
+    title=paste("TS of rainfall sum for",stnames[i],"Dry Season")
+    plot(dsav_ts[[i]], type="b", lty=1, lwd=2, col=hexcolors[i], ylab="rainfall in mm", main=title)
+    abline(lm(dsav_ts[[i]]~time(dsav_ts[[i]]))) #trendline
+  title=paste("TS of rainfall sum for",stnames[i],"Rain Season")
+  plot(rsav_ts[[i]], type="b", lty=1, lwd=2, col=hexcolors[i], ylab="rainfall in mm", main=title)
+  abline(lm(rsav_ts[[i]]~time(rsav_ts[[i]]))) #trendline
+  
+  dev.off()
+}
+### END BY SEASON TS ###
 
 #### ALL STATION TIME SERIES IN ONE PLOT ####
   ### Monthly TS ###
@@ -137,10 +160,11 @@ for (j in 1:12){  # loop through month
   mtext("SOI INDEX",side=4,col="red",line=3)
 ## Plot rainfall data and draw its axis
   par(new=TRUE)
-  ymid=mean(m_ts[[1]], na.rm=TRUE)
-  plot(m_ts[[1]], ylim=c(ymid-12,ymid+12), 
+  ymid=mean(m_ts[[2]], na.rm=TRUE)
+  plot(m_ts[[2]], ylim=c(ymid-12,ymid+12), 
        xaxt = "n", yaxt = "n", xlab="", ylab="", 
        type="l", col="black")
+  abline(ymid,0)
   axis(2, ylim=c(ymid-12,ymid+12),col="black",las=1)  ## las=1 makes horizontal labels
   mtext("raifall [mm/day]",side=2,line=2.5)
 ## Draw the time axis
