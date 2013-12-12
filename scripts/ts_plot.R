@@ -49,17 +49,20 @@
 #1. Per station: comparison of month within a station
 # Creates a plot matrix with all "by month" time series (Jan 1982, Jan 1983, ..)
 # for each station
+  lin_mod=list()
 for (i in 1:length(bymonth_ts)) { #loop trough station
+  lin_mod[[i]]=list()
   name=paste("output/plots/time_series/bymonth/ts_",stnames[i],".png", sep="")
   png(filename=name, width=2000, height=1200, units="px")
   par(mfrow=c(4,3))
   for (j in 1:12){ #loop trough month
+    lin_mod[[i]][[j]]=lm(bymonth_ts[[i]][[j]]~time(bymonth_ts[[i]][[j]]))
     mname=as.character(format.Date(time(bymonth_ts[[i]][[j]][1]), "%B"))
     title=paste("TS of rainfall sum for",stnames[i],"and month:",mname)
     plot(bymonth_ts[[i]][[j]], type="b", lty=1, lwd=2, col=hexcolors[i], ylab="rainfall in mm", main=title)
-    abline(lm(bymonth_ts[[i]][[j]]~time(bymonth_ts[[i]][[j]]))) #trendline
+    abline(lin_mod[[i]][j]) #trendline
   }
-  dev.off()
+    dev.off()
 }
 # 2. Per month: comparison of stations for every month
 # Creates a plot matrix for all stations of a particular month 
@@ -133,6 +136,23 @@ for (i in 1:length(rsav_ts)) { #loop trough station
 
 
 ### END ALL STATION TS ### 
+
+#### HISTOGRAMS ####
+library("MASS")
+dir.create("output/plots/histogramms") # new directory
+
+# Per station
+for (i in 1:length(d_ts))
+{
+  name=paste("output/plots/histogramms/hist_",stnames[i],".png", sep="")
+  png(filename=name, width=800, height=1200, units="px")
+  par(mfrow=c(3,1))
+  title=paste("values histogramm for",stnames[i])
+  truehist(d_ts[[i]], h=5, xlim=c(0,150), col=hexcolors[i], bty="o", main=paste("Daily",title))
+  truehist(m_ts[[i]], h=50, col=hexcolors[i], bty="o", main=paste("Monthly",title))
+  truehist(y_ts[[i]], h=500, xlim=c(500,4500), col=hexcolors[i], bty="o", main=paste("Yearly",title))
+  dev.off()
+}
   
 # #### Cumulative Sums for each station####
 # dir.create("output/plots/cumulative")
@@ -151,17 +171,17 @@ for (i in 1:length(rsav_ts)) { #loop trough station
   plot.new()
   par(mar=c(5, 4, 4, 6) + 0.1)
 ## Plot SOI plot and put axis scale on right
-  plot(soi_ts, xlab="", ylab="", main="PTK11 onthly comparison with equatorial SOI", 
+  plot(ysoi_ts, xlab="", ylab="", main="PTK11 onthly comparison with equatorial SOI", 
        ylim=c(-3.5,3.5), xaxt = "n", yaxt = "n", type="l", col="red")
-  polygon(c(min(index(soi_ts)), index(soi_ts), max(index(soi_ts))), 
+  polygon(c(min(index(ysoi_ts)), index(ysoi_ts), max(index(ysoi_ts))), 
           c( 0, soi_ts, 0), density=50, col="red") 
   abline(0,0, col="red")
   axis(4, ylim=c(-3,3), col="red",col.axis="red",las=1)
   mtext("SOI INDEX",side=4,col="red",line=3)
 ## Plot rainfall data and draw its axis
   par(new=TRUE)
-  ymid=mean(m_ts[[2]], na.rm=TRUE)
-  plot(m_ts[[2]], ylim=c(ymid-12,ymid+12), 
+  ymid=mean(mrs_ts[[2]], na.rm=TRUE)
+  plot(rsav_ts[[2]], ylim=c(ymid-12,ymid+12), 
        xaxt = "n", yaxt = "n", xlab="", ylab="", 
        type="l", col="black")
   abline(ymid,0)
@@ -170,6 +190,11 @@ for (i in 1:length(rsav_ts)) { #loop trough station
 ## Draw the time axis
 axis(1,at=time(y_ts[[1]]), labels=format.Date(time(y_ts[[1]]), "%Y"))
 box()
+
+#2nd
+ysoi_ts=monthly2annual(soi_ts, mean)
+cor(rsav_ts[[4]]~ysoi_ts)
+abline(6,1)
 ### END ENSO ###
 
 #### shut down ####
