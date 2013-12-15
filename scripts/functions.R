@@ -118,7 +118,7 @@ corgr=function(x, type){
   require(corrgram)
   name=paste("output/plots/correlograms/",type,"_corgr.png", sep ="")	# filename
   png(filename=name, width=800, height=800, units="px")		# open *.png write
-  corrgram(x, lower.panel=panel.pie, upper.panel=panel.pts, main=paste("Correlation between", type, "rainfall amounts"))
+  corrgram(x, order="PCA", lower.panel=panel.pts, upper.panel=panel.conf, diag.panel=panel.density, main=paste("Correlation between", type, "rainfall amounts"))
   dev.off()							# close write
 }
 ###

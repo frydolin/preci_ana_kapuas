@@ -134,7 +134,7 @@ for (i in 1:length(rsav_ts)) { #loop trough station
   dev.off()
 ### END MONTHLY AVERAGES ###
 
-
+plot(m_ts[[13]])
 ### END ALL STATION TS ### 
 
 #### HISTOGRAMS ####
@@ -145,15 +145,30 @@ dir.create("output/plots/histogramms") # new directory
 for (i in 1:length(d_ts))
 {
   name=paste("output/plots/histogramms/hist_",stnames[i],".png", sep="")
-  png(filename=name, width=800, height=1200, units="px")
+  png(filename=name, width=1500, height=2500, units="px")
   par(mfrow=c(3,1))
   title=paste("values histogramm for",stnames[i])
-  truehist(d_ts[[i]], h=5, xlim=c(0,150), col=hexcolors[i], bty="o", main=paste("Daily",title))
-  truehist(m_ts[[i]], h=50, col=hexcolors[i], bty="o", main=paste("Monthly",title))
-  truehist(y_ts[[i]], h=500, xlim=c(500,4500), col=hexcolors[i], bty="o", main=paste("Yearly",title))
+  truehist(d_ts[[i]], h=5, xlim=c(0,200), col=hexcolors[i], bty="o", main=paste("Daily",title))
+  truehist(m_ts[[i]], h=1, xlim=c(0,30), col=hexcolors[i], bty="o", main=paste("Monthly",title))
+  truehist(y_ts[[i]], h=0.5, xlim=c(5,15), col=hexcolors[i], bty="o", main=paste("Yearly",title))
   dev.off()
 }
-  
+
+#### DENSITY ####
+for (i in 1:length(d_ts))
+{
+  name=paste("output/plots/histogramms/density_",stnames[i],".png", sep="")
+  png(filename=name, width=1000, height=2000, units="px")
+  par(mfrow=c(3,1))
+  title=paste("values density for",stnames[i])
+  ddy<-density(d_ts[[i]], bw="SJ", kernel="gaussian", na.rm=TRUE)
+  plot(ddy, col=hexcolors[i], lwd="4", main=paste("Daily",title))
+  mdy<-density(m_ts[[i]], bw="SJ", kernel="gaussian", na.rm=TRUE)
+  plot(mdy, col=hexcolors[i],lwd="4", main=paste("Monthy",title))  
+  ydy<-density(y_ts[[i]], bw="SJ", kernel="gaussian", na.rm=TRUE)
+  plot(ydy, col=hexcolors[i], lwd="4",main=paste("Yearly",title))
+  dev.off()
+}
 # #### Cumulative Sums for each station####
 # dir.create("output/plots/cumulative")
 # 
