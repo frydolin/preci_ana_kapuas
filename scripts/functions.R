@@ -37,32 +37,16 @@ ts.bymonth=function(x){
 ###
 
 #### cumul ####
-# cumulative function: calculates yearly cumulative sums, accepts NA values
+# cumulative function: calculates yearly cumulative sums
 ## x: time series object
-## if there are more than 31 NA values in a row all subsequent terms are set to NA
-## e.g yearly sum not calculated then
 cumul=function(x){
-  timestep=format.Date(time(x),"%m%d")
-  nacount=0   #initiallize variable
-  cum=0       #initiallize variable
-  cum[1]=x[1]
-  for (i in 2:length(x)){
-    cum[i]=NA
-    if (timestep[i]=="0101") {cum[i]=sum(0,x[i],na.rm=TRUE)
-                              nacount=0
-                              next}
-    if (is.na(x[i])) {nacount=nacount+1}
-    else {
-      if (nacount==0) {cum[i]=sum(cum[i-1],x[i])
-                       nacount=0
-                       next}
-      if (nacount>0&&nacount<31){cum[i]=sum(cum[i-(nacount+1)],x[i])
-                                 nacount=0
-                                 next}
-      if (nacount>31){cum[i]=NA}
-    }    
+  ycumsum=list()
+  for (i in 1982:2012){
+    index=i-1981
+    yts=extract(x, trgt=i)
+    ycumsum[[index]]=cumsum(yts)
   }
-  return(cum)
+  return(ycumsum)
 }
 ###
 
