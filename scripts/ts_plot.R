@@ -66,6 +66,7 @@ for (i in 1:length(bymonth_ts)) { #loop trough station
   }
     dev.off()
 }
+
 # 2. Per month: comparison of stations for every month
 # Creates a plot matrix for all stations of a particular month 
 # of the "by month" time series (Jan 1982, Jan 1983, ..)
@@ -154,8 +155,40 @@ for (i in 1:length(d_ts))
   truehist(y_ts[[i]], h=0.5, xlim=c(5,15), col=hexcolors[i], bty="o", main=paste("Yearly",title))
   dev.off()
 }
+# Per type
+  # Daily
+  name=paste("output/plots/histogramms/daily_hist.png", sep="")
+  png(filename=name, width=1500, height=1200, units="px")
+  par(mfrow=c(3,4))
+  for (i in 1:12){
+    title=paste("values histogramm for",stnames[i])
+    truehist(d_ts[[i]], h=5, xlim=c(0,200), prob=FALSE,
+             col=hexcolors[i], bty="o", main=paste("Daily",title))
+  }
+  dev.off()
+  #Monthly
+  name=paste("output/plots/histogramms/monthly_hist.png", sep="")
+  png(filename=name, width=1500, height=1200, units="px")
+  par(mfrow=c(3,4))
+  for (i in 1:12){
+    title=paste("values histogramm for",stnames[i])
+    truehist(m_ts[[i]], h=1, xlim=c(0,30), prob=FALSE,
+             col=hexcolors[i], bty="o", main=paste("Monthly",title))
+  }
+  dev.off()
+  #Yearly
+  name=paste("output/plots/histogramms/yearly_hist.png", sep="")
+  png(filename=name, width=1500, height=1200, units="px")
+  par(mfrow=c(3,4))
+  for (i in 1:12){
+    title=paste("values histogramm for",stnames[i])
+    truehist(y_ts[[i]], h=0.5, xlim=c(5,15), prob=FALSE,
+             col=hexcolors[i], bty="o", main=paste("Yearly",title))
+  }
+  dev.off()
 
 #### DENSITY ####
+# Per station
 for (i in 1:length(d_ts))
 {
   name=paste("output/plots/histogramms/density_",stnames[i],".png", sep="")
@@ -170,6 +203,39 @@ for (i in 1:length(d_ts))
   plot(ydy, col=hexcolors[i], lwd="4",main=paste("Yearly",title))
   dev.off()
 }
+# Per type
+  # Daily
+  name=paste("output/plots/histogramms/daily_density.png", sep="")
+  png(filename=name, width=1500, height=1200, units="px")
+  par(mfrow=c(3,4))
+  for (i in 1:12){
+    title=paste("values density for",stnames[i])
+    ddy<-density(d_ts[[i]], bw="SJ", kernel="gaussian", na.rm=TRUE)
+    plot(ddy, col=hexcolors[i], lwd="4", main=paste("Daily",title))
+    
+  }
+  dev.off()
+  #Monthly
+  name=paste("output/plots/histogramms/monthly_density.png", sep="")
+  png(filename=name, width=1500, height=1200, units="px")
+  par(mfrow=c(3,4))
+  for (i in 1:12){
+    title=paste("values histogramm for",stnames[i])
+    mdy<-density(m_ts[[i]], bw="SJ", kernel="gaussian", na.rm=TRUE)
+    plot(mdy, col=hexcolors[i],lwd="4", main=paste("Monthy",title)) 
+  }
+  dev.off()
+  #Yearly
+  name=paste("output/plots/histogramms/yearly_density.png", sep="")
+  png(filename=name, width=1500, height=1200, units="px")
+  par(mfrow=c(3,4))
+  for (i in 1:12){
+    title=paste("values histogramm for",stnames[i])
+    ydy<-density(y_ts[[i]], bw="SJ", kernel="gaussian", na.rm=TRUE)
+    plot(ydy, col=hexcolors[i], lwd="4",main=paste("Yearly",title))
+  }
+  dev.off()
+### END DENSITY ###
 
 #### CUMULATIVE SUMS for each station####
 dir.create("output/plots/cumulative")
@@ -229,7 +295,7 @@ dir.create("output/plots/enso")
 for (j in 1:length(m_ts)){
   name=paste("output/plots/enso/soi_monthly_",stnames[j],".png", sep="")
   png(filename=name, width=800, height=600, units="px")
-  scatterplot(coredata(m_ts[[j]])~coredata(soi_ts), smoother=FALSE, 
+  scatterplot(coredata(m_ts[[j]])~coredata(soi_ts), smoother=FALSE, reg.line=lm,
               main=paste("Comparison between monthly equatorial SOI and monthly rainfall:", stnames[j]), 
               xlab="SOI Index", ylab="rainfall")
     dev.off()
@@ -237,7 +303,7 @@ for (j in 1:length(m_ts)){
 for (j in 1:length(rsav_ts)){
   name=paste("output/plots/enso/soi_yearly_",stnames[j],".png", sep="")
   png(filename=name, width=800, height=600, units="px")
-  scatterplot(coredata(rsav_ts[[j]])~coredata(ysoi_ts), smoother=FALSE, 
+  scatterplot(coredata(rsav_ts[[j]])~coredata(ysoi_ts), smoother=FALSE, reg.line=lm,
               main=paste("Comparison between yearly average equatorial SOI and average rainseason rainfall:", stnames[j]), 
               xlab="SOI Index", ylab="rainfall")
   dev.off()

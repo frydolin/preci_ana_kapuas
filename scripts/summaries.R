@@ -47,7 +47,7 @@
 
 
 #Yearly
-  y_ts <- lapply(d_ts, daily2annual, mean, na.rm=TRUE)
+  y_ts <- lapply(d_ts, daily2annual, mean, na.rm=FALSE)
   #str(y_ts)
   y_df=mdf(y_ts)
   write.csv2(y_df, file="output/files/yearly_data.csv", quote=F, na = "NA")
