@@ -73,7 +73,7 @@
   #str(mds_ts)
   mds_df=mdf(mds_ts)
 
-# Daily to season 
+# Daily to seasonal sum
   rsav_ts=lapply(d_ts, daily2season, season="RS", mean, na.rm=TRUE)
   rsav_df=mdf(rsav_ts)
   
@@ -82,16 +82,18 @@
 
 ### END AGGREGATION ###
 
-# #### Cumulative Daily Sums ####
-#   cumlist=lapply(d_ts, cumul) #make sums
-#   cumfun_ts=lapply(cumlist, function(x) zoo(x, order.by=time(d_ts[[1]]))) #convert to zoo
-#   cumfun_df=mdf(cumfun_ts) #convert to dataframe
-#   #write.csv2(cumfun_ts, file="output/files/cumulative_funct.xls", quote=F, na = "NA")
-# ### END CUMULATIVE SUMS ###
+#### Cumulative Daily Sums ####
+  cumlist=lapply(d_ts, cumul) #make sums
+  #cumfun_df_list=lapply(cumlist, function(x) lapply(x, unlistdo.call(cbind,unlist(x)) #doesnt work yet, convert to dataframe
+  #write.csv2(cumfun_ts, file="output/files/cumulative_funct.xls", quote=F, na = "NA") oesnt work yet,
+### END CUMULATIVE SUMS ###
 
 #### Time Series by months i.e. Jan 1982, 1983, 1984,... Feb 1982, ... ####
   ## output is a list of station summaries, each containing 12 lists of monthly TS ##
   bymonth_ts=lapply(m_ts, ts.bymonth)
 ### END TIME SERIES BY MONTH ###
+
+#### SOI AGGREGATION ####
+  ysoi_ts=monthly2annual(soi_ts, mean)
 
 ########## END summaries.R #############

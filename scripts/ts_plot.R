@@ -14,7 +14,7 @@
   dir.create("output/plots", recursive = FALSE)
 
 ## COLOR SCHEME for plots##
-  # currently for 11 stations
+  # currently for 13 stations
   hexcolors=c(
     "#222222",
     "#0EC20E",
@@ -26,7 +26,9 @@
     "#057E05",
     "#F31D11",
     "#0B9B7F",
-    "#F36A11")
+    "#F36A11",
+    "#FF00FF",
+    "#00FFFF")
 ### END SET UP ###
 
 #### Simple Time Series Plots for each station ####
@@ -85,7 +87,7 @@ for (j in 1:12){  # loop through month
 dir.create("output/plots/time_series/byseason") # new directory
 
 # Per station: comparison of Seasons within a station
-# Creates a plot matrix with othe season time series (RS 1982, DS 1983, ..)
+# Creates a plot matrix with the season time series (RS 1982, DS 1983, ..)
 # for each station
 for (i in 1:length(rsav_ts)) { #loop trough station
   name=paste("output/plots/time_series/byseason/ts_",stnames[i],".png", sep="")
@@ -134,7 +136,6 @@ for (i in 1:length(rsav_ts)) { #loop trough station
   dev.off()
 ### END MONTHLY AVERAGES ###
 
-plot(m_ts[[13]])
 ### END ALL STATION TS ### 
 
 #### HISTOGRAMS ####
@@ -169,47 +170,78 @@ for (i in 1:length(d_ts))
   plot(ydy, col=hexcolors[i], lwd="4",main=paste("Yearly",title))
   dev.off()
 }
-# #### Cumulative Sums for each station####
-# dir.create("output/plots/cumulative")
-# 
+
+#### CUMULATIVE SUMS for each station####
+dir.create("output/plots/cumulative")
+  #create overlapping graphs for all years
+  #create common index
+  cumlist_s.in=rapply(cumlist, how="list",function(x) zoo(x, order.by=time(cumlist[[1]][[19]])) )
+  str(cumlist_s.in)
+  #plot
+  for (j in 1:length(cumlist_s.in)){
+    name=paste("output/plots/cumulative/cumul_",stnames[j],".png", sep="")
+    png(filename=name, width=800, height=600, units="px")
+    plot(cumlist_s.in[[j]][[1]], type="l", lwd=2, lty=1, col=hexcolors[[j]], ylim=c(0,5000))
+      for (i in 2:31){
+        lines(cumlist_s.in[[j]][[i]], type="l", lwd=2, lty=i, col=hexcolors[[j]])
+              }
+    dev.off()
+  }
+#   not working yet
 #   for (i in 1:length(cumfun_ts)) {
 #     name=paste("output/plots/cumulative/cumfun_",stnames[i],".png", sep="")
 #     png(filename=name, width=800, height=500, units="px")
 #     plot(cumfun_ts[[i]], type="l",lty=1, lwd=2, col=hexcolors[i], ylab="rainfall in mm", main=paste("Cumulative rainfall amounts for", stnames[i]), xlab="date") 
 #     dev.off()
 #   }
-# 
-# ### END Cumulative Sums ###
+
+### END CUMULATIVE SUMS ###
 
 #### COMPARISON WITH ENSO ####
-  dev.off()
-  plot.new()
-  par(mar=c(5, 4, 4, 6) + 0.1)
-## Plot SOI plot and put axis scale on right
-  plot(ysoi_ts, xlab="", ylab="", main="PTK11 onthly comparison with equatorial SOI", 
-       ylim=c(-3.5,3.5), xaxt = "n", yaxt = "n", type="l", col="red")
-  polygon(c(min(index(ysoi_ts)), index(ysoi_ts), max(index(ysoi_ts))), 
-          c( 0, soi_ts, 0), density=50, col="red") 
-  abline(0,0, col="red")
-  axis(4, ylim=c(-3,3), col="red",col.axis="red",las=1)
-  mtext("SOI INDEX",side=4,col="red",line=3)
-## Plot rainfall data and draw its axis
-  par(new=TRUE)
-  ymid=mean(mrs_ts[[2]], na.rm=TRUE)
-  plot(rsav_ts[[2]], ylim=c(ymid-12,ymid+12), 
-       xaxt = "n", yaxt = "n", xlab="", ylab="", 
-       type="l", col="black")
-  abline(ymid,0)
-  axis(2, ylim=c(ymid-12,ymid+12),col="black",las=1)  ## las=1 makes horizontal labels
-  mtext("raifall [mm/day]",side=2,line=2.5)
-## Draw the time axis
-axis(1,at=time(y_ts[[1]]), labels=format.Date(time(y_ts[[1]]), "%Y"))
-box()
+  # Overlapping TS plots (DEPRECIATED)
+#   dev.off()
+#   plot.new()
+#   par(mar=c(5, 4, 4, 6) + 0.1)
+# ## Plot SOI plot and put axis scale on right
+#   plot(ysoi_ts, xlab="", ylab="", main="PTK11 onthly comparison with equatorial SOI", 
+#        ylim=c(-3.5,3.5), xaxt = "n", yaxt = "n", type="l", col="red")
+#   polygon(c(min(index(ysoi_ts)), index(ysoi_ts), max(index(ysoi_ts))), 
+#           c( 0, soi_ts, 0), density=50, col="red") 
+#   abline(0,0, col="red")
+#   axis(4, ylim=c(-3,3), col="red",col.axis="red",las=1)
+#   mtext("SOI INDEX",side=4,col="red",line=3)
+# ## Plot rainfall data and draw its axis
+#   par(new=TRUE)
+#   ymid=mean(mrs_ts[[2]], na.rm=TRUE)
+#   plot(rsav_ts[[2]], ylim=c(ymid-12,ymid+12), 
+#        xaxt = "n", yaxt = "n", xlab="", ylab="", 
+#        type="l", col="black")
+#   abline(ymid,0)
+#   axis(2, ylim=c(ymid-12,ymid+12),col="black",las=1)  ## las=1 makes horizontal labels
+#   mtext("raifall [mm/day]",side=2,line=2.5)
+# ## Draw the time axis
+# axis(1,at=time(y_ts[[1]]), labels=format.Date(time(y_ts[[1]]), "%Y"))
+# box()
 
-#2nd
-ysoi_ts=monthly2annual(soi_ts, mean)
-cor(rsav_ts[[4]]~ysoi_ts)
-abline(6,1)
+#Scatterplot comparison
+dir.create("output/plots/enso")
+#plot
+for (j in 1:length(m_ts)){
+  name=paste("output/plots/enso/soi_monthly_",stnames[j],".png", sep="")
+  png(filename=name, width=800, height=600, units="px")
+  scatterplot(coredata(m_ts[[j]])~coredata(soi_ts), smoother=FALSE, 
+              main=paste("Comparison between monthly equatorial SOI and monthly rainfall:", stnames[j]), 
+              xlab="SOI Index", ylab="rainfall")
+    dev.off()
+}
+for (j in 1:length(rsav_ts)){
+  name=paste("output/plots/enso/soi_yearly_",stnames[j],".png", sep="")
+  png(filename=name, width=800, height=600, units="px")
+  scatterplot(coredata(rsav_ts[[j]])~coredata(ysoi_ts), smoother=FALSE, 
+              main=paste("Comparison between yearly average equatorial SOI and average rainseason rainfall:", stnames[j]), 
+              xlab="SOI Index", ylab="rainfall")
+  dev.off()
+}
 ### END ENSO ###
 
 #### shut down ####
