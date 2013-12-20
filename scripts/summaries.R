@@ -48,9 +48,12 @@
 
 #Yearly
   y_ts <- lapply(d_ts, daily2annual, mean, na.rm=FALSE)
-  #str(y_ts)
   y_df=mdf(y_ts)
   write.csv2(y_df, file="output/files/yearly_data.csv", quote=F, na = "NA")
+  #sums
+  ys_ts <- lapply(d_ts, daily2annual, sum, na.rm=FALSE)
+  ys_df=mdf(ys_ts)
+  write.csv2(ys_df, file="output/files/yearly_sums.csv", quote=F, na = "NA")
 
 #Daily by Season
   #RS
