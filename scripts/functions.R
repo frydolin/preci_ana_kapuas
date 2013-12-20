@@ -5,11 +5,11 @@
 #### mdf ####
 # Coerce zoo time series to data frames: mdf (make data frame)#
 ## x: list of zoo time series objects
-## stnames has to be globally defined if you want nice colnames !!
-mdf=function(x){
+## coln: names of column headers, default ist stnames
+mdf=function(x, coln=stnames){
   dfr=do.call(cbind, as.data.frame(x))		# converison
   row.names(dfr)=as.character(time(x[[1]])) 	# only naming: timestep names
-  if(exists("stnames")) colnames(dfr)=stnames	else 	colnames(dfr)=c(1:ncol(dfr)) # only naming: stationnames
+  colnames(dfr)=coln	#only naming column names
   return(dfr)
 }
 ###
