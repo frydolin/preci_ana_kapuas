@@ -149,5 +149,28 @@ tsplot.pst=function(x, type, fpath) {
   }
 }
 ###
+#### Scatterplot Matrix ####
+  ### panel.2lines function ###
+  # creates lines as input for a scatterplotmatrix
+  # lm regression
+  # 0,1 abline
+  panel.2lines <- function(x,y,...) {
+    points(x,y)
+    abline(0,1,col="red")
+    abline(lm(y~x),col="blue")
+  }
+  ###
+### scatterMatrix###
+## x: should be a data matrix (as in the normal corrgram() function)
+## type: is only for naming e.g. daily, monthly 
+scatterMatrix=function(x, xylim, type, fpath){
+  name=paste(fpath,"/",type,"_scatter.png", sep ="")  # filename
+  png(filename=name, width=2000, height=2000, units="px")		# open *.png write
+  pairs(x, upper.panel=NULL, lower.panel=panel.2lines, 
+        xlim=xylim, ylim=xylim,
+        main=paste("Correlation between", type, "rainfall amounts"))
+  dev.off()							# close write
+}
+###
 
 ###### END #############

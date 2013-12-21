@@ -1,6 +1,6 @@
 ###### PRECIPITATION ANALYSIS: COMPARISON OF GROUND DATA ######
 
-## sp_plot.R plots spatial and comparative summaries to output files ##
+## compare.R plots spatial and comparative summaries to output files ##
 
 #### SET UP ####
 ## set up time locale to get english names 
@@ -91,28 +91,46 @@ require(zoo)
     plot.logspline(mdensity[[i]], col=hexcolors[i], lwd="4", add=TRUE)
   }
   dev.off()
-summary(mdensity[[10]])
 #Yearly
   #not enough data
 ### END DENSITIES IN ONE PLOT ###
 
-#### CORRELOGRAMS ####
-  library(corrgram)
-  fpath="output/correlograms"
+#### CORRELATION ####
+  fpath="output/correlation"
   dir.create(fpath)
-  
-  corgr(d_df, type="daily", fpath=fpath)
-  corgr(w_df, type="weekly", fpath=fpath)
-  corgr(m_df, type="monthly", fpath=fpath)
-#   corgr(y_df, type="yearly", fpath=fpath) #currently not enough values
-  
-  corgr(rs_df, type="rainseason daily", fpath=fpath)
-  corgr(ds_df, type="dryseason daily", fpath=fpath)
-  corgr(mrs_df, type="rainseason monthly", fpath=fpath)
-  corgr(mds_df, type="dryseason monthly", fpath=fpath)
-  
-  rm(fpath)
-### END CORRGRAMS ###
+  #### CORRELOGRAMS ####
+    fpath="output/correlation/correlograms"
+    dir.create(fpath)
+    
+    corgr(d_df, type="daily", fpath=fpath)
+    corgr(w_df, type="weekly", fpath=fpath)
+    corgr(m_df, type="monthly", fpath=fpath)
+  #   corgr(y_df, type="yearly", fpath=fpath) #currently not enough values
+    
+    corgr(rs_df, type="rainseason daily", fpath=fpath)
+    corgr(ds_df, type="dryseason daily", fpath=fpath)
+    corgr(mrs_df, type="rainseason monthly", fpath=fpath)
+    corgr(mds_df, type="dryseason monthly", fpath=fpath)
+    
+    rm(fpath)
+  ### END CORRGRAMS ###
+  #### SCATTERPLOT MATRIX ####
+    fpath="output/correlation/scatterplotmatrix"
+    dir.create(fpath)
+    
+    scatterMatrix(d_df, xylim=c(0,150), type="daily", fpath=fpath)
+    scatterMatrix(w_df, xylim=c(0,45), type="weekly", fpath=fpath)
+    scatterMatrix(m_df, xylim=c(0,25),type="monthly", fpath=fpath)
+    #scatterMatrix(y_df, xylim=c(0,20), type="yearly", fpath=fpath) #currently not enough values
+    
+    scatterMatrix(rs_df, xylim=c(0,150),type="rainseason daily", fpath=fpath)
+    scatterMatrix(ds_df, xylim=c(0,150),type="dryseason daily", fpath=fpath)
+    scatterMatrix(mrs_df, xylim=c(0,25),type="rainseason monthly", fpath=fpath)
+    scatterMatrix(mds_df, xylim=c(0,25),type="dryseason monthly", fpath=fpath)
+    
+    rm(fpath)
+  ### END SCATTERPLOT MATRIX ###
+### END CORRELATION###
 
 # #### Cumulative Sums COMPARISON####
 #   dir.create("output/plots/cumulative")
