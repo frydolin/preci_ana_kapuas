@@ -111,15 +111,17 @@ make.smry=function(x, objnames=stnames){
 
 #### corgr ####
 # own version of correlograms made by corrgram
-# corgr creates *.png files in output/plots/correlograms/
+# corgr creates *.png files in fpath
 ## make sure directory exists!
 ## x: should be a data matrix (as in the normal corrgram() function)
 ## type: is only for naming e.g. daily, monthly 
-corgr=function(x, type){
+corgr=function(x, type, fpath){
   require(corrgram)
-  name=paste("output/plots/correlograms/",type,"_corgr.png", sep ="")	# filename
+  name=paste(fpath,"/",type,"_corgr.png", sep ="")	# filename
   png(filename=name, width=800, height=800, units="px")		# open *.png write
-  corrgram(x, order="PCA", lower.panel=panel.pts, upper.panel=panel.conf, diag.panel=panel.density, main=paste("Correlation between", type, "rainfall amounts"))
+  corrgram(x, lower.panel=panel.pie, upper.panel=panel.conf, 
+           diag.panel=panel.density, 
+           main=paste("Correlation between", type, "rainfall amounts"))
   dev.off()							# close write
 }
 ###
@@ -131,12 +133,16 @@ corgr=function(x, type){
 ## x: zoo time series object
 ## type: is for naming e.g. daily, monthly. EXCEPTION: "yearly" also changes plot type to "b"!
 ## colors need to be defined in hexcolors vector.
-tsplot.pst=function(x, type) {
+## fpath: file path, default is fpath
+tsplot.pst=function(x, type, fpath) {
+  # make directory
+  npath=paste(fpath,"/",type, sep="")
+  dir.create(npath)
   # check if it is yearly ts
-  if (type=="yearly") ptype="b" else ptype="l"
+  if(type=="yearly") ptype="b" else ptype="l"
   # make graphs
   for (i in 1:length(x)) {
-    name=paste("output/time_series/",type,"_ts_",stnames[i],".png", sep="")
+    name=paste(npath,"/",type,"_ts_",stnames[i],".png", sep="")
     png(filename=name, width=900, height=500, units="px")
     plot(x[[i]], type=ptype, lty=1, lwd=2, col=hexcolors[i], ylab="rainfall in mm/day", main=paste("Time series of", type, "rainfall amounts for", stnames[i]), xlab=substr(type,1, (nchar(type)-2))) 
     dev.off()

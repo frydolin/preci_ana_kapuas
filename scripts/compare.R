@@ -9,38 +9,21 @@ Sys.setlocale("LC_TIME", "en_US.UTF-8")
 ##  load functions such as mdf,corgr,.. . As defined in the file.
 source("scripts/functions.R")
 require(zoo)
-
-## create plot output directory ##
-#dir.create("output/plots", recursive = FALSE) 
-
-## COLOR SCHEME for plots##
-# currently for 11 stations
-hexcolors=c(
-  "#222222",
-  "#0EC20E",
-  "#A30008",
-  "#7F054A",
-  "#649305",
-  "#6D14A2",
-  "#17599E",
-  "#057E05",
-  "#F31D11",
-  "#0B9B7F",
-  "#F36A11")
 ### END SET UP ###
 
 #### Box plot for station comparison ####
   library(beeswarm)
-  dir.create("output/plots/boxplots")
+  fpath="output/boxplots"
+  dir.create(fpath)
 # year
-    name=paste("output/plots/boxplots/yearly_boxplot.png", sep="")
+    name=paste(fpath,"/yearly_boxplot.png", sep="")
     png(filename=name, width=1200, height=800, units="px")
     boxplot(y_df, outline=FALSE, main="Average daily rainfall per year",xlab="Station", ylab="mm/day")
     abline(mean(y_df,  na.rm=TRUE),0, lwd="2", col="blue")
     beeswarm(y_ts, col=hexcolors, add=TRUE)
     dev.off()
 #monthly per month i.e. Jan
-    name=paste("output/plots/boxplots/monthly_boxplot.png", sep="")
+    name=paste(fpath,"/monthly_boxplot.png", sep="")
     png(filename=name, width=2000, height=1200, units="px")
     par(mfrow=c(4,3))
     for (j in 1:12){ #loop trough month
@@ -52,11 +35,12 @@ hexcolors=c(
     abline(mean(m_df[selector==month,], na.rm=TRUE),0, lwd="2", col="blue")
     }
   dev.off()
+  rm(fpath)
 ### END BOX PLOTS ###
 
 #### ALL STATION TIME SERIES IN ONE PLOT ####
   ### Monthly TS ###
-  name="output/plots/time_series/monthly_ts.png"
+  name="output/timeseries/monthly_ts.png"
   png(filename=name, width=1000, height=700, units="px")
   matplot(m_df, type = c("l"),pch=1, lwd=2, lty=c(1), col = hexcolors, xaxt = "n", ylab="rainfall in mm/year", main="Yearly Time Series", xlab="Year")
   axis(1,1:372,labels=substr(row.names(m_df),1,7))  
@@ -64,7 +48,7 @@ hexcolors=c(
   dev.off()
   
   ### YEARLY TS ###
-  name="output/plots/time_series/yearly_ts.png"
+  name="output/timeseries/yearly_ts.png"
   png(filename=name, width=1000, height=700, units="px")
   matplot(y_df, type = c("b"),pch=1, lwd=2, lty=c(1), col = hexcolors, xaxt = "n", ylab="rainfall in mm/year", main="Yearly Time Series", xlab="Year")
   axis(1,1:31,labels=substr(row.names(y_df),1,4))  
@@ -72,14 +56,14 @@ hexcolors=c(
   dev.off()
   
   ### Monthly Averages ###
-  name="output/plots/dav_by_month.png"
+  name="output/seasonality/dav_by_month.png"
   png(filename=name, width=1000, height=700, units="px")  
   matplot(davbm_df, type = c("b"),pch=1, lty=c(1), lwd=2, col = hexcolors, xaxt = "n", ylab="rainfall in mm/day", main="Daily Average Rain per Month", xlab="Month")
   axis(1,1:12,labels=row.names(davbm_df))
   legend(x="bottomright", legend=stnames, col=hexcolors, lwd=3, cex=0.8)
   dev.off()
   #boxplot version
-  name="output/plots/dav_by_month_boxplot.png"
+  name="output/seasonality/dav_by_month_boxplot.png"
   png(filename=name, width=1000, height=700, units="px")
   boxplot(t(davbm_df), outline=TRUE, main="Station average of daily average Rain per Month", xlab="Month", ylab="mm/day")
   abline(mean(t(davbm_df), na.rm=TRUE),0, lwd="2", col="blue")
@@ -98,7 +82,7 @@ hexcolors=c(
 #   }
 #   dev.off()
 #Monthly
-  name=paste("output/plots/histogramms/monthly_density_overlay.png", sep="")
+  name=paste("output/histogramms/density/monthly_density_overlay.png", sep="")
   png(filename=name, width=1000, height=800, units="px")
   plot.logspline(mdensity[[1]], xlim=c(0,25), ylim=c(0,0.2), col=hexcolors[1], 
               lwd="4", xlab="", main="Densities of monthly rainfall")
@@ -114,19 +98,20 @@ summary(mdensity[[10]])
 
 #### CORRELOGRAMS ####
   library(corrgram)
-  dir.create("output/plots/correlograms")
+  fpath="output/correlograms"
+  dir.create(fpath)
   
-  corgr(d_df, type="daily")
-  corgr(w_df, type="weekly")
-  corgr(m_df, type="monthly")
-  corgr(y_df, type="yearly")
+  corgr(d_df, type="daily", fpath=fpath)
+  corgr(w_df, type="weekly", fpath=fpath)
+  corgr(m_df, type="monthly", fpath=fpath)
+#   corgr(y_df, type="yearly", fpath=fpath) #currently not enough values
   
-  corgr(rs_df, type="rainseason daily")
-  corgr(ds_df, type="dryseason daily")
-  corgr(mrs_df, type="rainseason monthly")
-  corgr(mds_df, type="dryseason monthly")
+  corgr(rs_df, type="rainseason daily", fpath=fpath)
+  corgr(ds_df, type="dryseason daily", fpath=fpath)
+  corgr(mrs_df, type="rainseason monthly", fpath=fpath)
+  corgr(mds_df, type="dryseason monthly", fpath=fpath)
   
-  dev.off() #Completely shuts down the printing to file
+  rm(fpath)
 ### END CORRGRAMS ###
 
 # #### Cumulative Sums COMPARISON####
@@ -167,7 +152,7 @@ summary(mdensity[[10]])
 
 
 #### shut down ####
-rm(name)
+rm(name, fpath)
 dev.off()
 graphics.off() #Completely shuts down the printing to file
 ### END SHUT DOWN ###
