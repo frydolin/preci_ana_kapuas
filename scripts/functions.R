@@ -92,6 +92,23 @@ daily2season=function(x, season, FUN, na.rm){
 }
 ###
 
+#### make.smry ####
+# makes smry summaries and converts them into one comprehensive data frame
+## x list of zoo objects 
+## assumed they have a common index
+## objnames= names of summary objects
+make.smry=function(x, objnames=stnames){
+  smry.list=lapply(x, smry)
+  smry.list[[1]]
+  dfr=do.call(cbind, (smry.list))  	# converison
+  row.names(dfr)=row.names(smry.list[[1]])
+  colselector=c(1,2,seq(4, ncol(dfr), 2)) #remove index columns except first one
+  rowselector=c(-10,-11)  #remove skewness and kurtosis entries
+  dfr.sub=dfr[rowselector,colselector]  #subset
+  colnames(dfr.sub)=c("TIME INDEX",objnames)	#renaming columns
+  return(dfr.sub)
+}
+
 #### corgr ####
 # own version of correlograms made by corrgram
 # corgr creates *.png files in output/plots/correlograms/
@@ -119,7 +136,7 @@ tsplot.pst=function(x, type) {
   if (type=="yearly") ptype="b" else ptype="l"
   # make graphs
   for (i in 1:length(x)) {
-    name=paste("output/plots/time_series/",type,"_ts_",stnames[i],".png", sep="")
+    name=paste("output/time_series/",type,"_ts_",stnames[i],".png", sep="")
     png(filename=name, width=900, height=500, units="px")
     plot(x[[i]], type=ptype, lty=1, lwd=2, col=hexcolors[i], ylab="rainfall in mm/day", main=paste("Time series of", type, "rainfall amounts for", stnames[i]), xlab=substr(type,1, (nchar(type)-2))) 
     dev.off()

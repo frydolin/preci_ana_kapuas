@@ -31,12 +31,18 @@
 ### END SET UP ###
 
 #### SIMPLE TS PLOTS FOR EACH STATION ####
-  dir.create("output/plots/time_series")
+  dir.create("output/time_series")
 
   tsplot.pst(d_ts, type="daily")
+  daily_summary=make.smry(d_ts)
+  write.csv(daily_summary, file="output/time_series/daily_summary.csv", na = "NA")
   tsplot.pst(w_ts, type="weekly")
   tsplot.pst(m_ts, type="monthly")
+  monthly_summary=make.smry(m_ts)
+  write.csv(monthly_summary, file="output/time_series/monthly_summary.csv", na = "NA")
   tsplot.pst(y_ts, type="yearly")
+  yearly_summary=make.smry(y_ts)
+  write.csv(yearly_summary, file="output/time_series/yearly_summary.csv", na = "NA")
 ### END TS per Station ###
 
 #### HISTOGRAMS ####
