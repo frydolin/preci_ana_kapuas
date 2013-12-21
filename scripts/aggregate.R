@@ -76,6 +76,8 @@
   ## output is a list of station summaries, each containing 12 lists of monthly TS ##
   ## of daily mean values 
   bymonth_ts=lapply(m_ts, ts.bymonth)
+  #convert to list of dataframes
+  bymonth_df_list=lapply(bymonth_ts, mdf, coln=format.Date(time(m_ts[[1]][1:12]), "%b"))
 ### END AGGREGATION BY MONTH ###
 
 #### SEASONAL AGGREGATION ####
@@ -139,9 +141,19 @@
   cumsums=lapply(cumlist, unlist)
   #make times series and convert that to df
   cumsums_ts=lapply(cumsums, function(x) zoo(x, order.by=time(d_ts[[1]])))
+  rm(cumsums)
   cumsums_df=mdf(cumsums_ts)
   write.csv(cumsums_df, file="output/files/cumulative_funct.csv",  na = "NA") 
 ### END CUMULATIVE SUMS ###
+
+#### DENSITIES ####
+## Compute densities
+  library(logspline)
+  #library(ks)
+  ddensity<-lapply(d_ts, density, from=0, bw="nrd", na.rm=TRUE)
+  mdensity<-lapply(m_ts, logspline, lbound = 0)
+  ydensity<-lapply(y_ts, density, from=0, bw="nrd", na.rm=TRUE)
+### END DENSITIES ###
 
 #### SOI AGGREGATION ####
   ysoi_ts=monthly2annual(soi_ts, mean)

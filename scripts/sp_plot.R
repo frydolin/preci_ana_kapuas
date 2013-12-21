@@ -3,7 +3,6 @@
 ## sp_plot.R plots spatial and comparative summaries to output files ##
 
 #### SET UP ####
-
 ## set up time locale to get english names 
 Sys.setlocale("LC_TIME", "en_US.UTF-8") 
 
@@ -55,6 +54,64 @@ hexcolors=c(
   dev.off()
 ### END BOX PLOTS ###
 
+#### ALL STATION TIME SERIES IN ONE PLOT ####
+  ### Monthly TS ###
+  name="output/plots/time_series/monthly_ts.png"
+  png(filename=name, width=1000, height=700, units="px")
+  matplot(m_df, type = c("l"),pch=1, lwd=2, lty=c(1), col = hexcolors, xaxt = "n", ylab="rainfall in mm/year", main="Yearly Time Series", xlab="Year")
+  axis(1,1:372,labels=substr(row.names(m_df),1,7))  
+  legend(x="bottomleft", legend=stnames, col=hexcolors, lwd=3, cex=0.8)
+  dev.off()
+  
+  ### YEARLY TS ###
+  name="output/plots/time_series/yearly_ts.png"
+  png(filename=name, width=1000, height=700, units="px")
+  matplot(y_df, type = c("b"),pch=1, lwd=2, lty=c(1), col = hexcolors, xaxt = "n", ylab="rainfall in mm/year", main="Yearly Time Series", xlab="Year")
+  axis(1,1:31,labels=substr(row.names(y_df),1,4))  
+  legend(x="bottomright", legend=stnames, col=hexcolors, lwd=3, cex=0.8)
+  dev.off()
+  
+  ### Monthly Averages ###
+  name="output/plots/dav_by_month.png"
+  png(filename=name, width=1000, height=700, units="px")  
+  matplot(davbm_df, type = c("b"),pch=1, lty=c(1), lwd=2, col = hexcolors, xaxt = "n", ylab="rainfall in mm/day", main="Daily Average Rain per Month", xlab="Month")
+  axis(1,1:12,labels=row.names(davbm_df))
+  legend(x="bottomright", legend=stnames, col=hexcolors, lwd=3, cex=0.8)
+  dev.off()
+  #boxplot version
+  name="output/plots/dav_by_month_boxplot.png"
+  png(filename=name, width=1000, height=700, units="px")
+  boxplot(t(davbm_df), outline=TRUE, main="Station average of daily average Rain per Month", xlab="Month", ylab="mm/day")
+  abline(mean(t(davbm_df), na.rm=TRUE),0, lwd="2", col="blue")
+  dev.off()
+### END MONTHLY AVERAGES ###
+
+#### DENSITIES IN ONE PLOT ####
+# Daily
+#   name=paste("output/plots/histogramms/daily_density_overlay.png", sep="")
+#   png(filename=name, width=1000, height=800, units="px")
+#   plot(ddy[[1]], xlim=c(0,200), ylim=c(0,20), col=hexcolors[1], 
+#        lwd="4", xlab="", main="Densities of daily rainfall")
+#   legend(x="topright", legend=stnames, col=hexcolors, lwd=3, cex=0.8)
+#   for (i in 2:12){ 
+#     lines(ddy[[i]], col=hexcolors[i], lwd="4")
+#   }
+#   dev.off()
+#Monthly
+  name=paste("output/plots/histogramms/monthly_density_overlay.png", sep="")
+  png(filename=name, width=1000, height=800, units="px")
+  plot.logspline(mdensity[[1]], xlim=c(0,25), ylim=c(0,0.2), col=hexcolors[1], 
+              lwd="4", xlab="", main="Densities of monthly rainfall")
+              legend(x="topright", legend=stnames, col=hexcolors, lwd=3, cex=0.8)
+  for (i in 2:12){ 
+    plot.logspline(mdensity[[i]], col=hexcolors[i], lwd="4", add=TRUE)
+  }
+  dev.off()
+summary(mdensity[[10]])
+#Yearly
+  #not enough data
+### END DENSITIES IN ONE PLOT ###
+
 #### CORRELOGRAMS ####
   library(corrgram)
   dir.create("output/plots/correlograms")
@@ -69,10 +126,10 @@ hexcolors=c(
   corgr(mrs_df, type="rainseason monthly")
   corgr(mds_df, type="dryseason monthly")
   
-  graphics.off() #Completely shuts down the printing to file
+  dev.off() #Completely shuts down the printing to file
 ### END CORRGRAMS ###
 
-# #### Cumulative Sums ####
+# #### Cumulative Sums COMPARISON####
 #   dir.create("output/plots/cumulative")
 # 
 # ### Comparison of cumulative sums ###
