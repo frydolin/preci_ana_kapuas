@@ -2,6 +2,10 @@
 
 ## load.R loads in all the data and converts to appropriate formats ##
 
+### SET UP ###
+source(scripts/setup.R)
+###
+
 #### LOAD IN ALL GROUND DATA ####
 # You need to be in the correct working directory 
 
@@ -25,14 +29,12 @@
 ### END STATION NAME LIST ###
 
 #### CONVERT TO ZOO (TIME SERIES) OBJECTS ####
-  library(zoo)
   d_ts=lapply(gdata, function(x) zoo(x$rain, order.by=as.Date(x$date)))
   str(d_ts) #just to check
 ### END ZOO OBJECTS ###
 
 #### LOAD ENSO DATA ####
   soi=read.csv("input/soi.csv", sep=";", dec=",", na.strings = "NA")
-  library(zoo)
   soi_ts=zoo(soi$soi, order.by=as.Date(soi$date))
 ### END LOAD ENSO DATA ###
 

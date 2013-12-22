@@ -9,14 +9,11 @@
 ## na.rm currently FALSE 
 
 #### SET UP ####
-  Sys.setlocale("LC_TIME", "en_US.UTF-8") #set up time locale to get english names 
-  library("zoo")
-  library("hydroTSM")
-  source("scripts/functions.R") #own functions
-  ## create plot output directory ##
+  source(scripts/setup.R)
+  ## create output directory ##
   fpath="output/aggregation"
   dir.create(fpath)
-  ### END SET UP ###
+### END SET UP ###
 
 #### TIME SERIES AGGREGATION ####
 #Daily

@@ -54,7 +54,7 @@ cumul=function(x){
 # calculates seasonal sums/averages from daily zoo TS
 # RS defined as Jan, Nov, Dec. DS defined as Jun, Jul, Aug
 daily2season=function(x, season, FUN, na.rm){
-  
+  require("zoo")
   if ( !is.zoo(x) ) stop("Invalid argument: 'class(x)' must be zoo")
   if (!(season %in% c("RS","DS"))) stop("season must be either RS or DS")
   
@@ -98,6 +98,7 @@ daily2season=function(x, season, FUN, na.rm){
 ## assumed they have a common index
 ## objnames= names of summary objects
 make.smry=function(x, objnames=stnames){
+  require("hydroTSM")
   smry.list=lapply(x, smry)
   smry.list[[1]]
   dfr=do.call(cbind, (smry.list))  	# converison
@@ -116,7 +117,7 @@ make.smry=function(x, objnames=stnames){
 ## x: should be a data matrix (as in the normal corrgram() function)
 ## type: is only for naming e.g. daily, monthly 
 corgr=function(x, type, fpath){
-  require(corrgram)
+  require("corrgram")
   name=paste(fpath,"/",type,"_corgr.png", sep ="")	# filename
   png(filename=name, width=800, height=800, units="px")		# open *.png write
   corrgram(x, lower.panel=panel.pie, upper.panel=panel.conf, 

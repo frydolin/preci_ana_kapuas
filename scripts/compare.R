@@ -3,12 +3,7 @@
 ## compare.R plots spatial and comparative summaries to output files ##
 
 #### SET UP ####
-## set up time locale to get english names 
-Sys.setlocale("LC_TIME", "en_US.UTF-8") 
-
-##  load functions such as mdf,corgr,.. . As defined in the file.
-source("scripts/functions.R")
-require(zoo)
+  source(scripts/setup.R)
 ### END SET UP ###
 
 #### Box plot for station comparison ####
@@ -167,7 +162,6 @@ require(zoo)
 #   lines(window(m_ts[[11]], start=as.Date('2002-01-01'), end=as.Date('2010-12-31')), col=hexcolors[11])
 # 
 # ###  ###
-
 
 #### shut down ####
 rm(name, fpath)
