@@ -3,7 +3,7 @@
 ## compare.R plots spatial and comparative summaries to output files ##
 
 #### SET UP ####
-  source(scripts/setup.R)
+  source("scripts/setup.R")
 ### END SET UP ###
 
 #### Box plot for station comparison ####
@@ -165,7 +165,6 @@
 
 #### shut down ####
 rm(name, fpath)
-dev.off()
 graphics.off() #Completely shuts down the printing to file
 ### END SHUT DOWN ###
 

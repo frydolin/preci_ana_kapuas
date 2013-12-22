@@ -3,7 +3,7 @@
 ## load.R loads in all the data and converts to appropriate formats ##
 
 ### SET UP ###
-source(scripts/setup.R)
+source("scripts/setup.R")
 ###
 
 #### LOAD IN ALL GROUND DATA ####
@@ -30,7 +30,7 @@ source(scripts/setup.R)
 
 #### CONVERT TO ZOO (TIME SERIES) OBJECTS ####
   d_ts=lapply(gdata, function(x) zoo(x$rain, order.by=as.Date(x$date)))
-  str(d_ts) #just to check
+  #str(d_ts) #just to check
 ### END ZOO OBJECTS ###
 
 #### LOAD ENSO DATA ####
@@ -40,9 +40,9 @@ source(scripts/setup.R)
 
 #### CLEAN UP ####
 # remove variables and data not needed anymore
-rm(i,j)
-rm(files_tmp, fpath) 
-rm(soi, gdata)
+  rm(i,j)
+  rm(files_tmp, fpath) 
+  rm(soi, gdata)
 ### END CLEAN UP ###
 
 ########## END load.R #############

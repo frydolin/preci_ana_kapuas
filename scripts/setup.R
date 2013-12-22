@@ -9,6 +9,7 @@
   library("stats")
   library("class")
   library("methods")
+  library("grid")
   library("grDevices")
   library("graphics")
 

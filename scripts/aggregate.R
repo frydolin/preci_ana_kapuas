@@ -9,7 +9,7 @@
 ## na.rm currently FALSE 
 
 #### SET UP ####
-  source(scripts/setup.R)
+  source("scripts/setup.R")
   ## create output directory ##
   fpath="output/aggregation"
   dir.create(fpath)

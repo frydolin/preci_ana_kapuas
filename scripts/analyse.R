@@ -3,7 +3,7 @@
 ## analyse.R plots summaries to output files ##
 
 #### SET UP ####
-source(scripts/setup.R)
+source("scripts/setup.R")
 ### END SET UP ###
 
 #### SIMPLE TS PLOTS AND SUMMARY STATISTICS ####
@@ -178,7 +178,6 @@ dir.create(fpath)
   dir.create(fpath) # new directory
 
   #### BY MONTH time series with linear trendline ####
-  require("zoo")
   dir.create(paste(fpath,"/bymonth", sep="")) # new directory
   
   #1. Per station: comparison of month within a station
