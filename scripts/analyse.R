@@ -237,6 +237,14 @@ dir.create(fpath)
   }
   ### END BY SEASON TS ###
 rm(fpath)
+
+#### Mann-Kendall trend testing ####
+library("Kendall")
+  #runs on monthly values
+  #SeasonalMannKendall likes only ts objects therefore the as.ts conversion
+  mk.trendtest=lapply(m_ts, function(x) SeasonalMannKendall(as.ts(x)))
+  summary.Kendall(mk.trendtest[[1]])
+### END Mann-Kendall trend testing ###
 ### END TREND ANALYSIS ### 
 
 #### COMPARISON WITH ENSO ####
