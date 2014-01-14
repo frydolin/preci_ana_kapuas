@@ -242,8 +242,10 @@ rm(fpath)
 library("Kendall")
   #runs on monthly values
   #SeasonalMannKendall likes only ts objects therefore the as.ts conversion
+  #tau= Score/denominator, denominator=max possible value for score
   mk.trendtest=lapply(m_ts, function(x) SeasonalMannKendall(as.ts(x)))
-  summary.Kendall(mk.trendtest[[1]])
+  names(mk.trendtest)=stnames
+  mk.trendtest
 ### END Mann-Kendall trend testing ###
 ### END TREND ANALYSIS ### 
 
