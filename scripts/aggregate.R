@@ -6,7 +6,7 @@
 
 ## aggregation with mean i.e. output is average daily rainfall per week, month, year, ... ##
 ## and also sums ##
-## na.rm currently FALSE 
+
 
 #### SET UP ####
   source("scripts/setup.R")
@@ -16,6 +16,10 @@
 ### END SET UP ###
 
 #### TIME SERIES AGGREGATION ####
+## na.rm usually FALSE
+## na.rm=TRUE for monthly and yearly means, 
+## but records with too many missing values in the source data are set to NA
+
 #Daily
   #d_ts           #make time series
   #str(d_ts)      #check structure
@@ -36,6 +40,9 @@
 #Monthly
   #means
   m_ts <- lapply(d_ts, daily2monthly, mean, na.rm=FALSE)
+  # reenter NA for months with too many NA in source data, limit= 3days/per month
+  type=cut.Date(time(d_ts[[1]]), "months")
+  m_ts=na.cor(m_ts, orig=d_ts, type=type, limit=3)
   m_df=mdf(m_ts, coln=stnames)
   write.csv(m_df, file=paste(fpath,"/monthly_means.csv", sep=""), na = "NA")
   #sums
@@ -44,14 +51,19 @@
   write.csv(ms_df, file=paste(fpath,"/monthly_sums.csv", sep=""), na = "NA")
 
 #Yearly
-  y_ts <- lapply(d_ts, daily2annual, mean, na.rm=FALSE)
+  y_ts <- lapply(d_ts, daily2annual, mean, na.rm=TRUE)
+  # reenter NA for years with too many NA in source data, limit=20 days/year
+  type<- list(cut.Date(time(d_ts[[1]]), "years"))
+  y_ts=na.cor(y_ts, orig=d_ts, type=type, limit=20)
+
   y_df=mdf(y_ts, coln=stnames)
   write.csv(y_df, file=paste(fpath,"/yearly_means.csv", sep=""), na = "NA")
   #sums
   ys_ts <- lapply(d_ts, daily2annual, sum, na.rm=FALSE)
   ys_df=mdf(ys_ts, coln=stnames)
   write.csv(ys_df, file=paste(fpath,"/yearly_sums.csv", sep=""), na = "NA")
-  
+
+## CORRECTION OF NA ###
 ### END TS AGGREGATION ###
 
 #### AGGREGATION BY MONTH ####

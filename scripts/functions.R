@@ -90,7 +90,23 @@ daily2season=function(x, season, FUN, na.rm){
   
 }
 ###
-
+#### NA only set after threshold is reached ####
+na.cor=function(x, orig, type, limit){
+  for (i in 1: length(x)){
+    #time series of NA values in the original
+    #coded as 1, 0
+    x.na.bin=ifelse(is.na(orig[[i]]), 1,0)
+  #aggregation
+  na.counts <- aggregate(x.na.bin, by=type, sum) 
+  #index of the too high NA counts
+  na.index=which(na.counts$x>limit)
+  #replace values with too many NA in the input
+  x[[i]][na.index]=NA
+}
+return(x)
+}
+ 
+###
 ####  true.na.stats ####
 # True NA stats, not influenced by differnet record length
 # returns NA in %
