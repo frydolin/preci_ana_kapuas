@@ -13,7 +13,6 @@ mdf=function(x, coln=stnames){
   return(dfr)
 }
 ###
-
 ####mextract ####
 #extract values of certain month 
 mextract=function(x, what){
@@ -92,6 +91,24 @@ daily2season=function(x, season, FUN, na.rm){
 }
 ###
 
+####  true.na.stats ####
+# True NA stats, not influenced by differnet record length
+# returns NA in %
+# also returns the record_length
+# x is a zoo object
+
+true.na.stats= function(x){
+  index.non.NA  <- which(!is.na(x))
+  first.non.NA  <- min(index.non.NA)
+  last.non.NA   <- max(index.non.NA)
+  record.length <- length(x[first.non.NA:last.non.NA])
+  true.NA.sum   <- sum(is.na(x[first.non.NA:last.non.NA]))
+  NA.percentage <- (true.NA.sum/(record.length))*100
+  return(rbind(NA.percentage, record.length))
+}
+
+###
+
 #### make.smry ####
 # makes smry summaries and converts them into one comprehensive data frame
 ## x list of zoo objects 
@@ -100,16 +117,18 @@ daily2season=function(x, season, FUN, na.rm){
 make.smry=function(x, objnames=stnames){
   require("hydroTSM")
   smry.list=lapply(x, smry)
-  smry.list[[1]]
   dfr=do.call(cbind, (smry.list))  	# converison
   row.names(dfr)=row.names(smry.list[[1]])
   colselector=c(1,2,seq(4, ncol(dfr), 2)) #remove index columns except first one
   rowselector=c(-10,-11)  #remove skewness and kurtosis entries
   dfr.sub=dfr[rowselector,colselector]  #subset
-  colnames(dfr.sub)=c("TIME INDEX",objnames)	#renaming columns
+  #replace NA with true NA counts, and n with n counts
+   dfr.sub[c(10,11),-1]=sapply(x, true.na.stats) #First column not replaced because it's the time index
+   row.names(dfr.sub)[10]="NA in %"
+   colnames(dfr.sub)=c("TIME INDEX",objnames)	#renaming columns
   return(dfr.sub)
 }
-
+###
 #### corgr ####
 # own version of correlograms made by corrgram
 # corgr creates *.png files in fpath
