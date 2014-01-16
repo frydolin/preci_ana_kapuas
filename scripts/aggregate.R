@@ -39,10 +39,14 @@
 
 #Monthly
   #means
-  m_ts <- lapply(d_ts, daily2monthly, mean, na.rm=FALSE)
+  m_ts <- lapply(d_ts, daily2monthly, mean, na.rm=TRUE)
   # reenter NA for months with too many NA in source data, limit= 3days/per month
-  type=cut.Date(time(d_ts[[1]]), "months")
+  type=list(cut.Date(time(d_ts[[1]]), "months"))
   m_ts=na.cor(m_ts, orig=d_ts, type=type, limit=3)
+#   check efficiancy
+  sapply(m_ts, function(x) sum(is.na(x)))-
+  sapply(m_ts.f, function(x) sum(is.na(x)))
+stnames
   m_df=mdf(m_ts, coln=stnames)
   write.csv(m_df, file=paste(fpath,"/monthly_means.csv", sep=""), na = "NA")
   #sums
@@ -54,8 +58,14 @@
   y_ts <- lapply(d_ts, daily2annual, mean, na.rm=TRUE)
   # reenter NA for years with too many NA in source data, limit=20 days/year
   type<- list(cut.Date(time(d_ts[[1]]), "years"))
-  y_ts=na.cor(y_ts, orig=d_ts, type=type, limit=20)
-
+  y_ts.c=na.cor(y_ts, orig=d_ts, type=type, limit=24)
+  #   check efficiancy
+# sapply(y_ts.f, function(x) sum(is.na(x)))-
+#     (sapply(y_ts, function(x) sum(is.na(x))))
+# sapply(y_ts.f, function(x) sum(is.na(x)))-
+#     sapply(y_ts.c, function(x) sum(is.na(x)))
+#     
+# stnames
   y_df=mdf(y_ts, coln=stnames)
   write.csv(y_df, file=paste(fpath,"/yearly_means.csv", sep=""), na = "NA")
   #sums
@@ -63,7 +73,6 @@
   ys_df=mdf(ys_ts, coln=stnames)
   write.csv(ys_df, file=paste(fpath,"/yearly_sums.csv", sep=""), na = "NA")
 
-## CORRECTION OF NA ###
 ### END TS AGGREGATION ###
 
 #### AGGREGATION BY MONTH ####

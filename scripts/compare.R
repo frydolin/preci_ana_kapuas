@@ -100,7 +100,7 @@
     corgr(d_df, type="daily", fpath=fpath)
     corgr(w_df, type="weekly", fpath=fpath)
     corgr(m_df, type="monthly", fpath=fpath)
-  #   corgr(y_df, type="yearly", fpath=fpath) #currently not enough values
+    corgr(y_df, type="yearly", fpath=fpath) #currently not enough values
     
     corgr(rs_df, type="rainseason daily", fpath=fpath)
     corgr(ds_df, type="dryseason daily", fpath=fpath)
@@ -116,7 +116,7 @@
     scatterMatrix(d_df, xylim=c(0,150), type="daily", fpath=fpath)
     scatterMatrix(w_df, xylim=c(0,45), type="weekly", fpath=fpath)
     scatterMatrix(m_df, xylim=c(0,25),type="monthly", fpath=fpath)
-    #scatterMatrix(y_df, xylim=c(0,20), type="yearly", fpath=fpath) #currently not enough values
+    scatterMatrix(y_df, xylim=c(0,20), type="yearly", fpath=fpath) #currently not enough values
     
     scatterMatrix(rs_df, xylim=c(0,150),type="rainseason daily", fpath=fpath)
     scatterMatrix(ds_df, xylim=c(0,150),type="dryseason daily", fpath=fpath)
