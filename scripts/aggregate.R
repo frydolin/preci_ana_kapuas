@@ -73,7 +73,7 @@ stnames
   ys_df=mdf(ys_ts, coln=stnames)
   write.csv(ys_df, file=paste(fpath,"/yearly_sums.csv", sep=""), na = "NA")
   
-#number of rainy days
+#number of rainy days in a year
   #if rainfall>1mm 1 otherwise 0
   d_rainday<-lapply(d_ts, function (x) ifelse(x>1, 1, 0))
   #to yearly

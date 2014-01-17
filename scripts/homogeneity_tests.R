@@ -7,12 +7,19 @@
 
 
 neumann.ratio=function(x, na.rm=TRUE){
+  require("zoo")
+  #Check input
+  if (!is.zoo(x)&&!is.vector(x)) stop("Invalid argument: 'class(x)' must be in c('vector' or 'zoo')")
+  #Convert to vector of zoo objects, because rank() needs that
+  if (is.zoo(x)){x=as.vector(x)}
+  
+  n    <-sum(!is.na(x)) 
   x_mean= (mean(x, na.rm=na.rm))
   ind.length= length(x)
   x.plusone= x[2:ind.length]
   x.minuslast= x[1:(ind.length-1)]
   N=(sum((x.minuslast-x.plusone)^2, na.rm=na.rm)/sum((x-x_mean)^2, na.rm=na.rm))
-  return(list("Neumann.ratio"=N))
+  return(list("n"=n, "Neumann.ratio"=N))
 }
 
 buishand.test=function(x, na.rm=TRUE){
@@ -28,10 +35,12 @@ buishand.test=function(x, na.rm=TRUE){
    R.sign=R/(sqrt(n))
    Q.sign=Q/(sqrt(n))
    break.points=which(abs(rSk)==Q)
-   return(list("Sk"=Sk,"rSk"=rSk, "sd"=sd(Sk), "abs.Max"=Q, "Rsignificance"=R.sign, "breakpoints"=break.points))
+   if (R.sign==0){R.sign=NA}
+   return(list("n"=n,"rSk"=rSk, "abs.Max"=Q, "R.sign"=R.sign, "breakpoints"=break.points))
 }
-#
+
 pettitt.test=function(x, na.rm=TRUE){
+  require("zoo")
   #Check input
   if (!is.zoo(x)&&!is.vector(x)) stop("Invalid argument: 'class(x)' must be in c('vector' or 'zoo')")
   #Convert to vector of zoo objects, because rank() needs that
@@ -47,7 +56,7 @@ pettitt.test=function(x, na.rm=TRUE){
   }  
   Xe=max(abs(Xk))
   position=which(abs(Xk)==Xe)
-  return(list("x.rank"=x.rank,"n"=n, "X_k"=Xk, "X_e"=Xe, "break.pos"=position))
+  return(list("n"=n, "X_k"=Xk, "X_e"=Xe, "breakpoints"=position))
 }
 
 snh.test=function(x, na.rm=TRUE){
@@ -58,12 +67,13 @@ snh.test=function(x, na.rm=TRUE){
   z_1=numeric()
   z_2=numeric()
   T_k=numeric()
-  for (k in 1:(n-1)){
+  for (k in 1:n){
   z_1[k]=(1/k)*sum(dif[1:k], na.rm=na.rm) #sum up the vector
   z_2[k]=(1/(n-k))*sum(dif[(k+1):n],  na.rm=na.rm)
-  T_k[k] <- k*(z_1[k])^2+ (n-k)*(z_2[k])^2 # k=1...(n-1), for k=n there would be division by zero
+  T_k[k] <- k*(z_1[k])^2+(n-k)*(z_2[k])^2 # k=1...n
   }
   T_0=max(T_k, na.rm=na.rm)
+  if (T_0==0){T_0=NA} #set to NA 
   return(list("n"=n, "T_k"=T_k, "T_0"=T_0))
 }
 

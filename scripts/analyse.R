@@ -6,6 +6,64 @@
 source("scripts/setup.R")
 ### END SET UP ###
 
+#### HOMOGENEITY TESTING ####
+source("scripts/homogeneity_tests.R")
+# 1 with rainy days per year
+  neumann<-lapply(y_raindays, neumann.ratio, na.rm=TRUE)
+  buishand<-lapply(y_raindays, buishand.test, na.rm=TRUE)
+  pettitt<-lapply(y_raindays, pettitt.test, na.rm=TRUE)
+  snht<-lapply(y_raindays, snh.test, na.rm=TRUE)
+# extract and check for significance
+  #sign vlues should be reckecked
+  nm=sapply(neumann, function(x) x$N)
+    nm_s=ifelse(nm<1.4, "*", "-")
+    nm_s=ifelse(nm<1.2, "**", nm_s)
+  bs=sapply(buishand, function(x) x$R.sign)
+    bs_s=ifelse(bs>1.5, "*", "-")
+    bs_s=ifelse(bs>1.7, "**", bs_s)
+  pt=sapply(pettitt, function(x) x$X_e)
+    pt_s=ifelse(pt>107, "*", "-")
+    pt_s=ifelse(pt>133, "**", pt_s)
+  sn=sapply(snht, function(x) x$T_0)
+    sn_s=ifelse(sn>7.65, "*", "-")
+    sn_s=ifelse(sn>10.45, "**", sn_s)
+# make a data frame
+  rd.hom.tests=data.frame(nm, nm_s, bs, bs_s, pt, pt_s,  sn, sn_s, 
+                            row.names=stnames)
+  colnames(rd.hom.tests)= c("Neumann ratio", "nsign", "Buishand R/sqrt(n)","bsign" ,
+                            "Pettitt X_e","psign" , "SNHT T_0" ,"ssign")
+  write.csv(rd.hom.tests, file="rd.hom.tests")
+  rm(nm, nm_s, bs, bs_s, pt, pt_s,  sn, sn_s)
+
+# 2 with yearly sums
+  neumann<-lapply(y_ts, neumann.ratio, na.rm=TRUE)
+  buishand<-lapply(y_ts, buishand.test, na.rm=TRUE)
+  pettitt<-lapply(y_ts, pettitt.test, na.rm=TRUE)
+  snht<-lapply(y_ts, snh.test, na.rm=TRUE)
+  # extract and check for significance
+  #sign vlues should be reckecked
+  nm=sapply(neumann, function(x) x$N)
+  nm_s=ifelse(nm<1.4, "*", "-")
+  nm_s=ifelse(nm<1.2, "**", nm_s)
+  bs=sapply(buishand, function(x) x$R.sign)
+  bs_s=ifelse(bs>1.5, "*", "-")
+  bs_s=ifelse(bs>1.7, "**", bs_s)
+  pt=sapply(pettitt, function(x) x$X_e)
+  pt_s=ifelse(pt>107, "*", "-")
+  pt_s=ifelse(pt>133, "**", pt_s)
+  sn=sapply(snht, function(x) x$T_0)
+  sn_s=ifelse(sn>7.65, "*", "-")
+  sn_s=ifelse(sn>10.45, "**", sn_s)
+  # make a data frame
+  ys.hom.tests=data.frame(nm, nm_s, bs, bs_s, pt, pt_s,  sn, sn_s, 
+                          row.names=stnames)
+  colnames(ys.hom.tests)= c("Neumann ratio", "nsign", "Buishand R/sqrt(n)","bsign" ,
+                            "Pettitt X_e","psign" , "SNHT T_0" ,"ssign")
+  write.csv(ys.hom.tests, file="ys.hom.tests")
+  rm(nm, nm_s, bs, bs_s, pt, pt_s,  sn, sn_s)
+
+### END HOMOGENEITY TESTING ###
+
 #### SIMPLE TS PLOTS AND SUMMARY STATISTICS ####
   ### FOR EACH STATION, FOR MEAN VALUE TS 
   fpath="output/timeseries"
