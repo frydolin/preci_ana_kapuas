@@ -72,7 +72,15 @@ stnames
   ys_ts <- lapply(d_ts, daily2annual, sum, na.rm=FALSE)
   ys_df=mdf(ys_ts, coln=stnames)
   write.csv(ys_df, file=paste(fpath,"/yearly_sums.csv", sep=""), na = "NA")
-
+  
+#number of rainy days
+  #if rainfall>1mm 1 otherwise 0
+  d_rainday<-lapply(d_ts, function (x) ifelse(x>1, 1, 0))
+  #to yearly
+  y_raindays<-lapply(d_rainday, daily2annual,sum, na.rm=TRUE)
+  # reenter NA for years with too many NA in source data, limit=24 days/year
+  type<- list(cut.Date(time(d_ts[[1]]), "years"))
+  y_raindays=na.cor(y_raindays, orig=d_ts, type=type, limit=24)
 ### END TS AGGREGATION ###
 
 #### AGGREGATION BY MONTH ####
