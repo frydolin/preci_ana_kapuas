@@ -7,19 +7,19 @@
 
 
 neumann.ratio=function(x, na.rm=TRUE){
-  require("zoo")
   #Check input
-  if (!is.zoo(x)&&!is.vector(x)) stop("Invalid argument: 'class(x)' must be in c('vector' or 'zoo')")
-  #Convert to vector of zoo objects, because rank() needs that
-  if (is.zoo(x)){x=as.vector(x)}
+  if (class(x)!="zoo"&&!is.vector(x)) stop("Invalid argument: 'class(x)' must be in c('vector' or 'zoo')")
   
-  n    <-sum(!is.na(x)) #just for output illustration
+  #Convert to vector of zoo objects, because rank() needs that
+  if (class(x)=="zoo"){require("zoo"); x=as.vector(x)}
+  
+  nn    <-sum(!is.na(x)) #just for output illustration
   x_mean= (mean(x, na.rm=na.rm))
   ind.length= length(x)
   x.plusone= x[2:ind.length]
   x.minuslast= x[1:(ind.length-1)]
   N=(sum((x.minuslast-x.plusone)^2, na.rm=na.rm)/sum((x-x_mean)^2, na.rm=na.rm))
-  return(list("n"=n, "Neumann.ratio"=N))
+  return(list("n"=nn, "Neumann.ratio"=N))
 }
 
 buishand.test=function(x, na.rm=TRUE){
@@ -35,39 +35,41 @@ buishand.test=function(x, na.rm=TRUE){
    rSk=(Sk/sd(x, na.rm=na.rm)) #rescaled adjusted partial sums
    R=max(rSk, na.rm=na.rm)-min(rSk, na.rm=na.rm)
    Q=max(abs(rSk), na.rm=na.rm)
-   R.sign=R/(sqrt(nn))
+   R.sign=R/(sqrt(nn))  # here only valid values are taken since NAs get removed
    Q.sign=Q/(sqrt(nn))
    break.points=which(abs(rSk)==Q)
-   if (R.sign==0){R.sign=NA}
-   return(list("n"=n,"rSk"=rSk, "abs.Max"=Q, "R.sign"=R.sign, "breakpoints"=break.points))
+   return(list("n"=nn,"rSk"=rSk, "abs.Max"=Q, "R.sign"=R.sign, "breakpoints"=break.points))
 }
 
 pettitt.test=function(x, na.rm=TRUE){
-  require("zoo")
   #Check input
-  if (!is.zoo(x)&&!is.vector(x)) stop("Invalid argument: 'class(x)' must be in c('vector' or 'zoo')")
-  #Convert to vector of zoo objects, because rank() needs that
-  if (is.zoo(x)){x=as.vector(x)}
+  if (class(x)!="zoo"&&!is.vector(x)) stop("Invalid argument: 'class(x)' must be in c('vector' or 'zoo')")
   
-  n    <-length(x)       #index length
+  #Convert to vector of zoo objects, because rank() needs that
+  if (class(x)=="zoo"){require("zoo"); x=as.vector(x)}
+    
+  #n    <-length(x)       #index length, not necessary
   nn   <-sum(!is.na(x))  #number of valid values
-  x.rank=rank(x, ties.method="average", na.last=NA)
+  x.rank=rank(x, ties.method="average", na.last=NA) #NAs get removed
   Xk=numeric()
-  for(k in (1:n)){
+  for(k in (1:nn)){
     sum.part=x.rank[1:k]
     Xk[k]=2*(sum(sum.part))-k*(nn+1)
     }  
   Xe=max(abs(Xk))
   position=which(abs(Xk)==Xe)
-  return(list("n"=n, "X_k"=Xk, "X_e"=Xe, "breakpoints"=position))
+  return(list("n"=nn, "X_k"=Xk, "X_e"=Xe, "breakpoints"=position))
 }
 
 snh.test=function(x, na.rm=TRUE){
-  if(na.rm==TRUE){x=x[!is.na(x)]} #remove NAs, because of scaling with n, this is the best way?!
-  n    <-length(x)       #index length
+  #remove NAs, because of scaling with n, this is the best way?! gaps in the
+  #data are thus removed but the way the test is (comparison before time z and
+  #after time z to end), this should be ok..
+  if(na.rm==TRUE){x=x[!is.na(x)]} 
+  n       <-length(x)       #index length
   mean_x  <-mean(x)
   sd_x    <-sd(x)
-  dif  <-(x-mean_x)/sd_x #Vector of differences between value and mean, scaled by sd
+  dif     <-(x-mean_x)/sd_x #Vector of differences between value and mean, scaled by sd
   z_1=numeric()
   z_2=numeric()
   T_k=numeric()
