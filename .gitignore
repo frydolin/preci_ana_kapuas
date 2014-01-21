@@ -3,3 +3,7 @@
 .RData
 output/
 input/
+scripts/installpackages.R
+scripts/test_file.R
+scripts/tests_test.R
+
