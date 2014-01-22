@@ -1,4 +1,5 @@
-###### PRECIPITATION ANALYSIS: COMPARISON OF GROUND DATA ######
+###### SPATIO-TEMPORAL RAINFALL PATTERNS IN KAPUAS BASIN ######
+### Analysis and comparison of station data ###
 
 ## functions.R contains self written functions for the analysis ##
 
@@ -14,8 +15,10 @@ mdf=function(x, coln=stnames){
 }
 ###
 ####mextract ####
-#extract values of certain month 
+#extract values of certain month(s) 
+#x: zoo time series object
 mextract=function(x, what){
+  require("zoo")
   month=as.numeric(format.Date(time(x), "%m"))
   index <- which(month %in% what)
   return(x[index])
@@ -52,10 +55,19 @@ cumul=function(x){
 #### daily 2 season ####
 # calculates seasonal sums/averages from daily zoo TS
 # RS defined as Jan, Nov, Dec. DS defined as Jun, Jul, Aug
+# x: zoo TS
 daily2season=function(x, season, FUN, na.rm){
+  # Check for formats
   require("zoo")
   if ( !is.zoo(x) ) stop("Invalid argument: 'class(x)' must be zoo")
   if (!(season %in% c("RS","DS"))) stop("season must be either RS or DS")
+  
+  # NA threshold
+    limit=0
+  if (na.rm=="threshold"){
+    na.rm=TRUE
+    limit=6
+      }
   
   if (season=="RS"){
     s                 <- mextract(x, c(1,11,12))
@@ -64,19 +76,44 @@ daily2season=function(x, season, FUN, na.rm){
     # instead of with Jan/91 and Feb/91
     syears            <- as.numeric(format(time(s), "%Y" ))
     dec.index         <- which(format(time(s), "%m") == c(11,12))
-   dec.years         <- syears[dec.index]
-   dec.years         <- dec.years + 1
-   syears[dec.index] <- dec.years
+    dec.years         <- syears[dec.index]
+    dec.years         <- dec.years + 1
+    syears[dec.index] <- dec.years
    
    s.a <- aggregate(s, by= syears, FUN=FUN, na.rm= na.rm)
    
-   # Removing the last RS, because it is outside of the analysis period
-   s.a <- s.a[1:(length(s.a)-1)]
+   # NA threshold
+   if (limit>0){
+    #time series of NA values in the original
+    #coded as 1, 0
+    na.bin=ifelse(is.na(s), 1,0)
+   #aggregation of this series, gives NA counts per ag.fac timestep
+   na.counts <- aggregate(na.bin, by=list(syears), sum) 
+   #index of the too high NA counts
+   na.index=which(na.counts$x>limit)
+   #replace values with too many NA in the input
+   s.a[na.index]=NA
+   }
+   # Removing first and last RS, because they are outside of the analysis period
+   s.a <- s.a[2:(length(s.a)-1)]
   }
   
   else{
     s     <- mextract(x, c(6,7,8))
-    s.a   <- aggregate(s, by=format(time(s), "%Y"), FUN=FUN, na.rm= na.rm )  
+    s.a   <- aggregate(s, by=format(time(s), "%Y"), FUN=FUN, na.rm= na.rm )
+    # NA threshold
+    if (limit>0){
+      #time series of NA values in the original
+      #coded as 1, 0
+      na.bin=ifelse(is.na(s), 1,0)
+      #aggregation of this series, gives NA counts per ag.fac timestep
+      na.counts <- aggregate(na.bin, by=list(format(time(s), "%Y")), sum) 
+      #index of the too high NA counts
+      na.index=which(na.counts$x>limit)
+      #replace values with too many NA in the input
+      s.a[na.index]=NA
+    }
+    
   }
   
   # Replacing the NaNs by 'NA.
@@ -84,25 +121,32 @@ daily2season=function(x, season, FUN, na.rm){
   nan.index <- which(is.nan(s.a))
   if (length(nan.index) > 0) s.a[nan.index] <- NA 
   
+  #rewrite time
   time(s.a) <- as.Date(paste(time(s.a), "-01-01", sep=""))
   
   return(s.a)
-  
 }
 ###
 #### NA only set after threshold is reached ####
+# x: data record to be corrected, should be a list of zoo objects
+# orig: source data for x
+# type: factor variable for aggregation
+# limit: threshold of NA values in orig data at which NAs are introduced into x
 na.cor=function(x, orig, type, limit){
-  for (i in 1: length(x)){
-    #time series of NA values in the original
-    #coded as 1, 0
-    x.na.bin=ifelse(is.na(orig[[i]]), 1,0)
-  #aggregation
-  na.counts <- aggregate(x.na.bin, by=type, sum) 
-  #index of the too high NA counts
-  na.index=which(na.counts$x>limit)
-  #replace values with too many NA in the input
-  x[[i]][na.index]=NA
-}
+        for (i in 1: length(x)){
+        # create aggregation factor ist)
+          ag.fac=list(cut.Date(time(orig[[i]]), type))
+         
+        #time series of NA values in the original
+        #coded as 1, 0
+        orig.na.bin=ifelse(is.na(orig[[i]]), 1,0)
+        #aggregation of this series, gives NA counts per ag.fac timestep
+        na.counts <- aggregate(orig.na.bin, by=ag.fac, sum) 
+        #index of the too high NA counts
+        na.index=which(na.counts$x>limit)
+      #replace values with too many NA in the input
+      x[[i]][na.index]=NA
+    }
 return(x)
 }
  

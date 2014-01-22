@@ -32,7 +32,7 @@ source("scripts/homogeneity_tests.R")
                             row.names=stnames)
   colnames(rd.hom.tests)= c("Neumann ratio", "nsign", "Buishand R/sqrt(n)","bsign" ,
                             "Pettitt X_e","psign" , "SNHT T_0" ,"ssign")
-  write.csv(rd.hom.tests, file="rd.hom.tests")
+  write.csv(rd.hom.tests, file="rd.hom.tests_new")
   rm(nm, nm_s, bs, bs_s, pt, pt_s,  sn, sn_s)
 
 # 2 with yearly sums
@@ -59,7 +59,7 @@ source("scripts/homogeneity_tests.R")
                           row.names=stnames)
   colnames(ys.hom.tests)= c("Neumann ratio", "nsign", "Buishand R/sqrt(n)","bsign" ,
                             "Pettitt X_e","psign" , "SNHT T_0" ,"ssign")
-  write.csv(ys.hom.tests, file="ys.hom.tests")
+  write.csv(ys.hom.tests, file="ys.hom.tests_new")
   rm(nm, nm_s, bs, bs_s, pt, pt_s,  sn, sn_s)
 
 ### END HOMOGENEITY TESTING ###
