@@ -7,61 +7,19 @@ source("scripts/setup.R")
 ### END SET UP ###
 
 #### HOMOGENEITY TESTING ####
-source("scripts/homogeneity_tests.R")
-# 1 with rainy days per year
-  neumann<-lapply(y_raindays, neumann.ratio, na.rm=TRUE)
-  buishand<-lapply(y_raindays, buishand.test, na.rm=TRUE)
-  pettitt<-lapply(y_raindays, pettitt.test, na.rm=TRUE)
-  snht<-lapply(y_raindays, snh.test, na.rm=TRUE)
-# extract and check for significance
-  #sign vlues should be reckecked
-  nm=sapply(neumann, function(x) x$N)
-    nm_s=ifelse(nm<1.4, "*", "-")
-    nm_s=ifelse(nm<1.2, "**", nm_s)
-  bs=sapply(buishand, function(x) x$R.sign)
-    bs_s=ifelse(bs>1.5, "*", "-")
-    bs_s=ifelse(bs>1.7, "**", bs_s)
-  pt=sapply(pettitt, function(x) x$X_e)
-    pt_s=ifelse(pt>107, "*", "-")
-    pt_s=ifelse(pt>133, "**", pt_s)
-  sn=sapply(snht, function(x) x$T_0)
-    sn_s=ifelse(sn>7.65, "*", "-")
-    sn_s=ifelse(sn>10.45, "**", sn_s)
-# make a data frame
-  rd.hom.tests=data.frame(nm, nm_s, bs, bs_s, pt, pt_s,  sn, sn_s, 
-                            row.names=stnames)
-  colnames(rd.hom.tests)= c("Neumann ratio", "nsign", "Buishand R/sqrt(n)","bsign" ,
-                            "Pettitt X_e","psign" , "SNHT T_0" ,"ssign")
-  write.csv(rd.hom.tests, file="rd.hom.tests_new")
-  rm(nm, nm_s, bs, bs_s, pt, pt_s,  sn, sn_s)
-
-# 2 with yearly sums
-  neumann<-lapply(y_ts, neumann.ratio, na.rm=TRUE)
-  buishand<-lapply(y_ts, buishand.test, na.rm=TRUE)
-  pettitt<-lapply(y_ts, pettitt.test, na.rm=TRUE)
-  snht<-lapply(y_ts, snh.test, na.rm=TRUE)
-  # extract and check for significance
-  #sign vlues should be reckecked
-  nm=sapply(neumann, function(x) x$N)
-  nm_s=ifelse(nm<1.4, "*", "-")
-  nm_s=ifelse(nm<1.2, "**", nm_s)
-  bs=sapply(buishand, function(x) x$R.sign)
-  bs_s=ifelse(bs>1.5, "*", "-")
-  bs_s=ifelse(bs>1.7, "**", bs_s)
-  pt=sapply(pettitt, function(x) x$X_e)
-  pt_s=ifelse(pt>107, "*", "-")
-  pt_s=ifelse(pt>133, "**", pt_s)
-  sn=sapply(snht, function(x) x$T_0)
-  sn_s=ifelse(sn>7.65, "*", "-")
-  sn_s=ifelse(sn>10.45, "**", sn_s)
+  source("scripts/convenience_functions.R")
+  rd_hom=homogeneity.tests(y_raindays)
+  ys_hom=homogeneity.tests(y_ts)
   # make a data frame
-  ys.hom.tests=data.frame(nm, nm_s, bs, bs_s, pt, pt_s,  sn, sn_s, 
-                          row.names=stnames)
-  colnames(ys.hom.tests)= c("Neumann ratio", "nsign", "Buishand R/sqrt(n)","bsign" ,
-                            "Pettitt X_e","psign" , "SNHT T_0" ,"ssign")
-  write.csv(ys.hom.tests, file="ys.hom.tests_new")
-  rm(nm, nm_s, bs, bs_s, pt, pt_s,  sn, sn_s)
-
+  rd_hom=as.data.frame(rd_hom)
+  colnames(rd_hom)=paste("rd.",colnames(rd_hom), sep="")
+  ys_hom=as.data.frame(ys_hom)
+  colnames(ys_hom)=paste("ys.",colnames(ys_hom), sep="")
+  hom.tests=cbind(rd_hom[1], ys_hom[1], rd_hom[2], ys_hom[2], rd_hom[3], ys_hom[3],
+                  rd_hom[4], ys_hom[4])
+  row.names(hom.tests)=stnames
+  write.csv(hom.tests, file="output/homogeneity_tests")
+  rm(rd_hom, ys_hom)
 ### END HOMOGENEITY TESTING ###
 
 #### SIMPLE TS PLOTS AND SUMMARY STATISTICS ####
@@ -229,10 +187,43 @@ dir.create(fpath)
   rm(fpath)
 ### END SEASONALITY BOXPLOTS ###
 
-##### 2. TREND ANALYSIS #####
-  fpath="output/trendanalysis"
-  dir.create(fpath) # new directory
+##### TREND ANALYSIS #####
+fpath="output/trendanalysis"
+dir.create(fpath) # new directory
 
+  #### Mann-Kendall trend testing ####
+  library("Kendall")
+  ## A: seasonal Mann Kendall test. 
+    ## runs on monthly values 
+    ## SeasonalMannKendall likes only ts objects therefore the as.ts conversion 
+    ## tau=Score/denominator, denominator=max possible value for score
+    smk.trendtest=lapply(m_ts, function(x) SeasonalMannKendall(as.ts(x)))
+    names(smk.trendtest)=stnames
+    #smk.trendtest
+    smk.sl=sapply(smk.trendtest, function(x) x$sl)
+    smk.sign=ifelse(smk.sl<0.05, "*", "-")
+    smk.sign=ifelse(smk.sl<0.01, "**",smk.sign)
+    smk.sign
+  ## B: normal Mann Kendall
+    ## on the rainseason and dry season seperately
+      # RS
+      rs_mk.trendtest=lapply(rsav_ts, function(x) SeasonalMannKendall(as.ts(x)))
+      names(rs_mk.trendtest)=stnames
+      #rs_mk.trendtest
+      rs_mk.sl=sapply(rs_mk.trendtest, function(x) x$sl)
+      rs_mk.sign=ifelse(rs_mk.sl<0.05, "*", "-")
+      rs_mk.sign=ifelse(rs_mk.sl<0.01, "**",rs_mk.sign)
+      rs_mk.sign
+      # DS
+      ds_mk.trendtest=lapply(dsav_ts, function(x) SeasonalMannKendall(as.ts(x)))
+      names(ds_mk.trendtest)=stnames
+      #ds_mk.trendtest
+      ds_mk.sl=sapply(ds_mk.trendtest, function(x) x$sl)
+      ds_mk.sign=ifelse(ds_mk.sl<0.05, "*", "-")
+      ds_mk.sign=ifelse(ds_mk.sl<0.01, "**",ds_mk.sign)
+      ds_mk.sign
+  ### END Mann-Kendall trend testing ###
+  
   #### BY MONTH time series with linear trendline ####
   dir.create(paste(fpath,"/bymonth", sep="")) # new directory
   
@@ -294,15 +285,6 @@ dir.create(fpath)
   ### END BY SEASON TS ###
 rm(fpath)
 
-#### Mann-Kendall trend testing ####
-library("Kendall")
-  #runs on monthly values
-  #SeasonalMannKendall likes only ts objects therefore the as.ts conversion
-  #tau= Score/denominator, denominator=max possible value for score
-  mk.trendtest=lapply(m_ts, function(x) SeasonalMannKendall(as.ts(x)))
-  names(mk.trendtest)=stnames
-  mk.trendtest
-### END Mann-Kendall trend testing ###
 ### END TREND ANALYSIS ### 
 
 #### CLEAN UP ####

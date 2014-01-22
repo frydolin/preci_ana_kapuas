@@ -21,6 +21,7 @@ for(i in (1:length(d_ts))){
   high.ind=which(d_ts[[i]]>250)
   d_ts[[i]][high.ind]=NA
   }
+  rm(i)
 ### 
 
 #### TIME SERIES AGGREGATION ####
