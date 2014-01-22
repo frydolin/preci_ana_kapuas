@@ -307,57 +307,6 @@ library("Kendall")
 ### END Mann-Kendall trend testing ###
 ### END TREND ANALYSIS ### 
 
-#### COMPARISON WITH ENSO ####
-
-  # Overlapping TS plots (DEPRECIATED)
-#   dev.off()
-#   plot.new()
-#   par(mar=c(5, 4, 4, 6) + 0.1)
-# ## Plot SOI plot and put axis scale on right
-#   plot(ysoi_ts, xlab="", ylab="", main="PTK11 onthly comparison with equatorial SOI", 
-#        ylim=c(-3.5,3.5), xaxt = "n", yaxt = "n", type="l", col="red")
-#   polygon(c(min(index(ysoi_ts)), index(ysoi_ts), max(index(ysoi_ts))), 
-#           c( 0, soi_ts, 0), density=50, col="red") 
-#   abline(0,0, col="red")
-#   axis(4, ylim=c(-3,3), col="red",col.axis="red",las=1)
-#   mtext("SOI INDEX",side=4,col="red",line=3)
-# ## Plot rainfall data and draw its axis
-#   par(new=TRUE)
-#   ymid=mean(mrs_ts[[2]], na.rm=TRUE)
-#   plot(rsav_ts[[2]], ylim=c(ymid-12,ymid+12), 
-#        xaxt = "n", yaxt = "n", xlab="", ylab="", 
-#        type="l", col="black")
-#   abline(ymid,0)
-#   axis(2, ylim=c(ymid-12,ymid+12),col="black",las=1)  ## las=1 makes horizontal labels
-#   mtext("raifall [mm/day]",side=2,line=2.5)
-# ## Draw the time axis
-# axis(1,at=time(y_ts[[1]]), labels=format.Date(time(y_ts[[1]]), "%Y"))
-# box()
-
-#Scatterplot comparison
-  library(car)
-  fpath="output/ENSO"
-  dir.create(fpath)
-#plot
-for (j in 1:length(m_ts)){
-  name=paste(fpath,"/soi_monthly_",stnames[j],".png", sep="")
-  png(filename=name, width=800, height=600, units="px")
-  scatterplot(coredata(m_ts[[j]])~coredata(soi_ts), smoother=FALSE, reg.line=lm,
-              main=paste("Comparison between monthly equatorial SOI and monthly rainfall:", stnames[j]), 
-              xlab="SOI Index", ylab="rainfall")
-    dev.off()
-}
-for (j in 1:length(rsav_ts)){
-  name=paste(fpath,"/soi_yearly_",stnames[j],".png", sep="")
-  png(filename=name, width=800, height=600, units="px")
-  scatterplot(coredata(rsav_ts[[j]])~coredata(ysoi_ts), smoother=FALSE, reg.line=lm,
-              main=paste("Comparison between yearly average equatorial SOI and average rainseason rainfall:", stnames[j]), 
-              xlab="SOI Index", ylab="rainfall")
-  dev.off()
-}
-rm(fpath)
-### END ENSO ###
-
 #### CLEAN UP ####
 rm(name, fpath)
 graphics.off() #Completely shuts down the printing to file

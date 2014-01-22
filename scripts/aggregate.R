@@ -175,11 +175,6 @@
   ydensity<-lapply(y_ts, density, from=0, bw="nrd", na.rm=TRUE)
 ### END DENSITIES ###
 
-# #### SOI AGGREGATION ####
-#   ysoi_ts=monthly2annual(soi_ts, mean)
-#   write.csv(ysoi_ts, file=paste(fpath,"/soi_yearlymean.csv", sep=""),  na = "NA")                                                         
-# ### END SOI AGGREGATION ###
-
 #### CLEAN UP ####
 rm(fpath)
 ###

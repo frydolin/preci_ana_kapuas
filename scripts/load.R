@@ -37,11 +37,6 @@ source("scripts/setup.R")
   #str(d_ts) #just to check
 ### END ZOO OBJECTS ###
 
-# #### LOAD ENSO DATA ####
-#   soi=read.csv("input/soi.csv", sep=";", dec=",", na.strings = "NA")
-#   soi_ts=zoo(soi$soi, order.by=as.Date(soi$date))
-# ### END LOAD ENSO DATA ###
-
 #### CLEAN UP ####
 # remove variables and data not needed anymore
   rm(i,j)
