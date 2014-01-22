@@ -41,7 +41,7 @@ source("scripts/setup.R")
 # remove variables and data not needed anymore
   rm(i,j)
   rm(fnames, fpath) 
-  rm(soi, gdata)
+  rm(gdata)
 ### END CLEAN UP ###
 
 ##### END load.R ######

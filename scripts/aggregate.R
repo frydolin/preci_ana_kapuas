@@ -15,6 +15,14 @@
   dir.create(fpath)
 ### END SET UP ###
 
+#### CUT OFF OF unrealistically high values####
+# above 250mm
+for(i in (1:length(d_ts))){
+  high.ind=which(d_ts[[i]]>250)
+  d_ts[[i]][high.ind]=NA
+  }
+### 
+
 #### TIME SERIES AGGREGATION ####
 ## na.rm usually FALSE
 ## na.rm=TRUE for monthly and yearly means, 
@@ -39,7 +47,7 @@
 
 #Monthly
   #means
-  m_ts.f <- lapply(d_ts, daily2monthly, mean, na.rm=TRUE)
+  m_ts <- lapply(d_ts, daily2monthly, mean, na.rm=TRUE)
   # reenter NA for months with too many NA in source data, limit= 3days/per
   m_ts=na.cor(m_ts, orig=d_ts, type="month", limit=3) #function that reintroduces NAs
   #df
@@ -47,8 +55,8 @@
   write.csv(m_df, file=paste(fpath,"/monthly_means.csv", sep=""), na = "NA")
   #sums
   ms_ts <- lapply(d_ts, daily2monthly, sum, na.rm=TRUE)
-  ms_ts=na.cor(m_ts, orig=d_ts, type="month", limit=3) #function that reintroduces NAs
-  ms_df=mdf(m_ts, coln=stnames)
+  ms_ts=na.cor(ms_ts, orig=d_ts, type="month", limit=3) #function that reintroduces NAs
+  ms_df=mdf(ms_ts, coln=stnames)
   write.csv(ms_df, file=paste(fpath,"/monthly_sums.csv", sep=""), na = "NA")
 
 #Yearly
@@ -59,7 +67,7 @@
   write.csv(y_df, file=paste(fpath,"/yearly_means.csv", sep=""), na = "NA")
   #sums
   ys_ts <- lapply(d_ts, daily2annual, sum, na.rm=TRUE)
-  ys_ts=na.cor(y_ts, orig=d_ts, type="years", limit=28)
+  ys_ts=na.cor(ys_ts, orig=d_ts, type="years", limit=28)
   ys_df=mdf(ys_ts, coln=stnames)
   write.csv(ys_df, file=paste(fpath,"/yearly_sums.csv", sep=""), na = "NA")
   

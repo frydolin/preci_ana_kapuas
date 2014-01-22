@@ -157,14 +157,17 @@ return(x)
 # also returns the record_length
 # x is a zoo object
 
-true.na.stats= function(x){
+add.na.stats= function(x){
   index.non.NA  <- which(!is.na(x))
   first.non.NA  <- min(index.non.NA)
   last.non.NA   <- max(index.non.NA)
   record.length <- length(x[first.non.NA:last.non.NA])
   true.NA.sum   <- sum(is.na(x[first.non.NA:last.non.NA]))
   NA.percentage <- (true.NA.sum/(record.length))*100
-  return(rbind(NA.percentage, record.length))
+  first.record  <- as.character(time(x[first.non.NA]))
+  last.record   <- as.character(time(x[last.non.NA]))
+  return(rbind("n"=record.length, "NA.percentage"=NA.percentage, "first.record"=first.record, 
+              "last.record"=last.record))
 }
 
 ###
@@ -176,17 +179,25 @@ true.na.stats= function(x){
 ## objnames= names of summary objects
 make.smry=function(x, objnames=stnames){
   require("hydroTSM")
-  smry.list=lapply(x, smry)
+  smry.list=lapply(x, smry, digits=3)
   dfr=do.call(cbind, (smry.list))  	# converison
   row.names(dfr)=row.names(smry.list[[1]])
-  colselector=c(1,2,seq(4, ncol(dfr), 2)) #remove index columns except first one
-  rowselector=c(-10,-11)  #remove skewness and kurtosis entries
+  colselector=c(seq(2, ncol(dfr), 2)) #remove every other column (time index)
+  rowselector=c(-2,-5,-9,-10,-11,-12,-13)  #remove entries not needed
   dfr.sub=dfr[rowselector,colselector]  #subset
-  #replace NA with true NA counts, and n with n counts
-   dfr.sub[c(10,11),-1]=sapply(x, true.na.stats) #First column not replaced because it's the time index
-   row.names(dfr.sub)[10]="NA in %"
-   colnames(dfr.sub)=c("TIME INDEX",objnames)	#renaming columns
-  return(dfr.sub)
+  tdfr.sub=t(dfr.sub)
+  #reorder
+  dataframe=tdfr.sub[,c(1,4,2,5,3,6)]
+  #get additional statistics, replace NA counst
+  add.stats=sapply(x, add.na.stats) 
+  add.stats=as.data.frame(add.stats, row.names=c("n", "NA.percentage",
+                                                 "first.record",  "last.record" ))
+  add.stats=t(add.stats)
+  #Put together
+  dataframe=as.data.frame(cbind(dataframe, add.stats))
+  
+  row.names(dataframe)=stnames
+  return(dataframe)
 }
 ###
 #### corgr ####

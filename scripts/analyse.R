@@ -65,27 +65,25 @@ source("scripts/homogeneity_tests.R")
 ### END HOMOGENEITY TESTING ###
 
 #### SIMPLE TS PLOTS AND SUMMARY STATISTICS ####
-  ### FOR EACH STATION, FOR MEAN VALUE TS 
   fpath="output/timeseries"
   dir.create(fpath)
-  
+  ### PLOT FOR EACH STATION, FOR MEAN VALUE TS 
   tsplot.pst(d_ts, type="daily", fpath=fpath)
-  daily_summary=make.smry(d_ts)
-  write.csv(daily_summary, file=paste(fpath,"/daily/daily_summary.csv", sep=""), na = "NA")
-  
   tsplot.pst(w_ts, type="weekly",fpath=fpath)
-  weekly_summary=make.smry(w_ts)
-  write.csv(weekly_summary, file=paste(fpath,"/weekly/weekly_summary.csv", sep=""), na = "NA")
-  
-  tsplot.pst(m_ts, type="monthly",fpath=fpath)
-  monthly_summary=make.smry(m_ts)
-  write.csv(monthly_summary, file=paste(fpath,"/monthly/monthly_summary.csv", sep=""), na = "NA")
-  
+  tsplot.pst(m_ts, type="monthly",fpath=fpath)   
   tsplot.pst(y_ts, type="yearly",fpath=fpath)
-  yearly_summary=make.smry(y_ts)
+
+  ### SUMMARY STATISTICS FOR SUM VALUES
+  daily_summary=(make.smry(d_ts))
+  write.csv(daily_summary, file=paste(fpath,"/daily/daily_summary.csv", sep=""), na = "NA")
+  weekly_summary=make.smry(ws_ts)
+  write.csv(weekly_summary, file=paste(fpath,"/weekly/weekly_summary.csv", sep=""), na = "NA")
+  monthly_summary=make.smry(ms_ts)
+  write.csv(monthly_summary, file=paste(fpath,"/monthly/monthly_summary.csv", sep=""), na = "NA")
+  yearly_summary=make.smry(ys_ts)
   write.csv(yearly_summary, file=paste(fpath,"/yearly/yearly_summary.csv", sep=""), na = "NA")
 
-  rm(fpath)
+rm(fpath)
 ### END TS per Station ###
 
 #### HISTOGRAMS ####
