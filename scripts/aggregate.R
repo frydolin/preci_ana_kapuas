@@ -102,6 +102,13 @@ for(i in (1:length(d_ts))){
   bymonth_ts=lapply(m_ts, ts.bymonth)
   #convert to list of dataframes, this format is needed as boxplot input
   bymonth_df_list=lapply(bymonth_ts, mdf, coln=format.Date(time(m_ts[[1]][1:12]), "%b"))
+
+#special format with a list of twelve month with an array pf stations and
+#monthly values per month. Needed for beeplot
+  bymonth_ts_all=list()
+  for (i in 1:12){
+    bymonth_ts_all[[i]]<-sapply(bymonth_ts, function(x) x[[i]])
+  }
 ### END AGGREGATION BY MONTH ###
 
 #### SEASONAL AGGREGATION ####

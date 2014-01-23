@@ -169,12 +169,45 @@ dir.create(fpath)
   rm(fpath)
 ### END CUMULATIVE SUMS ###
 
-#### SEASONALITY BOXPLOTS ####
+#### SEASONALITY PLOTS ####
   fpath="output/seasonality"
   dir.create(fpath)
+  
+### MONTHLY AVERAGES ###
+  ## LINE PLOT
+    name=paste(fpath, "/dav_by_month.png", sep="")
+    png(filename=name, width=1000, height=700, units="px")  
+    matplot(davbm_df, type = c("b"),pch=1, lty=c(1), lwd=2, col = hexcolors, xaxt = "n", ylab="rainfall in mm/day", main="Daily Average Rain per Month", xlab="Month")
+    axis(1,1:12,labels=row.names(davbm_df))
+    legend(x="bottomright", legend=stnames, col=hexcolors, lwd=3, cex=0.8)
+    dev.off()
+#   ## AVERAGES BOX PLOT VERSION
+#    #the plot below is somehow an improved version instead of comparing averages
+#     name="output/seasonality/dav_by_month_boxplot.png"
+#     png(filename=name, width=1000, height=700, units="px")
+#     boxplot(t(davbm_df), outline=TRUE, main="Station average of daily average Rain per Month", xlab="Month", ylab="mm/day")
+#     abline(mean(t(davbm_df), na.rm=TRUE),0, lwd="2", col="blue")
+#     dev.off()
+
+### MONTHLY VALUES FOR ALL STATIONS, PER MONTH, BOXPLOT VERSION
+  ## (variation per month)
+  library(beeswarm)
+    name=paste(fpath, "/monthly_boxplot.png", sep="")
+    png(filename=name, width=1000, height=700, units="px")  
+    title=paste("Boxplot of average daily rainfall per month for all stations")
+    boxplot(bymonth_ts_all, outline=FALSE, xaxt="n", ylim=c(0,28), main=title, xlab="month", ylab="mm/day")
+    #add beeswarm plots
+    for (i in 1: length(bymonth_ts))
+    {
+      beeswarm(bymonth_ts[[i]], corral="random", pch = 21, col=hexcolors[[i]], add=TRUE)
+    }
+    axis(1,1:12,labels=row.names(davbm_df))
+    legend(x="bottomright", legend=stnames, col=hexcolors, lty=1, lwd=3, cex=0.8)
+    dev.off()
+    
+### SEASONALITY PER STATION
   fpath="output/seasonality/boxplots"
   dir.create(fpath)
-
   library(beeswarm)
   for (i in 1:length(m_ts)) { #loop trough station
     name=paste(fpath,"/m_boxplot_",stnames[i],".png", sep="")
@@ -185,7 +218,8 @@ dir.create(fpath)
     dev.off()
   }
   rm(fpath)
-### END SEASONALITY BOXPLOTS ###
+
+### END SEASONALITY PLOTS ###
 
 ##### TREND ANALYSIS #####
 fpath="output/trendanalysis"
@@ -262,7 +296,9 @@ dir.create(fpath) # new directory
     dev.off()
   }
   ### END BY MONTH TS ###
-  
+
+### END TREND ANALYSIS ### 
+
 #### BY SEASON TIME SERIES ####
   dir.create(paste(fpath,"/byseason", sep="")) # new directory
   
@@ -278,12 +314,12 @@ dir.create(fpath) # new directory
          col=hexcolors[i], ylab="rainfall in mm", main=title)
     abline(mean(rsav_ts[[i]], na.rm=TRUE),0,lty=1, lwd=2, 
            col=hexcolors[i]) #mean line
-    abline(lm(rsav_ts[[i]]~time(rsav_ts[[i]])),lty=1, lwd=2) #trendline
+    #abline(lm(rsav_ts[[i]]~time(rsav_ts[[i]])),lty=1, lwd=2) #trendline
     
     lines(dsav_ts[[i]], type="b", lty=3, lwd=2, col=hexcolors[i])
     abline(mean(dsav_ts[[i]], na.rm=TRUE),0,lty=3, lwd=2, 
            col=hexcolors[i]) #mean line
-    abline(lm(dsav_ts[[i]]~time(dsav_ts[[i]])), lty=3, lwd=2) #trendline
+    #abline(lm(dsav_ts[[i]]~time(dsav_ts[[i]])), lty=3, lwd=2) #trendline
     
     drawTimeAxis(dummy, tick.tstep = "years", lab.tstep = "years", lab.fmt="%Y") 
     legend("bottomleft", legend=c("RAINY", "DRY"), lty=c(1,3), col=hexcolors[i], lwd=1)
@@ -293,7 +329,6 @@ dir.create(fpath) # new directory
   ### END BY SEASON TS ###
 rm(fpath)
 
-### END TREND ANALYSIS ### 
 
 #### CLEAN UP ####
 rm(name, fpath)

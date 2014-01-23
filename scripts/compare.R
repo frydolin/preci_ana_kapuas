@@ -17,6 +17,7 @@
     abline(mean(y_df,  na.rm=TRUE),0, lwd="2", col="blue")
     beeswarm(y_ts, col=hexcolors, add=TRUE)
     dev.off()
+
 #monthly per month i.e. Jan
     name=paste(fpath,"/monthly_boxplot.png", sep="")
     png(filename=name, width=2000, height=1200, units="px")
@@ -50,19 +51,6 @@
   legend(x="bottomright", legend=stnames, col=hexcolors, lwd=3, cex=0.8)
   dev.off()
   
-  ### Monthly Averages ###
-  name="output/seasonality/dav_by_month.png"
-  png(filename=name, width=1000, height=700, units="px")  
-  matplot(davbm_df, type = c("b"),pch=1, lty=c(1), lwd=2, col = hexcolors, xaxt = "n", ylab="rainfall in mm/day", main="Daily Average Rain per Month", xlab="Month")
-  axis(1,1:12,labels=row.names(davbm_df))
-  legend(x="bottomright", legend=stnames, col=hexcolors, lwd=3, cex=0.8)
-  dev.off()
-  #boxplot version
-  name="output/seasonality/dav_by_month_boxplot.png"
-  png(filename=name, width=1000, height=700, units="px")
-  boxplot(t(davbm_df), outline=TRUE, main="Station average of daily average Rain per Month", xlab="Month", ylab="mm/day")
-  abline(mean(t(davbm_df), na.rm=TRUE),0, lwd="2", col="blue")
-  dev.off()
 ### END MONTHLY AVERAGES ###
 
 #### DENSITIES IN ONE PLOT ####
