@@ -197,10 +197,15 @@ dir.create(fpath)
     title=paste("Boxplot of average daily rainfall per month for all stations")
     boxplot(bymonth_ts_all, outline=FALSE, xaxt="n", ylim=c(0,28), main=title, xlab="month", ylab="mm/day")
     #add beeswarm plots
-    for (i in 1: length(bymonth_ts))
-    {
-      beeswarm(bymonth_ts[[i]], corral="random", pch = 21, col=hexcolors[[i]], add=TRUE)
-    }
+    # first create color vector:
+    #for every month
+    # add as many entries per color into the vector as there are observations
+    col.vector=character()
+    for (i in 1:12){       
+        for (j in 1:ncol(bymonth_ts_all[[1]])){ 
+        col.vector=c(col.vector, rep(hexcolors[j], nrow(bymonth_ts_all[[1]])))
+      } }
+    beeswarm(bymonth_ts_all, corral="random", pch = 21, pwcol=col.vector, add=TRUE)
     axis(1,1:12,labels=row.names(davbm_df))
     legend(x="bottomright", legend=stnames, col=hexcolors, lty=1, lwd=3, cex=0.8)
     dev.off()
