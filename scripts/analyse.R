@@ -263,22 +263,30 @@ dir.create(fpath) # new directory
   }
   ### END BY MONTH TS ###
   
-  #### BY SEASON TIME SERIES ####
+#### BY SEASON TIME SERIES ####
   dir.create(paste(fpath,"/byseason", sep="")) # new directory
   
   # Per station: comparison of Seasons within a station
   # Creates a plot matrix with the season time series (RS 1982, DS 1983, ..)
   # for each station
+  
   for (i in 1:length(rsav_ts)) { #loop trough station
     name=paste(fpath,"/byseason/ts_",stnames[i],".png", sep="")
-    png(filename=name, width=1000, height=1200, units="px")
-    par(mfrow=c(2,1))
-    title=paste("TS of rainfall sum for",stnames[i],"Dry Season")
-    plot(dsav_ts[[i]], type="b", lty=1, lwd=2, col=hexcolors[i], ylab="rainfall in mm", main=title)
-    abline(lm(dsav_ts[[i]]~time(dsav_ts[[i]]))) #trendline
-    title=paste("TS of rainfall sum for",stnames[i],"Rain Season")
-    plot(rsav_ts[[i]], type="b", lty=1, lwd=2, col=hexcolors[i], ylab="rainfall in mm", main=title)
-    abline(lm(rsav_ts[[i]]~time(rsav_ts[[i]]))) #trendline
+    png(filename=name, width=800, height=600, units="px")
+    title=paste("TS of rainfall in wet and dry season for",stnames[i])
+    plot(rsav_ts[[i]], ylim=c(0,18), xaxt="n", type="b", lty=1, lwd=2, 
+         col=hexcolors[i], ylab="rainfall in mm", main=title)
+    abline(mean(rsav_ts[[i]], na.rm=TRUE),0,lty=1, lwd=2, 
+           col=hexcolors[i]) #mean line
+    abline(lm(rsav_ts[[i]]~time(rsav_ts[[i]])),lty=1, lwd=2) #trendline
+    
+    lines(dsav_ts[[i]], type="b", lty=3, lwd=2, col=hexcolors[i])
+    abline(mean(dsav_ts[[i]], na.rm=TRUE),0,lty=3, lwd=2, 
+           col=hexcolors[i]) #mean line
+    abline(lm(dsav_ts[[i]]~time(dsav_ts[[i]])), lty=3, lwd=2) #trendline
+    
+    drawTimeAxis(dummy, tick.tstep = "years", lab.tstep = "years", lab.fmt="%Y") 
+    legend("bottomleft", legend=c("RAINY", "DRY"), lty=c(1,3), col=hexcolors[i], lwd=1)
     
     dev.off()
   }

@@ -35,6 +35,9 @@ source("scripts/setup.R")
 #### CONVERT TO ZOO (TIME SERIES) OBJECTS ####
   d_ts=lapply(gdata, function(x) zoo(x$rain, order.by=as.Date(x$date)))
   #str(d_ts) #just to check
+  #create dummy timeseries, for example for labeling
+  dummy=d_ts[[1]]
+  dummy[1:length(dummy)]=1
 ### END ZOO OBJECTS ###
 
 #### CLEAN UP ####
