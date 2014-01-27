@@ -44,22 +44,33 @@ source("scripts/setup.R")
 rm(fpath)
 ### END TS per Station ###
 
-#### HISTOGRAMS ####
+#### HISTOGRAMS and DENSITY####
   fpath="output/histogramms"
-  dir.create(fpath) # new directory
-  fpath="output/histogramms/histogramms"
   dir.create(fpath) # new directory
 library("MASS")
 # Per station
 for (i in 1:length(d_ts))
 {
   name=paste(fpath,"/hist_",stnames[i],".png", sep="")
-  png(filename=name, width=1500, height=2500, units="px")
+  png(filename=name, width=700, height=1000, units="px")
   par(mfrow=c(3,1))
-  title=paste("values histogramm for",stnames[i])
-  truehist(d_ts[[i]], h=5, xlim=c(0,200), col=hexcolors[i], bty="o", main=paste("Daily",title))
-  truehist(m_ts[[i]], h=1, xlim=c(0,30), col=hexcolors[i], bty="o", main=paste("Monthly",title))
-  truehist(y_ts[[i]], h=0.5, xlim=c(5,15), col=hexcolors[i], bty="o", main=paste("Yearly",title))
+  title=paste("histogramm and gaussian KDE for",stnames[i])
+  ## daily
+  truehist(d_ts[[i]][which(d_ts[[i]]>=1)], prob=TRUE, h=5, 
+           xlim=c(0,200), ymax=0.05, bty="o", col=hexcolors[i], main=paste("Daily",title))
+  rug(jitter(d_ts[[i]][which(d_ts[[i]]>=1)], amount = 0.5))
+  lines(ddensity[[i]], lwd=3, col="blue")  
+  ## monthly
+  truehist(m_ts[[i]], prob=TRUE, h=2, 
+           xlim=c(0,26), ymax=0.15, bty="o", col=hexcolors[i],  main=paste("Monthly",title))
+  rug(m_ts[[i]])
+  lines(mdensity[[i]], lwd=3, col="blue")  
+  ## yearly
+  truehist(y_ts[[i]], prob=TRUE, h=1, 
+           xlim=c(2,14),ymax=0.45, lwd=2, col=hexcolors[i], 
+           bty="o", main=paste("Yearly",title))
+  rug(y_ts[[i]])
+  lines(ydensity[[i]], lwd=3, col="blue")
   dev.off()
 }
 # Per type
@@ -68,9 +79,11 @@ for (i in 1:length(d_ts))
   png(filename=name, width=1500, height=1200, units="px")
   par(mfrow=c(3,4))
   for (i in 1:12){
-    title=paste("values histogramm for",stnames[i])
-    truehist(d_ts[[i]], h=5, xlim=c(0,200), prob=FALSE,
-             col=hexcolors[i], bty="o", main=paste("Daily",title))
+    title=paste("histogramm and gaussian KDE for",stnames[i])
+    truehist(d_ts[[i]][which(d_ts[[i]]>=1)], prob=TRUE, h=5, 
+             xlim=c(0,200), ymax=0.067, bty="o", col=hexcolors[i], main=paste("Daily",title))
+    rug(jitter(d_ts[[i]][which(d_ts[[i]]>=1)], amount = 0.5))
+    lines(ddensity[[i]], lwd=3, col="blue")  
   }
   dev.off()
   #Monthly
@@ -78,9 +91,11 @@ for (i in 1:length(d_ts))
   png(filename=name, width=1500, height=1200, units="px")
   par(mfrow=c(3,4))
   for (i in 1:12){
-    title=paste("values histogramm for",stnames[i])
-    truehist(m_ts[[i]], h=1, xlim=c(0,30), prob=FALSE,
-             col=hexcolors[i], bty="o", main=paste("Monthly",title))
+    title=paste("histogramm and gaussian KDE for",stnames[i])
+    truehist(m_ts[[i]], prob=TRUE, h=2, 
+             xlim=c(0,26), ymax=0.15, bty="o", col=hexcolors[i],  main=paste("Monthly",title))
+    rug(m_ts[[i]])
+    lines(mdensity[[i]], lwd=3, col="blue") 
   }
   dev.off()
   #Yearly
@@ -88,58 +103,16 @@ for (i in 1:length(d_ts))
   png(filename=name, width=1500, height=1200, units="px")
   par(mfrow=c(3,4))
   for (i in 1:12){
-    title=paste("values histogramm for",stnames[i])
-    truehist(y_ts[[i]], h=0.5, xlim=c(5,15), prob=FALSE,
-             col=hexcolors[i], bty="o", main=paste("Yearly",title))
+    title=paste("histogramm and gaussian KDE for",stnames[i])
+    truehist(y_ts[[i]], prob=TRUE, h=1, 
+             xlim=c(2,14),ymax=0.45, lwd=2, col=hexcolors[i], 
+             bty="o", main=paste("Yearly",title))
+    rug(y_ts[[i]])
+    lines(ydensity[[i]], lwd=3, col="blue")
   }
   dev.off()
 rm(fpath)
-
-#### DENSITY ####
-fpath="output/histogramms/density"
-dir.create(fpath) 
-# Plot Per station
-for (i in 1:length(d_ts))
-{
-  name=paste(fpath,"/density_",stnames[i],".png", sep="")
-  png(filename=name, width=1000, height=2000, units="px")
-  par(mfrow=c(3,1))
-  title=paste("values density for",stnames[i])
-  plot(ddensity[[i]], col=hexcolors[i], lwd="4", main=paste("Daily",title))
-  plot.logspline(mdensity[[i]], col=hexcolors[i],lwd="4", main=paste("Monthy",title))  
-  plot(ydensity[[i]], col=hexcolors[i], lwd="4",main=paste("Yearly",title))
-  dev.off()
-}
-# Per type
-  # Daily
-  name=paste(fpath,"/daily_density.png", sep="")
-  png(filename=name, width=1500, height=1200, units="px")
-  par(mfrow=c(3,4))
-  for (i in 1:12){
-    title=paste("values density for",stnames[i])
-    plot(ddensity[[i]], col=hexcolors[i], lwd="4", main=paste("Daily",title))
-  }
-  dev.off()
-  #Monthly
-  name=paste(fpath,"/monthly_density.png", sep="")
-  png(filename=name, width=1500, height=1200, units="px")
-  par(mfrow=c(3,4))
-  for (i in 1:12){
-    title=paste("values histogramm for",stnames[i])
-    plot.logspline(mdensity[[i]], col=hexcolors[i],lwd="4", main=paste("Monthy",title)) 
-  }
-  dev.off()
-  #Yearly
-  name=paste(fpath,"/yearly_density.png", sep="")
-  png(filename=name, width=1500, height=1200, units="px")
-  par(mfrow=c(3,4))
-  for (i in 1:12){
-    title=paste("values histogramm for",stnames[i])
-    plot(ydensity[[i]], col=hexcolors[i], lwd="4",main=paste("Yearly",title))
-  }
-  dev.off()
-rm(fpath)
-### END DENSITY ###
+### END HISTOGRAMMS and DENSITY ###
 
 #### CUMULATIVE SUMS for each station####
 fpath="output/cumulative"

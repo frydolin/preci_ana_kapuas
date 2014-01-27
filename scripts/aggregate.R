@@ -183,12 +183,10 @@ for(i in (1:length(d_ts))){
 ### END CUMULATIVE SUMS ###
 
 #### DENSITIES ####
-## Compute densities
-  library(logspline)
-  #library(ks)
-  ddensity<-lapply(d_ts, density, from=0, bw="nrd", na.rm=TRUE)
-  mdensity<-lapply(m_ts, logspline, lbound = 0)
-  ydensity<-lapply(y_ts, density, from=0, bw="nrd", na.rm=TRUE)
+## Compute gaussian Kernel densities
+  ddensity<-lapply(d_ts, function (x) density(x[which(x>=1)], from=0, bw=3.5,  na.rm=TRUE))
+  mdensity<-lapply(m_ts, function (x) density(x, from=0,  bw=1.8,  na.rm=TRUE))
+  ydensity<-lapply(y_ts, function (x) density(x, from=0, bw=0.9,  na.rm=TRUE))
 ### END DENSITIES ###
 
 #### CLEAN UP ####

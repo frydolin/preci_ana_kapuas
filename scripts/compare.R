@@ -53,29 +53,40 @@
   
 ### END MONTHLY AVERAGES ###
 
-#### DENSITIES IN ONE PLOT ####
-# Daily
-#   name=paste("output/plots/histogramms/daily_density_overlay.png", sep="")
-#   png(filename=name, width=1000, height=800, units="px")
-#   plot(ddy[[1]], xlim=c(0,200), ylim=c(0,20), col=hexcolors[1], 
-#        lwd="4", xlab="", main="Densities of daily rainfall")
-#   legend(x="topright", legend=stnames, col=hexcolors, lwd=3, cex=0.8)
-#   for (i in 2:12){ 
-#     lines(ddy[[i]], col=hexcolors[i], lwd="4")
-#   }
-#   dev.off()
-#Monthly
-  name=paste("output/histogramms/density/monthly_density_overlay.png", sep="")
-  png(filename=name, width=1000, height=800, units="px")
-  plot.logspline(mdensity[[1]], xlim=c(0,25), ylim=c(0,0.2), col=hexcolors[1], 
-              lwd="4", xlab="", main="Densities of monthly rainfall")
-              legend(x="topright", legend=stnames, col=hexcolors, lwd=3, cex=0.8)
-  for (i in 2:12){ 
-    plot.logspline(mdensity[[i]], col=hexcolors[i], lwd="4", add=TRUE)
+#### COMPARE DENSITIES ####
+fpath="output/histogramms/comparison"
+dir.create(fpath)
+
+## Daily
+  name=paste(fpath,"/daily_densities.png", sep="")
+  png(filename=name, width=1000, height=700, units="px")
+  plot(ddensity[[1]], xlim=c(0,250), ylim=c(0,0.05), col=hexcolors[1], 
+       lwd="3", xlab="rainfall in mm/day", main="Gaussian KDE  of daily rainfall")
+  for (i in 2:length(ddensity)){ 
+    lines(ddensity[[i]], col=hexcolors[i], lwd="3")
   }
+  legend(x="topright", legend=stnames, col=hexcolors, lwd=3, cex=0.8)
   dev.off()
+#Monthly
+  name=paste(fpath,"/monthly_densities.png", sep="")
+  png(filename=name, width=1000, height=700, units="px")
+  plot(mdensity[[1]], xlim=c(0,30), ylim=c(0,0.11), col=hexcolors[1], 
+              lwd="3", xlab="rainfall in mm/day", main="Gaussian KDE  of monthly rainfall")          
+  for (i in 2:length(ddensity)){ 
+        lines(mdensity[[i]], col=hexcolors[i], lwd="3")
+  }
+  legend(x="topright", legend=stnames, col=hexcolors, lwd=3, cex=0.8)
+dev.off()
 #Yearly
-  #not enough data
+  name=paste(fpath,"/yearly_densities.png", sep="")
+  png(filename=name, width=1000, height=700, units="px")
+  plot(ydensity[[1]], xlim=c(0,20), ylim=c(0,0.3), col=hexcolors[1], 
+       lwd="3", xlab="rainfall in mm/day", main="Gaussian KDE of yearly rainfall")          
+  for (i in 2:length(ddensity)){ 
+    lines(ydensity[[i]], col=hexcolors[i], lwd="3")
+  }
+  legend(x="topright", legend=stnames, col=hexcolors, lwd=3, cex=0.8)
+dev.off()
 ### END DENSITIES IN ONE PLOT ###
 
 #### CORRELATION ####
