@@ -30,17 +30,18 @@ source("scripts/setup.R")
   tsplot.pst(w_ts, type="weekly",fpath=fpath)
   tsplot.pst(m_ts, type="monthly",fpath=fpath)   
   tsplot.pst(y_ts, type="yearly",fpath=fpath)
-
+rm(fpath)
   ### SUMMARY STATISTICS FOR SUM VALUES
+fpath="output/summaries"
+dir.create(fpath)
   daily_summary=(make.smry(d_ts))
-  write.csv(daily_summary, file=paste(fpath,"/daily/daily_summary.csv", sep=""), na = "NA")
+  write.csv(daily_summary, file=paste(fpath,"/daily_summary.csv", sep=""), na = "NA")
   weekly_summary=make.smry(ws_ts)
-  write.csv(weekly_summary, file=paste(fpath,"/weekly/weekly_summary.csv", sep=""), na = "NA")
+  write.csv(weekly_summary, file=paste(fpath,"/weekly_summary.csv", sep=""), na = "NA")
   monthly_summary=make.smry(ms_ts)
-  write.csv(monthly_summary, file=paste(fpath,"/monthly/monthly_summary.csv", sep=""), na = "NA")
+  write.csv(monthly_summary, file=paste(fpath,"/monthly_summary.csv", sep=""), na = "NA")
   yearly_summary=make.smry(ys_ts)
-  write.csv(yearly_summary, file=paste(fpath,"/yearly/yearly_summary.csv", sep=""), na = "NA")
-
+  write.csv(yearly_summary, file=paste(fpath,"/yearly_summary.csv", sep=""), na = "NA")
 rm(fpath)
 ### END TS per Station ###
 
@@ -48,7 +49,7 @@ rm(fpath)
   fpath="output/histogramms"
   dir.create(fpath) # new directory
 library("MASS")
-# Per station
+### Per station
 for (i in 1:length(d_ts))
 {
   name=paste(fpath,"/hist_",stnames[i],".png", sep="")
@@ -61,7 +62,7 @@ for (i in 1:length(d_ts))
   rug(jitter(d_ts[[i]][which(d_ts[[i]]>=1)], amount = 0.5))
   lines(ddensity[[i]], lwd=3, col="blue")  
   ## monthly
-  truehist(m_ts[[i]], prob=TRUE, h=2, 
+  truehist(m_ts[[i]], prob=TRUE, h=1.5, 
            xlim=c(0,26), ymax=0.15, bty="o", col=hexcolors[i],  main=paste("Monthly",title))
   rug(m_ts[[i]])
   lines(mdensity[[i]], lwd=3, col="blue")  
@@ -73,7 +74,7 @@ for (i in 1:length(d_ts))
   lines(ydensity[[i]], lwd=3, col="blue")
   dev.off()
 }
-# Per type
+### Per type
   # Daily
   name=paste(fpath,"/daily_hist.png", sep="")
   png(filename=name, width=1500, height=1200, units="px")
@@ -92,7 +93,7 @@ for (i in 1:length(d_ts))
   par(mfrow=c(3,4))
   for (i in 1:12){
     title=paste("histogramm and gaussian KDE for",stnames[i])
-    truehist(m_ts[[i]], prob=TRUE, h=2, 
+    truehist(m_ts[[i]], prob=TRUE, h=1.5, 
              xlim=c(0,26), ymax=0.15, bty="o", col=hexcolors[i],  main=paste("Monthly",title))
     rug(m_ts[[i]])
     lines(mdensity[[i]], lwd=3, col="blue") 
@@ -112,6 +113,40 @@ for (i in 1:length(d_ts))
   }
   dev.off()
 rm(fpath)
+### COMPARE DENSITIES ###
+  fpath="output/histogramms/comparison"
+  dir.create(fpath)  
+  ## Daily
+  name=paste(fpath,"/daily_densities.png", sep="")
+  png(filename=name, width=1000, height=700, units="px")
+  plot(ddensity[[1]], xlim=c(0,250), ylim=c(0,0.05), col=hexcolors[1], 
+       lwd="3", xlab="rainfall in mm/day", main="Gaussian KDE  of daily rainfall")
+  for (i in 2:length(ddensity)){ 
+    lines(ddensity[[i]], col=hexcolors[i], lwd="3")
+  }
+  legend(x="topright", legend=stnames, col=hexcolors, lwd=3, cex=0.8)
+  dev.off()
+  #Monthly
+  name=paste(fpath,"/monthly_densities.png", sep="")
+  png(filename=name, width=1000, height=700, units="px")
+  plot(mdensity[[1]], xlim=c(0,30), ylim=c(0,0.11), col=hexcolors[1], 
+       lwd="3", xlab="rainfall in mm/day", main="Gaussian KDE  of monthly rainfall")          
+  for (i in 2:length(ddensity)){ 
+    lines(mdensity[[i]], col=hexcolors[i], lwd="3")
+  }
+  legend(x="topright", legend=stnames, col=hexcolors, lwd=3, cex=0.8)
+  dev.off()
+  #Yearly
+  name=paste(fpath,"/yearly_densities.png", sep="")
+  png(filename=name, width=1000, height=700, units="px")
+  plot(ydensity[[1]], xlim=c(0,20), ylim=c(0,0.3), col=hexcolors[1], 
+       lwd="3", xlab="rainfall in mm/day", main="Gaussian KDE of yearly rainfall")          
+  for (i in 2:length(ddensity)){ 
+    lines(ydensity[[i]], col=hexcolors[i], lwd="3")
+  }
+  legend(x="topright", legend=stnames, col=hexcolors, lwd=3, cex=0.8)
+  dev.off()
+  ### END COMPARE DENSITIES ###
 ### END HISTOGRAMMS and DENSITY ###
 
 #### CUMULATIVE SUMS for each station####

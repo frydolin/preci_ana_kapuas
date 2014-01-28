@@ -183,11 +183,11 @@ make.smry=function(x, objnames=stnames){
   dfr=do.call(cbind, (smry.list))  	# converison
   row.names(dfr)=row.names(smry.list[[1]])
   colselector=c(seq(2, ncol(dfr), 2)) #remove every other column (time index)
-  rowselector=c(-2,-5,-9,-10,-11,-12,-13)  #remove entries not needed
+  rowselector=c(-2,-5,-9,-12,-13)  #remove entries not needed
   dfr.sub=dfr[rowselector,colselector]  #subset
   tdfr.sub=t(dfr.sub)
   #reorder
-  dataframe=tdfr.sub[,c(1,4,2,5,3,6)]
+  dataframe=tdfr.sub[,c(1,4,2,5,3,6,7,8)]
   #get additional statistics, replace NA counst
   add.stats=sapply(x, add.na.stats) 
   add.stats=as.data.frame(add.stats, row.names=c("n", "NA.percentage",

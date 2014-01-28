@@ -53,41 +53,7 @@
   
 ### END MONTHLY AVERAGES ###
 
-#### COMPARE DENSITIES ####
-fpath="output/histogramms/comparison"
-dir.create(fpath)
 
-## Daily
-  name=paste(fpath,"/daily_densities.png", sep="")
-  png(filename=name, width=1000, height=700, units="px")
-  plot(ddensity[[1]], xlim=c(0,250), ylim=c(0,0.05), col=hexcolors[1], 
-       lwd="3", xlab="rainfall in mm/day", main="Gaussian KDE  of daily rainfall")
-  for (i in 2:length(ddensity)){ 
-    lines(ddensity[[i]], col=hexcolors[i], lwd="3")
-  }
-  legend(x="topright", legend=stnames, col=hexcolors, lwd=3, cex=0.8)
-  dev.off()
-#Monthly
-  name=paste(fpath,"/monthly_densities.png", sep="")
-  png(filename=name, width=1000, height=700, units="px")
-  plot(mdensity[[1]], xlim=c(0,30), ylim=c(0,0.11), col=hexcolors[1], 
-              lwd="3", xlab="rainfall in mm/day", main="Gaussian KDE  of monthly rainfall")          
-  for (i in 2:length(ddensity)){ 
-        lines(mdensity[[i]], col=hexcolors[i], lwd="3")
-  }
-  legend(x="topright", legend=stnames, col=hexcolors, lwd=3, cex=0.8)
-dev.off()
-#Yearly
-  name=paste(fpath,"/yearly_densities.png", sep="")
-  png(filename=name, width=1000, height=700, units="px")
-  plot(ydensity[[1]], xlim=c(0,20), ylim=c(0,0.3), col=hexcolors[1], 
-       lwd="3", xlab="rainfall in mm/day", main="Gaussian KDE of yearly rainfall")          
-  for (i in 2:length(ddensity)){ 
-    lines(ydensity[[i]], col=hexcolors[i], lwd="3")
-  }
-  legend(x="topright", legend=stnames, col=hexcolors, lwd=3, cex=0.8)
-dev.off()
-### END DENSITIES IN ONE PLOT ###
 
 #### CORRELATION ####
   fpath="output/correlation"
