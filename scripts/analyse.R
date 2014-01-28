@@ -82,7 +82,7 @@ for (i in 1:length(d_ts))
   for (i in 1:12){
     title=paste("histogramm and gaussian KDE for",stnames[i])
     truehist(d_ts[[i]][which(d_ts[[i]]>=1)], prob=TRUE, h=5, 
-             xlim=c(0,200), ymax=0.067, bty="o", col=hexcolors[i], main=paste("Daily",title))
+             xlim=c(0,200), ymax=0.05, bty="o", col=hexcolors[i], main=paste("Daily",title))
     rug(jitter(d_ts[[i]][which(d_ts[[i]]>=1)], amount = 0.5))
     lines(ddensity[[i]], lwd=3, col="blue")  
   }
@@ -91,7 +91,7 @@ for (i in 1:length(d_ts))
   name=paste(fpath,"/monthly_hist.png", sep="")
   png(filename=name, width=1500, height=1200, units="px")
   par(mfrow=c(3,4))
-  for (i in 1:12){
+  for (i in 1:length(d_ts)){
     title=paste("histogramm and gaussian KDE for",stnames[i])
     truehist(m_ts[[i]], prob=TRUE, h=1.5, 
              xlim=c(0,26), ymax=0.15, bty="o", col=hexcolors[i],  main=paste("Monthly",title))
@@ -103,7 +103,7 @@ for (i in 1:length(d_ts))
   name=paste(fpath,"/yearly_hist.png", sep="")
   png(filename=name, width=1500, height=1200, units="px")
   par(mfrow=c(3,4))
-  for (i in 1:12){
+  for (i in 1:length(d_ts)){
     title=paste("histogramm and gaussian KDE for",stnames[i])
     truehist(y_ts[[i]], prob=TRUE, h=1, 
              xlim=c(2,14),ymax=0.45, lwd=2, col=hexcolors[i], 
@@ -112,6 +112,20 @@ for (i in 1:length(d_ts))
     lines(ydensity[[i]], lwd=3, col="blue")
   }
   dev.off()
+#   #Yearly Raindays
+#   name=paste(fpath,"/yearly_raindays_hist.png", sep="")
+#   png(filename=name, width=1500, height=1200, units="px")
+#   par(mfrow=c(3,4))
+#   for (i in 1:12){
+#     title=paste("histogramm and gaussian KDE for",stnames[i])
+#     truehist(y_raindays[[i]], prob=TRUE, h=10, 
+#              xlim=c(0,300),ymax=0.04, lwd=2, col=hexcolors[i], 
+#              bty="o", main=paste("Yearly",title))
+#     rug(y_raindays[[i]])
+#     lines(y_rainday.density[[i]], lwd=3, col="blue")
+#   }
+#   dev.off()
+
 rm(fpath)
 ### COMPARE DENSITIES ###
   fpath="output/histogramms/comparison"
