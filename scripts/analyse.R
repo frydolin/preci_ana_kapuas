@@ -254,35 +254,25 @@ dir.create(fpath) # new directory
 
   #### Mann-Kendall trend testing ####
   library("Kendall")
+  # testing is outsourced to convenience function mk.trendtest
+  # returns only a vector of significance of results
   ## A: seasonal Mann Kendall test. 
     ## runs on monthly values 
     ## SeasonalMannKendall likes only ts objects therefore the as.ts conversion 
     ## tau=Score/denominator, denominator=max possible value for score
-    smk.trendtest=lapply(m_ts, function(x) SeasonalMannKendall(as.ts(x)))
-    names(smk.trendtest)=stnames
-    #smk.trendtest
-    smk.sl=sapply(smk.trendtest, function(x) x$sl)
-    smk.sign=ifelse(smk.sl<0.05, "*", "-")
-    smk.sign=ifelse(smk.sl<0.01, "**",smk.sign)
-    smk.sign
+    seasonal.mk=mk.trendtest(m_ts, SeasonalMannKendall)
+    names(seasonal.mk)=paste("seasonal.",names(seasonal.mk), sep="")
   ## B: normal Mann Kendall
     ## on the rainseason and dry season seperately
       # RS
-      rs_mk.trendtest=lapply(rsav_ts, function(x) SeasonalMannKendall(as.ts(x)))
-      names(rs_mk.trendtest)=stnames
-      #rs_mk.trendtest
-      rs_mk.sl=sapply(rs_mk.trendtest, function(x) x$sl)
-      rs_mk.sign=ifelse(rs_mk.sl<0.05, "*", "-")
-      rs_mk.sign=ifelse(rs_mk.sl<0.01, "**",rs_mk.sign)
-      rs_mk.sign
+      rs.mk=mk.trendtest(rsav_ts, MannKendall)
+      names(rs.mk)=paste("rs.",names(rs.mk), sep="")
       # DS
-      ds_mk.trendtest=lapply(dsav_ts, function(x) SeasonalMannKendall(as.ts(x)))
-      names(ds_mk.trendtest)=stnames
-      #ds_mk.trendtest
-      ds_mk.sl=sapply(ds_mk.trendtest, function(x) x$sl)
-      ds_mk.sign=ifelse(ds_mk.sl<0.05, "*", "-")
-      ds_mk.sign=ifelse(ds_mk.sl<0.01, "**",ds_mk.sign)
-      ds_mk.sign
+      ds.mk=mk.trendtest(dsav_ts, MannKendall)
+      names(ds.mk)=paste("ds.",names(ds.mk), sep="")
+  ## Make one table with results
+    mk.test=cbind(seasonal.mk, rs.mk, ds.mk)
+    write.csv(mk.test, file=paste(fpath,"/mann_kendall_test", sep=""))
   ### END Mann-Kendall trend testing ###
   
   #### BY MONTH time series with linear trendline ####

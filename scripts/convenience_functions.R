@@ -36,5 +36,19 @@ homogeneity.tests=function(x){
     return(list("nm"=nm_s, "bs"=bs_s, "pt"=pt_s, "sn"=sn_s ))
 }
 ###
-
+#### Mann-Kendall-Trend Testing ####
+  ## tau=Score/denominator, denominator=max possible value for score
+  # x: list of zoo objects
+  # test: type of test (SeasonalMannKendall, or MannKendall)
+  # returns kendall's tau and significance (p value coded with -,*,**)
+  mk.trendtest=function(x, test){
+  require("Kendall")
+  trendtest=lapply(x, function(x) test(as.ts(x)))
+  tau=sapply(trendtest, function(x) x$tau)
+  tau=signif(tau, digits = 3) #round tau to 3 significant digits
+  sl=sapply(trendtest, function(x) x$sl)
+  sign=ifelse(smk.sl<0.05, "*", "-")
+  sign=ifelse(smk.sl<0.01, "**",sign)
+  return(as.data.frame(cbind(tau, sign)))
+  }
 ##### END convenience_functions #####
