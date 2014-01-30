@@ -47,8 +47,8 @@ homogeneity.tests=function(x){
   tau=sapply(trendtest, function(x) x$tau)
   tau=signif(tau, digits = 3) #round tau to 3 significant digits
   sl=sapply(trendtest, function(x) x$sl)
-  sign=ifelse(smk.sl<0.05, "*", "-")
-  sign=ifelse(smk.sl<0.01, "**",sign)
+  sign=ifelse(sl<0.05, "*", "-")
+  sign=ifelse(sl<0.01, "**",sign)
   return(as.data.frame(cbind(tau, sign)))
   }
 ##### END convenience_functions #####

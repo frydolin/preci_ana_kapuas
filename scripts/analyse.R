@@ -1,4 +1,5 @@
-###### PRECIPITATION ANALYSIS: COMPARISON OF STATION DATA ######
+###### SPATIO-TEMPORAL RAINFALL PATTERNS IN KAPUAS BASIN ######
+### Analysis and comparison of station data ###
 
 ## analyse.R plots summaries to output files ##
 
@@ -79,7 +80,7 @@ for (i in 1:length(d_ts))
   name=paste(fpath,"/daily_hist.png", sep="")
   png(filename=name, width=1500, height=1200, units="px")
   par(mfrow=c(3,4))
-  for (i in 1:12){
+  for (i in 1:length(d_ts)){
     title=paste("histogramm and gaussian KDE for",stnames[i])
     truehist(d_ts[[i]][which(d_ts[[i]]>=1)], prob=TRUE, h=5, 
              xlim=c(0,200), ymax=0.05, bty="o", col=hexcolors[i], main=paste("Daily",title))
@@ -91,7 +92,7 @@ for (i in 1:length(d_ts))
   name=paste(fpath,"/monthly_hist.png", sep="")
   png(filename=name, width=1500, height=1200, units="px")
   par(mfrow=c(3,4))
-  for (i in 1:length(d_ts)){
+  for (i in 1:length(m_ts)){
     title=paste("histogramm and gaussian KDE for",stnames[i])
     truehist(m_ts[[i]], prob=TRUE, h=1.5, 
              xlim=c(0,26), ymax=0.15, bty="o", col=hexcolors[i],  main=paste("Monthly",title))
@@ -103,7 +104,7 @@ for (i in 1:length(d_ts))
   name=paste(fpath,"/yearly_hist.png", sep="")
   png(filename=name, width=1500, height=1200, units="px")
   par(mfrow=c(3,4))
-  for (i in 1:length(d_ts)){
+  for (i in 1:length(y_ts)){
     title=paste("histogramm and gaussian KDE for",stnames[i])
     truehist(y_ts[[i]], prob=TRUE, h=1, 
              xlim=c(2,14),ymax=0.45, lwd=2, col=hexcolors[i], 
@@ -153,7 +154,7 @@ rm(fpath)
   #Yearly
   name=paste(fpath,"/yearly_densities.png", sep="")
   png(filename=name, width=1000, height=700, units="px")
-  plot(ydensity[[1]], xlim=c(0,20), ylim=c(0,0.3), col=hexcolors[1], 
+  plot(ydensity[[1]], xlim=c(0,18), ylim=c(0,0.3), col=hexcolors[1], 
        lwd="3", xlab="rainfall in mm/day", main="Gaussian KDE of yearly rainfall")          
   for (i in 2:length(ddensity)){ 
     lines(ydensity[[i]], col=hexcolors[i], lwd="3")
@@ -163,33 +164,33 @@ rm(fpath)
   ### END COMPARE DENSITIES ###
 ### END HISTOGRAMMS and DENSITY ###
 
-#### CUMULATIVE SUMS for each station####
-fpath="output/cumulative"
-dir.create(fpath)
-  #create overlapping graphs for all years
-  #create common index, here the year 2000 is used (leap year)
-  cumlist_s.in=rapply(cumlist, how="list",function(x) zoo(x, order.by=time(cumlist[[1]][[19]])) )
-  #plot
-  #warnings are usually caused by NA values and then can be ignored
-  for (j in 1:length(cumlist_s.in)){
-    name=paste(fpath,"/cumul_overlay_",stnames[j],".png", sep="")
-    png(filename=name, width=800, height=600, units="px")
-    plot(cumlist_s.in[[j]][[1]], type="l", lwd=2, lty=1, col=hexcolors[[j]], ylim=c(0,5000))
-      for (i in 2:31){
-        lines(cumlist_s.in[[j]][[i]], type="l", lwd=2, lty=i, col=hexcolors[[j]])
-              }
-    dev.off()
-  }
-  rm(cumlist_s.in)
-  #long term cumulative sums
-  for (i in 1:length(cumsums_ts)) {
-    name=paste(fpath,"/cumul_",stnames[i],".png", sep="")
-    png(filename=name, width=800, height=500, units="px")
-    plot(cumsums_ts[[i]], type="l",lty=1, lwd=2, col=hexcolors[i], ylab="rainfall in mm", main=paste("Cumulative rainfall amounts for", stnames[i]), xlab="date") 
-    dev.off()
-  }
-  rm(fpath)
-### END CUMULATIVE SUMS ###
+# #### CUMULATIVE SUMS for each station####
+# fpath="output/cumulative"
+# dir.create(fpath)
+#   #create overlapping graphs for all years
+#   #create common index, here the year 2000 is used (leap year)
+#   cumlist_s.in=rapply(cumlist, how="list",function(x) zoo(x, order.by=time(cumlist[[1]][[19]])) )
+#   #plot
+#   #warnings are usually caused by NA values and then can be ignored
+#   for (j in 1:length(cumlist_s.in)){
+#     name=paste(fpath,"/cumul_overlay_",stnames[j],".png", sep="")
+#     png(filename=name, width=800, height=600, units="px")
+#     plot(cumlist_s.in[[j]][[1]], type="l", lwd=2, lty=1, col=hexcolors[[j]], ylim=c(0,5000))
+#       for (i in 2:31){
+#         lines(cumlist_s.in[[j]][[i]], type="l", lwd=2, lty=i, col=hexcolors[[j]])
+#               }
+#     dev.off()
+#   }
+#   rm(cumlist_s.in)
+#   #long term cumulative sums
+#   for (i in 1:length(cumsums_ts)) {
+#     name=paste(fpath,"/cumul_",stnames[i],".png", sep="")
+#     png(filename=name, width=800, height=500, units="px")
+#     plot(cumsums_ts[[i]], type="l",lty=1, lwd=2, col=hexcolors[i], ylab="rainfall in mm", main=paste("Cumulative rainfall amounts for", stnames[i]), xlab="date") 
+#     dev.off()
+#   }
+#   rm(fpath)
+# ### END CUMULATIVE SUMS ###
 
 #### SEASONALITY PLOTS ####
   fpath="output/seasonality"
@@ -298,14 +299,15 @@ dir.create(fpath) # new directory
   }
   
   # 2. Per month: comparison of stations for every month
-  # Creates a plot matrix for all stations of a particular month 
+  # Creates a plot matrix for 8 stations of a particular month 
   # of the "by month" time series (Jan 1982, Jan 1983, ..)
+  # needs adjustment depending on station number!!!
   for (j in 1:12){  # loop through month
     mname=as.character(format.Date(time(bymonth_ts[[1]][[j]][1]), "%B"))
     name=paste(fpath,"/bymonth/ts_",mname,".png", sep="")
     png(filename=name, width=2000, height=1200, units="px")
-    par(mfrow=c(4,3))
-    for (i in 1:12) {    #loop trough first twelve stations
+    par(mfrow=c(4,2))
+    for (i in 1:8) {    #loop trough first eigth stations
       title=paste("TS of mean rainfall for",stnames[i],"and month:",mname)
       plot(bymonth_ts[[i]][[j]], type="b", lty=1, lwd=2, col=hexcolors[i], ylab="rainfall in mm/day", main=title)
       abline(lm(bymonth_ts[[i]][[j]]~time(bymonth_ts[[i]][[j]]))) #trendline
@@ -313,7 +315,6 @@ dir.create(fpath) # new directory
     dev.off()
   }
   ### END BY MONTH TS ###
-
 ### END TREND ANALYSIS ### 
 
 #### BY SEASON TIME SERIES ####
