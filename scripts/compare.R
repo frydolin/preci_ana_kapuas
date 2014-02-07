@@ -128,6 +128,43 @@
 # 
 # ###  ###
 
+#### COMPARISON OF SPATIAL CORRELATION AND DISTANCE ####
+library("sp")
+library("maptools")
+library("raster")
+library("reshape")
+# Load station data (not in long lat to get distances in meters)
+  stations<-readShapePoints("input/stationmap_wgs84utm49N/stationmap.shp")
+# Subset stations 
+  stations <- stations[stations$ID %in% stnames,]
+# Compute distances
+  sp.dist.matrix=pointDistance(stations, longlat=FALSE)
+  sp.dist.matrix=sp.dist.matrix/1000 #to get km instead of m
+  rownames(sp.dist.matrix)=stations$ID
+  colnames(sp.dist.matrix)=stations$ID
+# reorder
+  sp.dist=reshape.matrix(sp.dist.matrix)
+
+# correlation matrixes
+stnames
+  cor.matrix_d=cor(d_df, use="pairwise.complete.obs", method ="pearson")
+  cor.matrix_d=cor.matrix_d[-5,-5]
+  cor_d=reshape.matrix(cor.matrix_d)
+  cor.matrix_m=cor(m_df, use="pairwise.complete.obs", method ="pearson")
+  cor.matrix_m=cor.matrix_m[-5,-5]  
+  cor_m=reshape.matrix(cor.matrix_m)
+  cor.matrix_y=cor(y_df, use="pairwise.complete.obs", method ="pearson")
+  cor.matrix_y=cor.matrix_y[-5,-5]    
+  cor_y=reshape.matrix(cor.matrix_y)
+View(y_df)
+# Plot
+plot(cor_d$value~sp.dist$value, ylim=c(0,1), lty=2, xlim=c(0,300), 
+     ylab="Pearson correlation coefficient", xlab="distance in km")
+plot(cor_m$value~sp.dist$value, ylim=c(0,1), lty=2, xlim=c(0,300))
+plot(cor_y$value~sp.dist$value, ylim=c(0,1), lty=2, xlim=c(0,300))
+
+### END COMPARISON OF SPATIAL CORRELATION AND DISTANCE ###
+
 #### shut down ####
 rm(name, fpath)
 graphics.off() #Completely shuts down the printing to file

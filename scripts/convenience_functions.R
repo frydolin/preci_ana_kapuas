@@ -51,4 +51,15 @@ homogeneity.tests=function(x){
   sign=ifelse(sl<0.01, "**",sign)
   return(as.data.frame(cbind(tau, sign)))
   }
+
+#### Reshaping of distance and correlation matrixes: ####
+reshape.matrix=function(x){
+  x=x[order(rownames(x)),order(colnames(x))]
+  x[upper.tri(x, diag=FALSE)]=NA
+  y= melt(x) #melt
+  y=y[!is.na(y$value),] #remove NA entries (they are duplicates of the quadratic matrix)
+  y=y[with(y, order(X1, X2)), ] #reorder
+  row.names(y)=paste(y$X1,"-",y$X2,sep="")
+  return(y)
+}
 ##### END convenience_functions #####

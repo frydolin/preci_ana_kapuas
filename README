@@ -1,24 +1,27 @@
 ###### 	R code for: 
-###### 	PRECIPITATION ANALYSIS: COMPARISON OF GROUND  STATION DATA ######
+###### SPATIO-TEMPORAL RAINFALL PATTERNS IN KAPUAS BASIN ######
+### Analysis and comparison of station data ###
 
 ### R FILES ###
-+ run.R 			executes the analysis, it calls further scripts:
-				run.R is the only file that needs to be run for a complete default analysis
++ run.R 		executes the analysis, it calls further scripts:
+			run.R is the only file that needs to be run for a complete default analysis
 
 + installpackages.R	convenience script that should install all needed packages, if they are not yet installed
-+ load.R 			loads in all the data and converts to appropriate formats ##
++ load.R 		loads in all the data and converts to appropriate formats ##
 + aggregate.R 		creates all necessary summaries and variables to be analysed ##
 + analyse.R 		plots summaries to output ##
 + compare.R		plots comparative plots to output
 
 Called from within these files:
 + setup.R			loads common variables, functions and packages
-+ functions.R 		contains own functions for the analysis
++ homogeneity_test.R		four types of homogeneity tests
++ functions.R			contains own functions for the analysis
++ convenience_functions.R	own functions for repeated tasks, that are specific and can't be reused.
 
 ### NECESSARY FOLDER STRUCTURE ###
 # /input		# contains input data
 # /output		# where output is written to
-# /scripts 	# all R scripts
+# /scripts		# all R scripts
 # all other folders are created automatically
 
 ### REQUIRED INPUT DATA FORMAT###
@@ -27,27 +30,23 @@ Called from within these files:
 # date	rainfall
 # seperator is ; 
 # missing value flag is NA
+# filenames are NNstationname.csv with NN being any two numbers
 
 ### REQUIRED PACKAGES ###
 attached base packages:
-      grid
-      stats     
-      graphics  
-      grDevices 
-      utils     
-      methods  
-      base     
+[1] grid      tools     stats     graphics  grDevices utils     datasets 
+[8] methods   base     
 
 other attached packages:
  [1] corrgram_1.5     seriation_1.0-11 colorspace_1.2-4 gclus_1.3.1     
- [5] TSP_1.0-8        cluster_1.14.4   car_2.0-19       beeswarm_0.1.6  
- [9] MASS_7.3-29      logspline_2.1.5  hydroTSM_0.4-1   xts_0.9-7       
-[13] zoo_1.7-10       class_7.3-9       
+ [5] TSP_1.0-8        cluster_1.14.4   Kendall_2.2      beeswarm_0.1.6  
+ [9] MASS_7.3-29      hydroTSM_0.4-1   xts_0.9-7        zoo_1.7-10      
+[13] class_7.3-9     
 
 loaded via a namespace (and not attached):
- [1] automap_1.0-14   e1071_1.6-1      gstat_1.0-17     intervals_0.14.0
- [5] lattice_0.20-24  nnet_7.3-7       reshape_0.8.4    sp_1.0-14       
- [9] spacetime_1.0-9  tools_3.0.1     
+[1] automap_1.0-14   boot_1.3-9       e1071_1.6-1      gstat_1.0-17    
+[5] intervals_0.14.0 lattice_0.20-24  reshape_0.8.4    sp_1.0-14       
+[9] spacetime_1.0-9 
 
 ### VARIABLE NAME ABBREVIATIONS ###
 # d: 	day(ly) (usually not explicitly stated)
