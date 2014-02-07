@@ -164,33 +164,42 @@ rm(fpath)
   ### END COMPARE DENSITIES ###
 ### END HISTOGRAMMS and DENSITY ###
 
-# #### CUMULATIVE SUMS for each station####
-# fpath="output/cumulative"
-# dir.create(fpath)
-#   #create overlapping graphs for all years
-#   #create common index, here the year 2000 is used (leap year)
-#   cumlist_s.in=rapply(cumlist, how="list",function(x) zoo(x, order.by=time(cumlist[[1]][[19]])) )
-#   #plot
-#   #warnings are usually caused by NA values and then can be ignored
-#   for (j in 1:length(cumlist_s.in)){
-#     name=paste(fpath,"/cumul_overlay_",stnames[j],".png", sep="")
-#     png(filename=name, width=800, height=600, units="px")
-#     plot(cumlist_s.in[[j]][[1]], type="l", lwd=2, lty=1, col=hexcolors[[j]], ylim=c(0,5000))
-#       for (i in 2:31){
-#         lines(cumlist_s.in[[j]][[i]], type="l", lwd=2, lty=i, col=hexcolors[[j]])
-#               }
-#     dev.off()
-#   }
-#   rm(cumlist_s.in)
-#   #long term cumulative sums
-#   for (i in 1:length(cumsums_ts)) {
-#     name=paste(fpath,"/cumul_",stnames[i],".png", sep="")
-#     png(filename=name, width=800, height=500, units="px")
-#     plot(cumsums_ts[[i]], type="l",lty=1, lwd=2, col=hexcolors[i], ylab="rainfall in mm", main=paste("Cumulative rainfall amounts for", stnames[i]), xlab="date") 
-#     dev.off()
-#   }
-#   rm(fpath)
-# ### END CUMULATIVE SUMS ###
+#### CUMULATIVE SUMS ####
+  ### For each station ###
+fpath="output/cumulative"
+dir.create(fpath)
+
+  #create overlapping graphs for all years
+  #create common single index, here the year 2000 is used (leap year)
+  cumlist_s.in=rapply(cumlist, how="list", function(x) zoo(x, order.by=time(cumlist[[1]][[19]])) )
+  #plot
+  #warnings are usually caused by NA values and then can be ignored
+  for (j in 1:length(cumlist_s.in)){
+    name=paste(fpath,"/cumul_overlay_",stnames[j],".png", sep="")
+    png(filename=name, width=800, height=600, units="px")
+    plot(cumlist_s.in[[j]][[1]], type="l", lwd=2, lty=1, col=hexcolors[[j]], ylim=c(0,5000))
+      for (i in 2:31){
+        lines(cumlist_s.in[[j]][[i]], type="l", lwd=2, lty=i, col=hexcolors[[j]])
+              }
+    dev.off()
+  }
+  rm(cumlist_s.in)
+  #long term cumulative sums
+  for (i in 1:length(cumsums_ts)) {
+    name=paste(fpath,"/cumul_",stnames[i],".png", sep="")
+    png(filename=name, width=800, height=500, units="px")
+    plot(cumsums_ts[[i]], type="l",lty=1, lwd=2, col=hexcolors[i], ylab="rainfall in mm", main=paste("Cumulative rainfall amounts for", stnames[i]), xlab="date") 
+    dev.off()
+  }
+  rm(fpath)
+
+  ## Comparison of cumsums of average daily values 
+  matplot(d.cumsum_df, xaxt="n", xlim=c(0,366), 
+          type = c("l"), lty=c(1:10), lwd=2, col=hexcolors)
+  axis(1,at=c(0, 31,60,91,121,152,182,213,244,274,305,335,366), labels=c(row.names(davbm_df), ""))
+  legend(x="topleft", legend=colnames(d.cumsum_df), col=hexcolors, lty=c(1:19), lwd=2, cex=0.8)
+
+### END CUMULATIVE SUMS ###
 
 #### SEASONALITY PLOTS ####
   fpath="output/seasonality"

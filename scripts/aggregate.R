@@ -172,6 +172,7 @@ for(i in (1:length(d_ts))){
 ### END SEASONAL AGGREGATION ###
 
 #### CUMULATIVE DAILY SUMS ####
+  ## for each year
   cumlist=lapply(d_ts, cumul) #make sums 
   #convert to one connected TS per station
   cumsums=lapply(cumlist, unlist)
@@ -180,6 +181,12 @@ for(i in (1:length(d_ts))){
   rm(cumsums)
   cumsums_df=mdf(cumsums_ts)
   write.csv(cumsums_df, file=paste(fpath,"/cumulative_funct.csv", sep=""),  na = "NA") 
+  ## with average rain on each day
+  # aggregate mean daily rainfall 
+  dpd_ts=lapply(d_ts, aggregate, by=format.Date(time(d_ts[[1]]), "%m-%d"), mean, na.rm=TRUE)
+  d.cumsum_ts=lapply(dpd_ts, cumsum)
+  d.cumsum_df=mdf(d.cumsum_ts)
+
 ### END CUMULATIVE SUMS ###
 
 #### DENSITIES ####

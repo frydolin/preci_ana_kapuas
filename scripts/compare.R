@@ -91,7 +91,6 @@
     rm(fpath)
   ### END SCATTERPLOT MATRIX ###
 ### END CORRELATION###
-
 # #### Cumulative Sums COMPARISON####
 #   dir.create("output/plots/cumulative")
 # 
@@ -146,17 +145,16 @@ library("reshape")
   sp.dist=reshape.matrix(sp.dist.matrix)
 
 # correlation matrixes
-stnames
   cor.matrix_d=cor(d_df, use="pairwise.complete.obs", method ="pearson")
-  cor.matrix_d=cor.matrix_d[-5,-5]
+  cor.matrix_d=cor.matrix_d[-4,-4]
   cor_d=reshape.matrix(cor.matrix_d)
   cor.matrix_m=cor(m_df, use="pairwise.complete.obs", method ="pearson")
-  cor.matrix_m=cor.matrix_m[-5,-5]  
+  cor.matrix_m=cor.matrix_m[-4,-4]  
   cor_m=reshape.matrix(cor.matrix_m)
   cor.matrix_y=cor(y_df, use="pairwise.complete.obs", method ="pearson")
-  cor.matrix_y=cor.matrix_y[-5,-5]    
+  cor.matrix_y=cor.matrix_y[-4,-4]    
   cor_y=reshape.matrix(cor.matrix_y)
-View(y_df)
+
 # Plot
 plot(cor_d$value~sp.dist$value, ylim=c(0,1), lty=2, xlim=c(0,300), 
      ylab="Pearson correlation coefficient", xlab="distance in km")
