@@ -4,11 +4,11 @@
 
 #### default
 dev.off()
+par(family="Lato")
 def.par=par(no.readonly = TRUE)
 
 #### histograms
-par(family="Lato",
-    mfrow=c(5,3),
+par(mfrow=c(5,3),
     adj=0,
     mar=(c(2,2.4,1,0)+0.1),
     col="black",
@@ -20,7 +20,12 @@ par(family="Lato",
 hist.par=par(no.readonly = TRUE)
 par(def.par)
 
+#### legend outside
+par(xpd=TRUE,
+     mar=(c(4,3,2,6.3))+0.15)
+leg.out=par(no.readonly = TRUE)
 
+par(def.par)
 
 #### COLOR SCHEME for plots##
 # repeats these 12 color values 3 times -> 36 color values

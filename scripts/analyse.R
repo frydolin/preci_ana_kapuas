@@ -209,10 +209,14 @@ dir.create(fpath)
   rm(fpath)
 
   ## Comparison of cumsums of average daily values 
-  matplot(d.cumsum_df, xaxt="n", xlim=c(0,366), 
-          type = c("l"), lty=c(1:10), lwd=2, col=hexcolors)
+  name=paste(fpath,"/av-daily_cumsum.svg", sep="")
+  svg(filename=name,  pointsize = 11, width=(16/2.54), height=(10/2.54))#
+  par(leg.out)
+  par(cex.lab=0.8, cex.axis=0.7, cex.main=0.9, mgp=c(1.8,0.5,0))
+  matplot(d.cumsum_df, xaxt="n", xlim=c(0,366), type = c("l"), lty=c(1:14), lwd=2, col=hexcolors, xlab="Time", ylab="Cumulative rainfall sum [mm]", main="Cumulative sum of average daily rainfall")
   axis(1,at=c(0, 31,60,91,121,152,182,213,244,274,305,335,366), labels=c(row.names(davbm_df), ""))
-  legend(x="topleft", legend=colnames(d.cumsum_df), col=hexcolors, lty=c(1:19), lwd=2, cex=0.8)
+  legend("topright", inset=c(-0.23,0), legend=colnames(d.cumsum_df), col=hexcolors, lty=c(1:1), lwd=2, cex=0.7)
+dev.off()
 
 ### END CUMULATIVE SUMS ###
 
