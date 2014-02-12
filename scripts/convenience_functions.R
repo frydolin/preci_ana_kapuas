@@ -5,6 +5,23 @@
 ## for this analysis so they are just for convenience and can't be recycled
 ## for other purposes
 
+#### TESTING FOR NORMALITY ####
+# x list of zoo objects
+# sign coding: (-, * and **) for non, at 5% at 1% error probability
+  norm.test=function(x){
+  shap=lapply(x, shapiro.test)
+  shap.m=sapply(shap, function(x) rbind(x$statistic,x$p.value))
+  colnames(shap.m)=stnames
+  shap.m=as.data.frame(shap.m)
+  sign=ifelse(shap.m[2,]<0.05, "*", "-")
+  sign=ifelse(shap.m[2,]<0.01, "**",sign)
+  shap.m=rbind(shap.m, sign)  
+  rownames(shap.m)=c("statistic", "p.value", "significance")
+  shap.m=t(shap.m) 
+  return(shap.m)
+  }
+### 
+
 #### homogeneity.tests ####
 # for n=30
 # returns a vector of significance 
@@ -36,6 +53,7 @@ homogeneity.tests=function(x){
     return(list("nm"=nm_s, "bs"=bs_s, "pt"=pt_s, "sn"=sn_s ))
 }
 ###
+
 #### Mann-Kendall-Trend Testing ####
   ## tau=Score/denominator, denominator=max possible value for score
   # x: list of zoo objects
@@ -62,4 +80,5 @@ reshape.matrix=function(x){
   row.names(y)=paste(y$X1,"-",y$X2,sep="")
   return(y)
 }
+###
 ##### END convenience_functions #####

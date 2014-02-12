@@ -5,10 +5,28 @@
 
 #### SET UP ####
 source("scripts/setup.R")
+source("scripts/graphic_pars.R")     
 ### END SET UP ###
+
+#### TESTING FOR NORMALITY ####
+  # because it is a requirement of some of the homogeneity tests
+  source("scripts/convenience_functions.R")
+  fpath=("output/quality control")
+  dir.create(fpath)
+  m.norm.test=norm.test(m_ts)
+  write.csv (m.norm.test, file=paste(fpath,"/m.norm.test.csv", sep=""))
+  y.norm.test=norm.test(y_ts)
+  write.csv (y.norm.test, file=paste(fpath,"/y.norm.test.csv", sep=""))
+  y_raindays.norm.test=norm.test(y_raindays)
+  write.csv (y_raindays.norm.test, file=paste(fpath,"/y_raindays.norm.test.csv", sep=""))
+
+  rm(fpath, m.norm.test, y.norm.test, y_raindays.norm.test)
+###
 
 #### HOMOGENEITY TESTING ####
   source("scripts/convenience_functions.R")
+  fpath=("output/quality control")
+  dir.create(fpath)
   rd_hom=homogeneity.tests(y_raindays)
   ys_hom=homogeneity.tests(y_ts)
   # make a data frame
@@ -19,7 +37,7 @@ source("scripts/setup.R")
   hom.tests=cbind(rd_hom[1], ys_hom[1], rd_hom[2], ys_hom[2], rd_hom[3], ys_hom[3],
                   rd_hom[4], ys_hom[4])
   row.names(hom.tests)=stnames
-  write.csv(hom.tests, file="output/homogeneity_tests")
+  write.csv(hom.tests, file=paste(fpath,"/homogeneity_tests.csv", sep=""))
   rm(rd_hom, ys_hom)
 ### END HOMOGENEITY TESTING ###
 
@@ -49,7 +67,8 @@ rm(fpath)
 #### HISTOGRAMS and DENSITY####
   fpath="output/histogramms"
   dir.create(fpath) # new directory
-library("MASS")
+  library("MASS")
+
 ### Per station
 for (i in 1:length(d_ts))
 {
@@ -77,55 +96,51 @@ for (i in 1:length(d_ts))
 }
 ### Per type
   # Daily
-  name=paste(fpath,"/daily_hist.png", sep="")
-  png(filename=name, width=1500, height=1200, units="px")
-  par(mfrow=c(3,4))
+  name=paste(fpath,"/daily_hist.svg", sep="")
+  svg(filename=name,  pointsize = 11, width=(16/2.54), height=(16/2.54))
+  par(hist.par)
   for (i in 1:length(d_ts)){
-    title=paste("histogramm and gaussian KDE for",stnames[i])
-    truehist(d_ts[[i]][which(d_ts[[i]]>=1)], prob=TRUE, h=5, 
-             xlim=c(0,200), ymax=0.05, bty="o", col=hexcolors[i], main=paste("Daily",title))
-    rug(jitter(d_ts[[i]][which(d_ts[[i]]>=1)], amount = 0.5))
-    lines(ddensity[[i]], lwd=3, col="blue")  
+   truehist(d_ts[[i]][which(d_ts[[i]]>=1)], prob=TRUE, h=5, 
+             xlim=c(-5,200), ymax=0.06,col=hexcolors[i], main=paste(stnames[i]))
+#     rug(jitter(d_ts[[i]][which(d_ts[[i]]>=1)], amount = 0.5), lwd=0.5, line=0)
+    lines(ddensity[[i]], lwd=1, col="blue")  
+  box(which="plot", lwd=1)
   }
   dev.off()
   #Monthly
-  name=paste(fpath,"/monthly_hist.png", sep="")
-  png(filename=name, width=1500, height=1200, units="px")
-  par(mfrow=c(3,4))
+  name=paste(fpath,"/monthly_hist.svg", sep="")
+  svg(filename=name,  pointsize = 11, width=(16/2.54), height=(16/2.54))
+  par(hist.par)
   for (i in 1:length(m_ts)){
-    title=paste("histogramm and gaussian KDE for",stnames[i])
     truehist(m_ts[[i]], prob=TRUE, h=1.5, 
-             xlim=c(0,26), ymax=0.15, bty="o", col=hexcolors[i],  main=paste("Monthly",title))
-    rug(m_ts[[i]])
-    lines(mdensity[[i]], lwd=3, col="blue") 
+             xlim=c(-3,26), ymax=0.15, lwd=1, col=hexcolors[i], main=paste(stnames[i]))
+    rug(m_ts[[i]], ticksize=0.1, lwd=0.5, line=0)
+     lines(mdensity[[i]], lwd=1, col="blue")
+    box(which="plot", lwd=1)
   }
   dev.off()
   #Yearly
-  name=paste(fpath,"/yearly_hist.png", sep="")
-  png(filename=name, width=1500, height=1200, units="px")
-  par(mfrow=c(3,4))
+  name=paste(fpath,"/yearly_hist.svg", sep="")
+  svg(filename=name,  pointsize = 11, width=(16/2.54), height=(16/2.54))
+  par(hist.par)
   for (i in 1:length(y_ts)){
-    title=paste("histogramm and gaussian KDE for",stnames[i])
-    truehist(y_ts[[i]], prob=TRUE, h=1, 
-             xlim=c(2,14),ymax=0.45, lwd=2, col=hexcolors[i], 
-             bty="o", main=paste("Yearly",title))
-    rug(y_ts[[i]])
-    lines(ydensity[[i]], lwd=3, col="blue")
+    truehist(y_ts[[i]], prob=TRUE, h=1, xlim=c(2,14),ymax=0.45, lwd=1, col=hexcolors[i], main=paste(stnames[i]))
+    rug(y_ts[[i]], ticksize=0.1, lwd=0.5, line=0)
+    lines(ydensity[[i]], lwd=1, col="blue")
+    box(which="plot", lwd=1)
   }
   dev.off()
-#   #Yearly Raindays
-#   name=paste(fpath,"/yearly_raindays_hist.png", sep="")
-#   png(filename=name, width=1500, height=1200, units="px")
-#   par(mfrow=c(3,4))
-#   for (i in 1:12){
-#     title=paste("histogramm and gaussian KDE for",stnames[i])
-#     truehist(y_raindays[[i]], prob=TRUE, h=10, 
-#              xlim=c(0,300),ymax=0.04, lwd=2, col=hexcolors[i], 
-#              bty="o", main=paste("Yearly",title))
-#     rug(y_raindays[[i]])
-#     lines(y_rainday.density[[i]], lwd=3, col="blue")
-#   }
-#   dev.off()
+  #Yearly Raindays
+  name=paste(fpath,"/yearly_raindays_hist.svg", sep="")
+  svg(filename=name,  pointsize = 11, width=(16/2.54), height=(16/2.54))
+  par(hist.par)
+    for (i in 1:length(y_raindays)){
+  truehist(y_raindays[[i]], prob=TRUE, h=15, ylim=c(0,0.03), xlim=c(30,280),lwd=1, col=hexcolors[i], main=paste(stnames[i]))
+    rug(y_raindays[[i]], ticksize=0.1, lwd=0.5, line=0)
+    lines(y_rainday.density[[i]], lwd=1, col="blue")
+    box(which="plot", lwd=1)
+  }
+  dev.off()
 
 rm(fpath)
 ### COMPARE DENSITIES ###
