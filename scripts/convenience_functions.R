@@ -6,9 +6,10 @@
 ## for other purposes
 
 #### TESTING FOR NORMALITY ####
-# x list of zoo objects
+# x: dataframe
 # sign coding: (-, * and **) for non, at 5% at 1% error probability
   norm.test=function(x){
+  x=lapply(x, as.ts) # test seems not to like a zoo time series only ordinary ts
   shap=lapply(x, shapiro.test)
   shap.m=sapply(shap, function(x) rbind(x$statistic,x$p.value))
   colnames(shap.m)=stnames

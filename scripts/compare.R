@@ -11,11 +11,16 @@
   fpath="output/boxplots"
   dir.create(fpath)
 # year
-    name=paste(fpath,"/yearly_boxplot.png", sep="")
-    png(filename=name, width=1200, height=800, units="px")
-    boxplot(y_df, outline=FALSE, main="Average daily rainfall per year",xlab="Station", ylab="mm/day")
-    abline(mean(y_df,  na.rm=TRUE),0, lwd="2", col="blue")
-    beeswarm(y_ts, col=hexcolors, add=TRUE)
+    name=paste(fpath,"/yearly_boxplot.svg", sep="")
+    svg(filename=name, width=(16/2.54)*1.5, height=(9/2.54)*1.5, pointsize = 11)
+    par(def.par)
+    par(cex.axis=0.8)
+    boxplot(y_df, outline=FALSE, main="Average daily rainfall per year", ylab="rainfall in mm/day", xaxt="n")
+    abline(mean(y_df,  na.rm=TRUE),0, lwd=2, lty=3, col="darkred")
+    beeswarm(y_ts, col=colors, add=TRUE)
+    axis(1, at=(1:14), labels = FALSE)
+    text(1:14, par("usr")[3] - 0.25, srt = 35, adj = 1.05,
+    labels = colnames(y_df), xpd = TRUE, cex=0.8)
     dev.off()
 
 #monthly per month i.e. Jan

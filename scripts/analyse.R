@@ -7,7 +7,7 @@
 source("scripts/setup.R")
 source("scripts/graphic_pars.R")     
 ### END SET UP ###
-
+library("zoo")
 #### TESTING FOR NORMALITY ####
   # because it is a requirement of some of the homogeneity tests
   source("scripts/convenience_functions.R")

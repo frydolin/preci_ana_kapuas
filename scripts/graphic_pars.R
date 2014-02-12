@@ -4,7 +4,8 @@
 
 #### default
 dev.off()
-par(family="Lato")
+par(family="Lato",
+    mar=(c(4,4,3,0)+0.2))
 def.par=par(no.readonly = TRUE)
 
 #### histograms
@@ -26,10 +27,10 @@ par(xpd=TRUE,
 leg.out=par(no.readonly = TRUE)
 
 par(def.par)
-
+par()
 #### COLOR SCHEME for plots##
 # repeats these 12 color values 3 times -> 36 color values
-hexcolors=rep(c("#222222",
+colors=rep(c("#222222",
                 "#0EC20E",
                 "#A30008",
                 "#7F054A",
@@ -41,6 +42,18 @@ hexcolors=rep(c("#222222",
                 "#0B9B7F",
                 "#F36A11",
                 "#FF00FF"), 3)
+hexcolors=rep(c("#222222",
+             "#0EC20E",
+             "#A30008",
+             "#7F054A",
+             "#00FFFF",
+             "#6D14A2",
+             "#17599E",
+             "#057E05",
+             "#F31D11",
+             "#0B9B7F",
+             "#F36A11",
+             "#FF00FF"), 3)
 
 
 
