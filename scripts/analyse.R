@@ -78,17 +78,17 @@ for (i in 1:length(d_ts))
   title=paste("histogramm and gaussian KDE for",stnames[i])
   ## daily
   truehist(d_ts[[i]][which(d_ts[[i]]>=1)], prob=TRUE, h=5, 
-           xlim=c(0,200), ymax=0.05, bty="o", col=hexcolors[i], main=paste("Daily",title))
+           xlim=c(0,200), ymax=0.05, bty="o", col=colors[i], main=paste("Daily",title))
   rug(jitter(d_ts[[i]][which(d_ts[[i]]>=1)], amount = 0.5))
   lines(ddensity[[i]], lwd=3, col="blue")  
   ## monthly
   truehist(m_ts[[i]], prob=TRUE, h=1.5, 
-           xlim=c(0,26), ymax=0.15, bty="o", col=hexcolors[i],  main=paste("Monthly",title))
+           xlim=c(0,26), ymax=0.15, bty="o", col=colors[i],  main=paste("Monthly",title))
   rug(m_ts[[i]])
   lines(mdensity[[i]], lwd=3, col="blue")  
   ## yearly
   truehist(y_ts[[i]], prob=TRUE, h=1, 
-           xlim=c(2,14),ymax=0.45, lwd=2, col=hexcolors[i], 
+           xlim=c(2,14),ymax=0.45, lwd=2, col=colors[i], 
            bty="o", main=paste("Yearly",title))
   rug(y_ts[[i]])
   lines(ydensity[[i]], lwd=3, col="blue")
@@ -101,7 +101,7 @@ for (i in 1:length(d_ts))
   par(hist.par)
   for (i in 1:length(d_ts)){
    truehist(d_ts[[i]][which(d_ts[[i]]>=1)], prob=TRUE, h=5, 
-             xlim=c(-5,200), ymax=0.06,col=hexcolors[i], main=paste(stnames[i]))
+             xlim=c(-5,200), ymax=0.06,col=colors[i], main=paste(stnames[i]))
 #     rug(jitter(d_ts[[i]][which(d_ts[[i]]>=1)], amount = 0.5), lwd=0.5, line=0)
     lines(ddensity[[i]], lwd=1, col="blue")  
   box(which="plot", lwd=1)
@@ -113,7 +113,7 @@ for (i in 1:length(d_ts))
   par(hist.par)
   for (i in 1:length(m_ts)){
     truehist(m_ts[[i]], prob=TRUE, h=1.5, 
-             xlim=c(-3,26), ymax=0.15, lwd=1, col=hexcolors[i], main=paste(stnames[i]))
+             xlim=c(-3,26), ymax=0.15, lwd=1, col=colors[i], main=paste(stnames[i]))
     rug(m_ts[[i]], ticksize=0.1, lwd=0.5, line=0)
      lines(mdensity[[i]], lwd=1, col="blue")
     box(which="plot", lwd=1)
@@ -124,7 +124,7 @@ for (i in 1:length(d_ts))
   svg(filename=name,  pointsize = 11, width=(16/2.54), height=(16/2.54))
   par(hist.par)
   for (i in 1:length(y_ts)){
-    truehist(y_ts[[i]], prob=TRUE, h=1, xlim=c(2,14),ymax=0.45, lwd=1, col=hexcolors[i], main=paste(stnames[i]))
+    truehist(y_ts[[i]], prob=TRUE, h=1, xlim=c(2,14),ymax=0.45, lwd=1, col=colors[i], main=paste(stnames[i]))
     rug(y_ts[[i]], ticksize=0.1, lwd=0.5, line=0)
     lines(ydensity[[i]], lwd=1, col="blue")
     box(which="plot", lwd=1)
@@ -135,7 +135,7 @@ for (i in 1:length(d_ts))
   svg(filename=name,  pointsize = 11, width=(16/2.54), height=(16/2.54))
   par(hist.par)
     for (i in 1:length(y_raindays)){
-  truehist(y_raindays[[i]], prob=TRUE, h=15, ylim=c(0,0.03), xlim=c(30,280),lwd=1, col=hexcolors[i], main=paste(stnames[i]))
+  truehist(y_raindays[[i]], prob=TRUE, h=15, ylim=c(0,0.03), xlim=c(30,280),lwd=1, col=colors[i], main=paste(stnames[i]))
     rug(y_raindays[[i]], ticksize=0.1, lwd=0.5, line=0)
     lines(y_rainday.density[[i]], lwd=1, col="blue")
     box(which="plot", lwd=1)
@@ -149,32 +149,32 @@ rm(fpath)
   ## Daily
   name=paste(fpath,"/daily_densities.png", sep="")
   png(filename=name, width=1000, height=700, units="px")
-  plot(ddensity[[1]], xlim=c(0,250), ylim=c(0,0.05), col=hexcolors[1], 
+  plot(ddensity[[1]], xlim=c(0,250), ylim=c(0,0.05), col=colors[1], 
        lwd="3", xlab="rainfall in mm/day", main="Gaussian KDE  of daily rainfall")
   for (i in 2:length(ddensity)){ 
-    lines(ddensity[[i]], col=hexcolors[i], lwd="3")
+    lines(ddensity[[i]], col=colors[i], lwd="3")
   }
-  legend(x="topright", legend=stnames, col=hexcolors, lwd=3, cex=0.8)
+  legend(x="topright", legend=stnames, col=colors, lwd=3, cex=0.8)
   dev.off()
   #Monthly
   name=paste(fpath,"/monthly_densities.png", sep="")
   png(filename=name, width=1000, height=700, units="px")
-  plot(mdensity[[1]], xlim=c(0,30), ylim=c(0,0.11), col=hexcolors[1], 
+  plot(mdensity[[1]], xlim=c(0,30), ylim=c(0,0.11), col=colors[1], 
        lwd="3", xlab="rainfall in mm/day", main="Gaussian KDE  of monthly rainfall")          
   for (i in 2:length(ddensity)){ 
-    lines(mdensity[[i]], col=hexcolors[i], lwd="3")
+    lines(mdensity[[i]], col=colors[i], lwd="3")
   }
-  legend(x="topright", legend=stnames, col=hexcolors, lwd=3, cex=0.8)
+  legend(x="topright", legend=stnames, col=colors, lwd=3, cex=0.8)
   dev.off()
   #Yearly
   name=paste(fpath,"/yearly_densities.png", sep="")
   png(filename=name, width=1000, height=700, units="px")
-  plot(ydensity[[1]], xlim=c(0,18), ylim=c(0,0.3), col=hexcolors[1], 
+  plot(ydensity[[1]], xlim=c(0,18), ylim=c(0,0.3), col=colors[1], 
        lwd="3", xlab="rainfall in mm/day", main="Gaussian KDE of yearly rainfall")          
   for (i in 2:length(ddensity)){ 
-    lines(ydensity[[i]], col=hexcolors[i], lwd="3")
+    lines(ydensity[[i]], col=colors[i], lwd="3")
   }
-  legend(x="topright", legend=stnames, col=hexcolors, lwd=3, cex=0.8)
+  legend(x="topright", legend=stnames, col=colors, lwd=3, cex=0.8)
   dev.off()
   ### END COMPARE DENSITIES ###
 ### END HISTOGRAMMS and DENSITY ###
@@ -192,9 +192,9 @@ dir.create(fpath)
   for (j in 1:length(cumlist_s.in)){
     name=paste(fpath,"/cumul_overlay_",stnames[j],".png", sep="")
     png(filename=name, width=800, height=600, units="px")
-    plot(cumlist_s.in[[j]][[1]], type="l", lwd=2, lty=1, col=hexcolors[[j]], ylim=c(0,5000))
+    plot(cumlist_s.in[[j]][[1]], type="l", lwd=2, lty=1, col=colors[[j]], ylim=c(0,5000))
       for (i in 2:31){
-        lines(cumlist_s.in[[j]][[i]], type="l", lwd=2, lty=i, col=hexcolors[[j]])
+        lines(cumlist_s.in[[j]][[i]], type="l", lwd=2, lty=i, col=colors[[j]])
               }
     dev.off()
   }
@@ -203,7 +203,7 @@ dir.create(fpath)
   for (i in 1:length(cumsums_ts)) {
     name=paste(fpath,"/cumul_",stnames[i],".png", sep="")
     png(filename=name, width=800, height=500, units="px")
-    plot(cumsums_ts[[i]], type="l",lty=1, lwd=2, col=hexcolors[i], ylab="rainfall in mm", main=paste("Cumulative rainfall amounts for", stnames[i]), xlab="date") 
+    plot(cumsums_ts[[i]], type="l",lty=1, lwd=2, col=colors[i], ylab="rainfall in mm", main=paste("Cumulative rainfall amounts for", stnames[i]), xlab="date") 
     dev.off()
   }
   rm(fpath)
@@ -213,9 +213,9 @@ dir.create(fpath)
   svg(filename=name,  pointsize = 11, width=(16/2.54), height=(10/2.54))#
   par(leg.out)
   par(cex.lab=0.8, cex.axis=0.7, cex.main=0.9, mgp=c(1.8,0.5,0))
-  matplot(d.cumsum_df, xaxt="n", xlim=c(0,366), type = c("l"), lty=c(1:14), lwd=2, col=hexcolors, xlab="Time", ylab="Cumulative rainfall sum [mm]", main="Cumulative sum of average daily rainfall")
+  matplot(d.cumsum_df, xaxt="n", xlim=c(0,366), type = c("l"), lty=c(1:14), lwd=2, col=colors, xlab="Time", ylab="Cumulative rainfall sum [mm]", main="Cumulative sum of average daily rainfall")
   axis(1,at=c(0, 31,60,91,121,152,182,213,244,274,305,335,366), labels=c(row.names(davbm_df), ""))
-  legend("topright", inset=c(-0.23,0), legend=colnames(d.cumsum_df), col=hexcolors, lty=c(1:1), lwd=2, cex=0.7)
+  legend("topright", inset=c(-0.23,0), legend=colnames(d.cumsum_df), col=colors, lty=c(1:1), lwd=2, cex=0.7)
 dev.off()
 
 ### END CUMULATIVE SUMS ###
@@ -228,9 +228,9 @@ dev.off()
   ## LINE PLOT
     name=paste(fpath, "/dav_by_month.png", sep="")
     png(filename=name, width=1000, height=700, units="px")  
-    matplot(davbm_df, type = c("b"),pch=1, lty=c(1), lwd=2, col = hexcolors, xaxt = "n", ylab="rainfall in mm/day", main="Daily Average Rain per Month", xlab="Month")
+    matplot(davbm_df, type = c("b"),pch=1, lty=c(1), lwd=2, col = colors, xaxt = "n", ylab="rainfall in mm/day", main="Daily Average Rain per Month", xlab="Month")
     axis(1,1:12,labels=row.names(davbm_df))
-    legend(x="bottomright", legend=stnames, col=hexcolors, lwd=3, cex=0.8)
+    legend(x="bottomright", legend=stnames, col=colors, lwd=3, cex=0.8)
     dev.off()
 #   ## AVERAGES BOX PLOT VERSION
 #    #the plot below is somehow an improved version instead of comparing averages
@@ -254,11 +254,11 @@ dev.off()
     col.vector=character()
     for (i in 1:12){       
         for (j in 1:ncol(bymonth_ts_all[[1]])){ 
-        col.vector=c(col.vector, rep(hexcolors[j], nrow(bymonth_ts_all[[1]])))
+        col.vector=c(col.vector, rep(colors[j], nrow(bymonth_ts_all[[1]])))
       } }
     beeswarm(bymonth_ts_all, corral="random", pch = 21, pwcol=col.vector, add=TRUE)
     axis(1,1:12,labels=row.names(davbm_df))
-    legend(x="bottomright", legend=stnames, col=hexcolors, lty=1, lwd=3, cex=0.8)
+    legend(x="bottomright", legend=stnames, col=colors, lty=1, lwd=3, cex=0.8)
     dev.off()
     
 ### SEASONALITY PER STATION
@@ -270,7 +270,7 @@ dev.off()
     png(filename=name, width=800, height=600, units="px")
     title=paste("Boxplot of average daily rainfall per month for",stnames[[i]])
     boxplot(bymonth_df_list[[i]], outline=FALSE, ylim=c(0,20), main=title, xlab="month", ylab="mm/day")
-    beeswarm(bymonth_ts[[i]], corral="random", pch = 21, col=1, bg=hexcolors[[i]], add=TRUE)
+    beeswarm(bymonth_ts[[i]], corral="random", pch = 21, col=1, bg=colors[[i]], add=TRUE)
     dev.off()
   }
   rm(fpath)
@@ -320,7 +320,7 @@ dir.create(fpath) # new directory
       lin_mod[[i]][[j]]=lm(bymonth_ts[[i]][[j]]~time(bymonth_ts[[i]][[j]]))
       mname=as.character(format.Date(time(bymonth_ts[[i]][[j]][1]), "%B"))
       title=paste("TS of mean rainfall for",stnames[i],"and month:",mname)
-      plot(bymonth_ts[[i]][[j]], type="b", lty=1, lwd=2, col=hexcolors[i], ylab="rainfall in mm/day", main=title)
+      plot(bymonth_ts[[i]][[j]], type="b", lty=1, lwd=2, col=colors[i], ylab="rainfall in mm/day", main=title)
       abline(lin_mod[[i]][j]) #trendline
     }
     dev.off()
@@ -337,7 +337,7 @@ dir.create(fpath) # new directory
     par(mfrow=c(4,2))
     for (i in 1:8) {    #loop trough first eigth stations
       title=paste("TS of mean rainfall for",stnames[i],"and month:",mname)
-      plot(bymonth_ts[[i]][[j]], type="b", lty=1, lwd=2, col=hexcolors[i], ylab="rainfall in mm/day", main=title)
+      plot(bymonth_ts[[i]][[j]], type="b", lty=1, lwd=2, col=colors[i], ylab="rainfall in mm/day", main=title)
       abline(lm(bymonth_ts[[i]][[j]]~time(bymonth_ts[[i]][[j]]))) #trendline
     }
     dev.off()
@@ -357,18 +357,18 @@ dir.create(fpath) # new directory
     png(filename=name, width=800, height=600, units="px")
     title=paste("TS of rainfall in wet and dry season for",stnames[i])
     plot(rsav_ts[[i]], ylim=c(0,18), xaxt="n", type="b", lty=1, lwd=2, 
-         col=hexcolors[i], ylab="rainfall in mm", main=title)
+         col=colors[i], ylab="rainfall in mm", main=title)
     abline(mean(rsav_ts[[i]], na.rm=TRUE),0,lty=1, lwd=2, 
-           col=hexcolors[i]) #mean line
+           col=colors[i]) #mean line
     #abline(lm(rsav_ts[[i]]~time(rsav_ts[[i]])),lty=1, lwd=2) #trendline
     
-    lines(dsav_ts[[i]], type="b", lty=3, lwd=2, col=hexcolors[i])
+    lines(dsav_ts[[i]], type="b", lty=3, lwd=2, col=colors[i])
     abline(mean(dsav_ts[[i]], na.rm=TRUE),0,lty=3, lwd=2, 
-           col=hexcolors[i]) #mean line
+           col=colors[i]) #mean line
     #abline(lm(dsav_ts[[i]]~time(dsav_ts[[i]])), lty=3, lwd=2) #trendline
     
     drawTimeAxis(dummy, tick.tstep = "years", lab.tstep = "years", lab.fmt="%Y") 
-    legend("bottomleft", legend=c("RAINY", "DRY"), lty=c(1,3), col=hexcolors[i], lwd=1)
+    legend("bottomleft", legend=c("RAINY", "DRY"), lty=c(1,3), col=colors[i], lwd=1)
     
     dev.off()
   }

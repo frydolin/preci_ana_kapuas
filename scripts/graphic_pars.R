@@ -3,7 +3,7 @@
 ## graphic_par.R sets graphic paramters
 
 #### default
-dev.off()
+#dev.off()
 par(family="Lato",
     mar=(c(4,4,3,0)+0.2))
 def.par=par(no.readonly = TRUE)
@@ -25,35 +25,15 @@ par(def.par)
 par(xpd=TRUE,
      mar=(c(4,3,2,6.3))+0.15)
 leg.out=par(no.readonly = TRUE)
-
 par(def.par)
-par()
+
 #### COLOR SCHEME for plots##
-# repeats these 12 color values 3 times -> 36 color values
-colors=rep(c("#222222",
-                "#0EC20E",
-                "#A30008",
-                "#7F054A",
-                "#00FFFF",
-                "#6D14A2",
-                "#17599E",
-                "#057E05",
-                "#F31D11",
-                "#0B9B7F",
-                "#F36A11",
-                "#FF00FF"), 3)
-hexcolors=rep(c("#222222",
-             "#0EC20E",
-             "#A30008",
-             "#7F054A",
-             "#00FFFF",
-             "#6D14A2",
-             "#17599E",
-             "#057E05",
-             "#F31D11",
-             "#0B9B7F",
-             "#F36A11",
-             "#FF00FF"), 3)
+# For 14 colors
+library("colorspace")
+colors=rainbow_hcl(14,c=seq(40, 100, length.out =14), l=seq(35, 75, length.out =14), start=370, end = 40, fixup=TRUE)
+# pal((colors))
+# pal(desaturate(colors))
+set.seed(70)
+colors=sample(colors)
 
-
-
+### END graphic_pars.R ###

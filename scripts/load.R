@@ -44,6 +44,7 @@ source("scripts/setup.R")
 #### PRESELECTION OF STATIONS ####
   d_ts=d_ts[c(-3,-8,-9,-11,-13,-14)]
   stnames=stnames[c(-3,-8,-9,-11,-13,-14)]
+  colors=colors[c(-3,-8,-9,-11,-13,-14)]
 ### END PRESELECTION ###
 
 #### CLEAN UP ####
