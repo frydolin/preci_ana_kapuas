@@ -4,6 +4,7 @@
 
 #### SET UP ####
   source("scripts/setup.R")
+  source("scripts/graphic_pars.R")
 ### END SET UP ###
 
 #### Box plot for station comparison ####

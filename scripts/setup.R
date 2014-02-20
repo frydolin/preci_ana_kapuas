@@ -21,7 +21,6 @@
 
 ## load own functions, as defined in the file.
   source("scripts/functions.R")
-  source("scripts/graphic_pars.R")
 
 ## set up time locale to get English time format
   Sys.setlocale("LC_TIME", "en_US.UTF-8") 
