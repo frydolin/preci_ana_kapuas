@@ -202,17 +202,15 @@ make.smry=function(x, objnames=stnames){
 ###
 #### corgr ####
 # own version of correlograms made by corrgram
-# corgr creates *.png files in fpath
+# corgr creates *.svg files in fpath
 ## make sure directory exists!
 ## x: should be a data matrix (as in the normal corrgram() function)
 ## type: is only for naming e.g. daily, monthly 
 corgr=function(x, type, fpath){
   require("corrgram")
-  name=paste(fpath,"/",type,"_corgr.png", sep ="")	# filename
-  png(filename=name, width=800, height=800, units="px")		# open *.png write
-  corrgram(x, lower.panel=panel.pie, upper.panel=panel.conf, 
-           diag.panel=panel.density, 
-           main=paste("Correlation between", type, "rainfall amounts"))
+  name=paste(fpath,"/",type,"_corgr.svg", sep ="")	# filename
+  svg(filename=name, width=(8/2.54), height=(8/2.54), pointsize = 11, family="Lato")	# open *.svg write
+  corrgram(x, lower.panel=panel.pie, upper.panel=panel.conf, diag.panel=panel.density, main="", oma=c(0,0,0,0))
   dev.off()							# close write
 }
 ###
@@ -246,9 +244,9 @@ tsplot.pst=function(x, type, fpath) {
   # lm regression
   # 0,1 abline
   panel.2lines <- function(x,y,...) {
-    points(x,y)
+    points(y~x, cex=0.7)
     abline(0,1,col="red")
-    abline(lm(y~x),col="blue")
+    abline(lm(y~x),col="darkblue")
   }
   ###
 ### scatterMatrix###
@@ -256,11 +254,11 @@ tsplot.pst=function(x, type, fpath) {
 ## type: is only for naming e.g. daily, monthly 
 scatterMatrix=function(x, xylim, type, fpath){
   name=paste(fpath,"/",type,"_scatter.png", sep ="")  # filename
-  png(filename=name, width=2000, height=2000, units="px")		# open *.png write
-  pairs(x, upper.panel=NULL, lower.panel=panel.2lines, 
-        xlim=xylim, ylim=xylim,
-        main=paste("Correlation between", type, "rainfall amounts"))
-  dev.off()							# close write
+  png(filename=name, width=(16/2.54)*300, height=(16/2.54)*300, pointsize = 11, res=300)  # open *.svg write
+  pairs(x, upper.panel=NULL, lower.panel=panel.2lines, xlim=xylim, ylim=xylim, 
+        las=1, gap=0.3, oma=c(2.5,2.5,0,0), cex.labels=1.5, family="Lato"
+    )
+  dev.off()	# close write
 }
 ###
 

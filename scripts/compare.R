@@ -59,8 +59,6 @@
   
 ### END MONTHLY AVERAGES ###
 
-
-
 #### CORRELATION ####
   fpath="output/correlation"
   dir.create(fpath)
@@ -71,13 +69,12 @@
     corgr(d_df, type="daily", fpath=fpath)
     corgr(w_df, type="weekly", fpath=fpath)
     corgr(m_df, type="monthly", fpath=fpath)
-    corgr(y_df, type="yearly", fpath=fpath) #currently not enough values
-    
+    corgr(y_df, type="yearly", fpath=fpath)
+
     corgr(rs_df, type="rainseason daily", fpath=fpath)
     corgr(ds_df, type="dryseason daily", fpath=fpath)
     corgr(mrs_df, type="rainseason monthly", fpath=fpath)
     corgr(mds_df, type="dryseason monthly", fpath=fpath)
-    
     rm(fpath)
   ### END CORRGRAMS ###
   #### SCATTERPLOT MATRIX ####
@@ -87,13 +84,12 @@
     scatterMatrix(d_df, xylim=c(0,150), type="daily", fpath=fpath)
     scatterMatrix(w_df, xylim=c(0,45), type="weekly", fpath=fpath)
     scatterMatrix(m_df, xylim=c(0,25),type="monthly", fpath=fpath)
-    scatterMatrix(y_df, xylim=c(0,20), type="yearly", fpath=fpath) #currently not enough values
+    scatterMatrix(y_df, xylim=c(3,15), type="yearly", fpath=fpath)
     
     scatterMatrix(rs_df, xylim=c(0,150),type="rainseason daily", fpath=fpath)
     scatterMatrix(ds_df, xylim=c(0,150),type="dryseason daily", fpath=fpath)
     scatterMatrix(mrs_df, xylim=c(0,25),type="rainseason monthly", fpath=fpath)
-    scatterMatrix(mds_df, xylim=c(0,25),type="dryseason monthly", fpath=fpath)
-    
+    scatterMatrix(mds_df, xylim=c(0,25),type="dryseason monthly", fpath=fpath)    
     rm(fpath)
   ### END SCATTERPLOT MATRIX ###
 ### END CORRELATION###
@@ -143,6 +139,7 @@ source("scripts/convenience_functions.R")
   stations<-readShapePoints("input/stationmap_utm49N/stationmap_utm49N.shp")
 # Subset stations 
   stations <- stations[stations$ID %in% stnames,]
+
 # Compute distances
   sp.dist.matrix=pointDistance(stations, longlat=FALSE)
   sp.dist.matrix=sp.dist.matrix/1000 #to get km instead of m
@@ -162,9 +159,13 @@ source("scripts/convenience_functions.R")
   cor_y=reshape.matrix(cor.matrix_y)
 
 # Plot
-plot(cor_d$value~sp.dist$value, ylim=c(0,1), lty=2, xlim=c(0,300),   ylab="Pearson correlation coefficient", xlab="distance in km")
-plot(cor_m$value~sp.dist$value, ylim=c(0,1), lty=2, xlim=c(0,300))
-plot(cor_y$value~sp.dist$value, ylim=c(0,1), lty=2, xlim=c(0,300))
+name="output/correlation/corrdist.svg"
+  svg(filename=name, width=(16/2.54), height=(9/2.54), pointsize = 11, family="Lato")
+   par(def.par); par(cex.lab=0.8, cex.axis=0.7, las=1); par(mfrow=c(2,2)); par(mar=(c(2.6,2.8,1.8,0)+0.2))
+  plot(cor_d$value~sp.dist$value, ylim=c(0,1.1),  xlim=c(0,280), lty=2, xlab="", ylab="r (Pearson)")
+ plot(cor_m$value~sp.dist$value, ylim=c(0,1.1),  xlim=c(0,280), lty=2, ylab="", xlab="distance (km)")
+  plot(cor_y$value~sp.dist$value, ylim=c(0,1.1),  xlim=c(0,280), lty=2, ylab="r (Pearson)", xlab="distance (km)")
+dev.off()
 
   rm(sp.dist.matrix, cor.matrix_d, cor.matrix_m, cor.matrix_y)
 ### END COMPARISON OF SPATIAL CORRELATION AND DISTANCE ###
