@@ -5,8 +5,8 @@
 
 #### default ####
 #dev.off()
-par(family="Lato",
-    mar=(c(4,4,3,0)+0.2))
+par(mar=(c(4,4,3,0)+0.2),
+    mgp=c(1.8,0.6,0))
 def.par=par(no.readonly = TRUE)
 
 #### histograms ####

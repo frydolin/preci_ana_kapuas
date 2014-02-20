@@ -143,48 +143,52 @@ for (i in 1:length(d_ts))
   dev.off()
 
 rm(fpath)
-### COMPARE DENSITIES ###
+### END HISTOGRAMMS and DENSITY ###
+
+#### COMPARE DENSITIES ####
   fpath="output/histogramms/comparison"
   dir.create(fpath)  
+
   ## Daily
-  name=paste(fpath,"/daily_densities.png", sep="")
-  png(filename=name, width=1000, height=700, units="px")
-  plot(ddensity[[1]], xlim=c(0,250), ylim=c(0,0.05), col=colors[1], 
-       lwd="3", xlab="rainfall in mm/day", main="Gaussian KDE  of daily rainfall")
+  name=paste(fpath,"/daily_gauss_kde_densities.svg", sep="")
+  svg(filename=name, pointsize = 11, width=(16/2.54), height=(9/2.54))
+  par(def.par); par(mar=(c(3,3,0.8,0)+0.2)); par(cex.lab=0.8, cex.axis=0.7)
+  plot(ddensity[[1]], xlim=c(0,250), ylim=c(0,0.05), col=colors[1], lwd=2, ylab="frequency", main="", xlab="rainfall in mm/day")
   for (i in 2:length(ddensity)){ 
-    lines(ddensity[[i]], col=colors[i], lwd="3")
+    lines(ddensity[[i]], lty=i, col=colors[i], lwd=2)
   }
-  legend(x="topright", legend=stnames, col=colors, lwd=3, cex=0.8)
+  legend(x="topright", legend=stnames, lty=(1:length(ddensity)), col=colors, lwd=2, cex=0.7, bty="n")
   dev.off()
   #Monthly
-  name=paste(fpath,"/monthly_densities.png", sep="")
-  png(filename=name, width=1000, height=700, units="px")
-  plot(mdensity[[1]], xlim=c(0,30), ylim=c(0,0.11), col=colors[1], 
-       lwd="3", xlab="rainfall in mm/day", main="Gaussian KDE  of monthly rainfall")          
+  name=paste(fpath,"/monthly_gauss_kde_densities.svg", sep="")
+  svg(filename=name, pointsize = 11, width=(16/2.54), height=(9/2.54), family="Lato")
+  par(def.par); par(mar=(c(3,3,0.8,0)+0.2)); par(cex.lab=0.8, cex.axis=0.7)
+  plot(mdensity[[1]], xlim=c(0,30), ylim=c(0,0.11), col=colors[1], lwd=2, ylab="frequency", xlab="rainfall in mm/day", main="")
   for (i in 2:length(ddensity)){ 
-    lines(mdensity[[i]], col=colors[i], lwd="3")
+    lines(mdensity[[i]], col=colors[i], lwd=2, lty=i)
   }
-  legend(x="topright", legend=stnames, col=colors, lwd=3, cex=0.8)
+  legend(x="topright", legend=stnames, lty=(1:length(mdensity)), col=colors, lwd=2, cex=0.7, bty="n")
   dev.off()
   #Yearly
-  name=paste(fpath,"/yearly_densities.png", sep="")
-  png(filename=name, width=1000, height=700, units="px")
+  name=paste(fpath,"/yearly_gauss_kde_densities.svg", sep="")
+  svg(filename=name, width=(16/2.54), height=(9/2.54), pointsize = 11, family="Lato")
+  par(def.par); par(mar=(c(3,3,0.8,0)+0.2)); par(cex.lab=0.8, cex.axis=0.7)
   plot(ydensity[[1]], xlim=c(0,18), ylim=c(0,0.3), col=colors[1], 
-       lwd="3", xlab="rainfall in mm/day", main="Gaussian KDE of yearly rainfall")          
+       lwd=2, ylab="frequency",xlab="rainfall in mm/day", main="")          
   for (i in 2:length(ddensity)){ 
-    lines(ydensity[[i]], col=colors[i], lwd="3")
+    lines(ydensity[[i]], col=colors[i], lwd=2, lty=i)
   }
-  legend(x="topright", legend=stnames, col=colors, lwd=3, cex=0.8)
+  legend(x="topright", legend=stnames, lty=(1:length(mdensity)), col=colors, lwd=2, cex=0.7, bty="n")
   dev.off()
-  ### END COMPARE DENSITIES ###
-### END HISTOGRAMMS and DENSITY ###
+  rm(name)
+### END COMPARE DENSITIES ###
 
 #### CUMULATIVE SUMS ####
   ### For each station ###
 fpath="output/cumulative"
 dir.create(fpath)
 
-  #create overlapping graphs for all years
+#create overlapping graphs for all years
   #create common single index, here the year 2000 is used (leap year)
   cumlist_s.in=rapply(cumlist, how="list", function(x) zoo(x, order.by=time(cumlist[[1]][[19]])) )
   #plot
@@ -216,21 +220,19 @@ dir.create(fpath)
   matplot(d.cumsum_df, xaxt="n", xlim=c(0,366), type = c("l"), lty=c(1:14), lwd=2, col=colors, xlab="Time", ylab="Cumulative rainfall sum [mm]", main="Cumulative sum of average daily rainfall")
   axis(1,at=c(0, 31,60,91,121,152,182,213,244,274,305,335,366), labels=c(row.names(davbm_df), ""))
   legend("topright", inset=c(-0.23,0), legend=colnames(d.cumsum_df), col=colors, lty=c(1:1), lwd=2, cex=0.7)
-dev.off()
-
 ### END CUMULATIVE SUMS ###
 
 #### SEASONALITY PLOTS ####
   fpath="output/seasonality"
   dir.create(fpath)
-  
 ### MONTHLY AVERAGES ###
   ## LINE PLOT
-    name=paste(fpath, "/dav_by_month.png", sep="")
-    png(filename=name, width=1000, height=700, units="px")  
-    matplot(davbm_df, type = c("b"),pch=1, lty=c(1), lwd=2, col = colors, xaxt = "n", ylab="rainfall in mm/day", main="Daily Average Rain per Month", xlab="Month")
+    name=paste(fpath, "/lineplot_dav_by_month.svg", sep="")
+    svg(filename=name, width=(16/2.54), height=(8/2.54), pointsize = 11, family="Lato") 
+    par(def.par); par(mar=(c(3,3,0,0)+0.2));  par(cex.lab=0.8, cex.axis=0.7)
+    matplot(davbm_df, ylim=c(4,13), type = c("b"), pch=1, lty=(1:length(davbm_df)), lwd=2, cex=0.8, col = colors, xaxt = "n", las=1, ylab="rainfall (mm/day)", xlab="Month")
     axis(1,1:12,labels=row.names(davbm_df))
-    legend(x="bottomright", legend=stnames, col=colors, lwd=3, cex=0.8)
+  legend(x="bottomright", legend=stnames, lty=(1:length(mdensity)), col=colors, lwd=2, cex=0.7, bty="n")
     dev.off()
 #   ## AVERAGES BOX PLOT VERSION
 #    #the plot below is somehow an improved version instead of comparing averages
@@ -243,24 +245,23 @@ dev.off()
 ### MONTHLY VALUES FOR ALL STATIONS, PER MONTH, BOXPLOT VERSION
   ## (variation per month)
   library(beeswarm)
-    name=paste(fpath, "/monthly_boxplot.png", sep="")
-    png(filename=name, width=1000, height=700, units="px")  
-    title=paste("Boxplot of average daily rainfall per month for all stations")
-    boxplot(bymonth_ts_all, outline=FALSE, xaxt="n", ylim=c(0,28), main=title, xlab="month", ylab="mm/day")
-    #add beeswarm plots
+  name=paste(fpath, "/monthly_boxplot.svg", sep="")
+  svg(filename=name, width=(16/2.54), height=(8/2.54), pointsize = 11, family="Lato") 
+#     title=paste("Boxplot of average daily rainfall per month for all stations")
+    par(def.par); par(mar=(c(2.8,2.8,0,0)+0.2));  par(cex.lab=0.8, cex.axis=0.7)
+    boxplot(bymonth_ts_all, ylim=c(0,28), xlim=c(0.8,13.3), cex=0.55, outline=FALSE, xaxt="n", ylim=c(0,28), xlab="Month", ylab="rainfall (mm/day)")
+    ## add beeswarm plots
     # first create color vector:
-    #for every month
-    # add as many entries per color into the vector as there are observations
     col.vector=character()
-    for (i in 1:12){       
-        for (j in 1:ncol(bymonth_ts_all[[1]])){ 
-        col.vector=c(col.vector, rep(colors[j], nrow(bymonth_ts_all[[1]])))
-      } }
-    beeswarm(bymonth_ts_all, corral="random", pch = 21, pwcol=col.vector, add=TRUE)
+    for (i in 1:12){ #for every month   
+        for (j in 1:ncol(bymonth_ts_all[[1]])){  # add as many entries per color (per station) into the vector as there are observations
+        col.vector=c(col.vector, rep(colors[j], nrow(bymonth_ts_all[[1]])))} 
+    }
+    beeswarm(bymonth_ts_all, corral="random", cex=0.5, pwcol=col.vector, add=TRUE)
     axis(1,1:12,labels=row.names(davbm_df))
-    legend(x="bottomright", legend=stnames, col=colors, lty=1, lwd=3, cex=0.8)
+ legend("topright", legend=stnames, pch=1, col=colors, pt.cex=0.6, cex=0.6, bty="n")
     dev.off()
-    
+
 ### SEASONALITY PER STATION
   fpath="output/seasonality/boxplots"
   dir.create(fpath)
