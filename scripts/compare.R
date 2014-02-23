@@ -12,6 +12,7 @@
   fpath="output/boxplots"
   dir.create(fpath)
 # year
+  #-> main text
     name=paste(fpath,"/yearly_boxplot.svg", sep="")
     svg(filename=name, width=(16/2.54)*1.5, height=(8/2.54)*1.5, pointsize = 10)
     par(def.par)
@@ -24,23 +25,29 @@
     labels = colnames(y_df), xpd = TRUE, cex=0.95)
     dev.off()
 
-#monthly per month i.e. Jan
-    name=paste(fpath,"/monthly_boxplot.png", sep="")
-    png(filename=name, width=2000, height=1200, units="px")
-    par(mfrow=c(4,3))
+#monthly per month i.e. Jan, Feb
+  # -> virtual appendix
+    name=paste(fpath,"/monthly_boxplot.svg", sep="")
+   svg(filename=name, width=(20/2.54), height=(16/2.54), pointsize = 11, family="Lato")
+    par(def.par); par(mar=(c(2.8,2.8,1,0)+0.2));par(mfrow=c(4,3))
     for (j in 1:12){ #loop trough month
     month=if (j>=10){j} else {paste("0",j, sep="")}
     selector <- format.Date(as.Date(row.names(m_df)),format="%m")
     mname=as.character(format.Date(time(m_ts[[1]][j]), "%B"))
-    title=paste("Average daily rainfall in",mname)
-    boxplot(m_df[selector==month,], main=title, xlab="Station", ylab="mm/day")
-    abline(mean(m_df[selector==month,], na.rm=TRUE),0, lwd="2", col="blue")
+    #title=paste("Average daily rainfall in",mname)
+    boxplot(m_df[selector==month,], main=mname, cex.main=0.8, adj=0, xaxt="n", xlab="", ylab="mm/day")
+    abline(mean(m_df[selector==month,], na.rm=TRUE),0, lwd=2, lty=3, col="darkred")
+    axis(1, at=(1:ncol(m_df)), labels = FALSE)
+    text(1:ncol(m_df), par("usr")[3] - 0.6, srt = 35, adj = 1.05,
+         labels = colnames(m_df), xpd = TRUE, cex=0.7)
     }
   dev.off()
+
   rm(fpath)
 ### END BOX PLOTS ###
 
 #### ALL STATION TIME SERIES IN ONE PLOT ####
+  #-> not shown at all
   ### Monthly TS ###
   name="output/timeseries/monthly_ts.png"
   png(filename=name, width=1000, height=700, units="px")
@@ -56,13 +63,13 @@
   axis(1,1:31,labels=substr(row.names(y_df),1,4))  
   legend(x="bottomright", legend=stnames, col=colors, lwd=3, cex=0.8)
   dev.off()
-  
-### END MONTHLY AVERAGES ###
+### ALL STATION TIME SERIES IN ONE PLOT ###
 
 #### CORRELATION ####
   fpath="output/correlation"
   dir.create(fpath)
   #### CORRELOGRAMS ####
+  # -> main text
     fpath="output/correlation/correlograms"
     dir.create(fpath)
     
@@ -78,6 +85,7 @@
     rm(fpath)
   ### END CORRGRAMS ###
   #### SCATTERPLOT MATRIX ####
+  # -> main text
     fpath="output/correlation/scatterplotmatrix"
     dir.create(fpath)
     
@@ -93,41 +101,6 @@
     rm(fpath)
   ### END SCATTERPLOT MATRIX ###
 ### END CORRELATION###
-# #### Cumulative Sums COMPARISON####
-#   dir.create("output/plots/cumulative")
-# 
-# ### Comparison of cumulative sums ###
-# ## 1. Comparison of SGU 1, 19, 17 since they are spatially close
-# #10year 
-#   name=paste("output/plots/cumulative/10ycumsum_comparison.png", sep="")
-#   png(filename=name, width=800, height=500, units="px")
-#   matplot(cumfun_df[6575:10592,c(3,7,8)], type = c("l"), xaxt="n",  pch=1, lwd=2, lty=c(1), col =colors[c(3,7,8)], ylab="rainfall in mm/year", main=paste("Cumulative rainfall amounts for", stnames[c(3,7,8)]), xlab="Year")
-#   axis(1,at=seq(0, 4015, by=365), labels=c(2000:2011)  )
-#   legend(x="topright", legend=stnames[c(3,7,8)], col=colors[c(3,7,8)], lwd=3, cex=0.8)
-#   dev.off()
-# #2 year
-#   name=paste("output/plots/cumulative/2ycumsum_comparison.png", sep="")
-#   png(filename=name, width=800, height=500, units="px")
-#   matplot(cumfun_df[7671:8402,c(3,7,8)], type = c("l"), xaxt="n",  pch=1, lwd=2, lty=c(1), col =colors[c(3,7,8)], ylab="rainfall in mm/year", main=paste("Cumulative rainfall amounts for", stnames[c(3,7,8)]), xlab="Year")
-#   axis(1,at=seq(0, 740, by=365), labels=c(2003:2004)  )
-#   legend(x="topright", legend=stnames[c(3,7,8)], col=colors[c(3,7,8)], lwd=3, cex=0.8)
-#   dev.off()
-# ## 2. Comparison of PTK11, SGU01, STG01 KPH01, in order to see west east gradient
-# #3 year
-#   name=paste("output/plots/cumulative/3ycumsum_ew_comparison.png", sep="")
-#   png(filename=name, width=1000, height=500, units="px")
-#   stnamestring=paste(stnames[c(1,3,9,11)], collapse=" ")
-#   matplot(cumfun_df[7671:8767,c(1,3,9,11)], type = c("l"), xaxt="n",  pch=1, lwd=2, lty=c(1), col =colors[c(1,3,9,11)], ylab="rainfall in mm/year", main=paste("Cumulative rainfall amounts for",stnames[c(1,3,9,11)], collapse=" "), xlab="Year")
-#   axis(1,at=seq(0, 1105, by=365), labels=c(2003:2006)  )
-#   legend(x="topleft", legend=stnames[c(1,3,9,11)], col=colors[c(1,3,9,11)], lwd=3, cex=0.8)
-#   dev.off()
-# ### END Cumulative Sums ###
-# 
-# ### Comparison PTK11- KPH01 ###
-#   plot(window(m_ts[[1]], start=as.Date('2002-01-01'), end=as.Date('2010-12-31')),  type="l", lty=1, lwd=2, col=colors[1], ylab="rainfall in mm/day", main=paste("Time series of daily rainfall amounts for",stnames[c(1,11)], collapse=" "), xlab="Time") 
-#   lines(window(m_ts[[11]], start=as.Date('2002-01-01'), end=as.Date('2010-12-31')), col=colors[11])
-# 
-# ###  ###
 
 #### COMPARISON OF SPATIAL CORRELATION AND DISTANCE ####
 library("sp")
@@ -136,7 +109,7 @@ library("raster")
 library("reshape")
 source("scripts/convenience_functions.R")
 # Load station data (not in long lat to get distances in meters)
-  stations<-readShapePoints("input/stationmap_utm49N/stationmap_utm49N.shp")
+  stations<-readShapePoints("input/stationmap_UTM49N//stationmap-UTM49N.shp")
 # Subset stations 
   stations <- stations[stations$ID %in% stnames,]
 
