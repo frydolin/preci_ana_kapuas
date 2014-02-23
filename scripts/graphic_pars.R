@@ -6,7 +6,9 @@
 #### default ####
 #dev.off()
 par(mar=(c(4,4,3,0)+0.2),
-    mgp=c(1.8,0.6,0))
+    mgp=c(1.8,0.6,0),
+    cex.axis=0.7,
+    cex.lab=0.7)
 def.par=par(no.readonly = TRUE)
 
 #### histograms ####
@@ -17,8 +19,8 @@ par(mfrow=c(5,3),
     mgp=c(3,0.5,0),
     oma=c(2,2,0,0),
     lwd=1,
-    las=1,
-    cex.axis=0.7)
+    las=1
+    )
 hist.par=par(no.readonly = TRUE)
 par(def.par)
 
