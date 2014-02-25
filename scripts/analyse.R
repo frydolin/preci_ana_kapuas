@@ -49,7 +49,13 @@
   tsplot.pst(w_ts, type="weekly",fpath=fpath)
   tsplot.pst(m_ts, type="monthly",fpath=fpath)   
   tsplot.pst(y_ts, type="yearly",fpath=fpath)
+  tsplot.pst(y_raindays, type="yearly_raindays",fpath=fpath)
 rm(fpath)
+### TS PLOT of yearly values and raindays ###
+  fpath="output/timeseries/double"
+  dir.create(fpath)
+  double.ts(y_ts, y_raindays, fpath=fpath)
+### 
   ### SUMMARY STATISTICS FOR SUM VALUES
 fpath="output/summaries"
 dir.create(fpath)

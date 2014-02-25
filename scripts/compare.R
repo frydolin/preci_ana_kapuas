@@ -14,9 +14,8 @@
 # year
   #-> main text
     name=paste(fpath,"/yearly_boxplot.svg", sep="")
-    svg(filename=name, width=(16/2.54)*1.5, height=(8/2.54)*1.5, pointsize = 10)
-    par(def.par)
-    par(cex.axis=0.95, mar=(c(4,4,0.3,0)+0.2))
+    svg(filename=name, width=(16/2.54), height=(8/2.54), pointsize = 10)
+    par(def.par);par(mar=(c(2.8,2.8,0,0)+0.2));  par(cex.lab=0.7, cex.axis=0.7)
     boxplot(y_df, outline=FALSE, ylab="rainfall in mm/day", xaxt="n")
     beeswarm(y_ts, pch=21, bg=colors, cex=1.3, add=TRUE)
     abline(mean(y_df,  na.rm=TRUE),0, lwd=2.8, lty=2, col="#dd4444")
@@ -24,6 +23,17 @@
     text(1:14, par("usr")[3] - 0.25, srt = 35, adj = 1.05,
     labels = colnames(y_df), xpd = TRUE, cex=0.95)
     dev.off()
+# yearly raindays
+  name=paste(fpath,"/yearly_raindays_boxplot.svg", sep="")
+  svg(filename=name, width=(16/2.54), height=(8/2.54), pointsize = 10)
+  par(def.par);par(mar=(c(2.8,2.8,0,0)+0.2));  par(cex.lab=0.7, cex.axis=0.7)
+  boxplot(y_raindays_df, outline=FALSE, ylab="No of raindays", xaxt="n")
+  beeswarm(y_raindays, pch=21, bg=colors, cex=0.8, add=TRUE)
+  abline(mean(y_raindays_df,  na.rm=TRUE),0, lwd=2.8, lty=2, col="#dd4444")
+  axis(1, at=(1:14), labels = FALSE)
+  text(1:14, par("usr")[3] - 0.25, srt = 35, adj = 1,
+       labels = colnames(y_df), xpd = TRUE, cex=0.7)
+  dev.off()
 
 #monthly per month i.e. Jan, Feb
   # -> virtual appendix
@@ -63,6 +73,14 @@
   axis(1,1:31,labels=substr(row.names(y_df),1,4))  
   legend(x="bottomright", legend=stnames, col=colors, lwd=3, cex=0.8)
   dev.off()
+  ## Yearly raindays ##
+    name="output/timeseries/yearly_raindays.svg"
+    svg(filename=name, width=(16/2.54), height=(10/2.54), pointsize = 11, family="Lato")
+    par(def.par); par(mar=(c(2.8,2.8,0,0)+0.2));  par(cex.lab=0.7, cex.axis=0.7)
+    matplot(y_raindays_df, type = c("b"),pch=1, lwd=2, lty=c(1), col = colors, xaxt = "n", ylab="rainfall in mm/year", main="Yearly Rain Days", xlab="Year")
+    axis(1,1:31,labels=substr(row.names(y_df),1,4))  
+    legend(x="bottomright", legend=stnames, col=colors, lwd=3, cex=0.8)
+    dev.off()
 ### ALL STATION TIME SERIES IN ONE PLOT ###
 
 #### CORRELATION ####

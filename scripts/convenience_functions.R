@@ -84,13 +84,36 @@ reshape.matrix=function(x){
   return(y)
 }
 ###
+#### RAINDAY/RAINFALL TS ####
+double.ts=function(x, y, fpath){
+  for (i in 1:length(x)) {
+    name=paste(fpath,"/","double_ts_",stnames[i],".svg", sep="")
+    svg(filename=name, width=(16/2.54), height=(7.5/2.54), pointsize = 11, family="Lato")    
+    par(def.par)
+    par(mar=c(4, 4, 0, 5) + 0.2)
+    ## Plot rainfall amounts plot and put axis scale on right
+    plot(x[[i]], xlab="", ylab="", xaxt = "n", yaxt = "n", type="b", col=colors[i], pch=19, cex=0.8, lty=1)
+    axis(4,col=colors[i],las=1)
+    mtext("rainfall (mm/day)",side=4,col=colors[i],line=3)
+    ## Plot rainfall data and draw its axis
+    par(new=TRUE)
+    ymid=mean(y[[i]], na.rm=TRUE)
+    plot(y[[i]], ylim=c(ymid-50,ymid+50),xaxt = "n", yaxt = "n", xlab="", ylab="", type="b", col="black", cex=0.8, lty=3)
+    axis(2, ylim=c(ymid-50,ymid+50),col="black",las=1) 
+    mtext("no. of raindays",side=2,line=2.5)
+    ## Draw the time axis
+    axis(1,at=time(y_ts[[1]]), labels=format.Date(time(y_ts[[1]]), "%Y"))
+    box()
+    dev.off()
+  }
+}
 
 #### CUMULATIVE PLOTS ####
 # x: list of ecdf objects
 cuml.plot=function(x){
-  png(filename=name, width=500, height=300, units="px")
+  svg(filename=name, width=(16/2.54), height=(9/2.54), pointsize = 11, family="Lato")
   par(def.par); par(mar=(c(3,3,0.8,0)+0.2)); par(cex.lab=0.7, cex.axis=0.7)
-      plot(x[[1]], do.points=FALSE, verticals=TRUE, col.01line = "black", col=colors[1], xlab="rainfall (mm/day)", main="")          
+      plot(x[[1]], do.points=FALSE, verticals=TRUE, col.01line = "black", col=colors[1],  xlab="rainfall (mm/day)", main="")          
       for (i in 2:length(x)){ 
         lines(x[[i]], do.points=FALSE, verticals=TRUE, col=colors[i], lty=1)
       }

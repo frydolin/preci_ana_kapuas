@@ -79,6 +79,7 @@ for(i in (1:length(d_ts))){
   y_raindays<-lapply(d_rainday, daily2annual,sum, na.rm=TRUE)
   # reenter NA for years with too many NA in source data, limit=28 days/year
   y_raindays=na.cor(y_raindays, orig=d_ts, type="year", limit=28)
+  y_raindays_df=mdf(y_raindays)
 ### END TS AGGREGATION ###
 
 #### AGGREGATION BY MONTH ####
@@ -195,6 +196,11 @@ for(i in (1:length(d_ts))){
   mdensity<-lapply(m_ts, function (x) density(x, from=0,  bw=1.8,  na.rm=TRUE))
   ydensity<-lapply(y_ts, function (x) density(x, from=0, bw=0.9,  na.rm=TRUE))
   y_rainday.density<-lapply(y_raindays, function (x) density(x, from=0, bw=12,  na.rm=TRUE))
+
+# Empirical Cumulative Distribution Function
+d.ecdf<-lapply(d_ts, function (x) ecdf(x[which(x>=1)]))
+m.ecdf<-lapply(m_ts, ecdf)
+y.ecdf<-lapply(y_ts, ecdf)
 
 ### END DENSITIES ###
 
