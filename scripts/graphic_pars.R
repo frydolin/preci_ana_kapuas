@@ -12,7 +12,7 @@ par(mar=(c(4,4,3,0)+0.2),
 def.par=par(no.readonly = TRUE)
 
 #### histograms ####
-par(mfrow=c(5,3),
+par(mfrow=c(3,3),
     adj=0,
     mar=(c(2,2.4,1,0)+0.1),
     col="black",
@@ -32,12 +32,12 @@ par(def.par)
 ##
 #### COLOR SCHEME for plots ####
 # For 14 colors
-  library("colorspace")
-  set.seed(1)
-  colors=rainbow_hcl(14, c=sample(seq(50, 100, length.out =14)), l=seq(30, 70, length.out =14), start=420, end = 60, fixup=TRUE)
-# pal((colors))
-#    pal(desaturate(colors))
-#   set.seed(70)
-#   colors=sample(colors)
+colors=rainbow(n=14, s = 1, v = 0.8, start = 0.05, end = max(1, 14 - 1)/14, alpha = 1)
+#   pal((colors))
+#   pal((desaturate(colors)))
+  # For statistical analysis
+  colors=colors[c(-3,-8,-9,-11,-13,-14)]
+  # For spatial interpolation
+  #   colors=colors[c(-9,-13)]
 ###
 ### END graphic_pars.R ###

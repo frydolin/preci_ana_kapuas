@@ -43,13 +43,13 @@ source("scripts/setup.R")
 
 #### PRESELECTION OF STATIONS ####
 # For statistical analysis
-#   d_ts=d_ts[c(-3,-8,-9,-11,-13,-14)]
-#   stnames=stnames[c(-3,-8,-9,-11,-13,-14)]
-#   colors=colors[c(-3,-8,-9,-11,-13,-14)]
+  d_ts=d_ts[c(-3,-8,-9,-11,-13,-14)]
+  stnames=stnames[c(-3,-8,-9,-11,-13,-14)]
+  colors=colors[c(-3,-8,-9,-11,-13,-14)]
 # For spatial interpolation
-  d_ts=d_ts[c(-9,-13)]
-  stnames=stnames[c(-9,-13)]
-  colors=colors[c(-9,-13)]
+#   d_ts=d_ts[c(-9,-13)]
+#   stnames=stnames[c(-9,-13)]
+#   colors=colors[c(-9,-13)]
 ### END PRESELECTION ###
 
 #### CLEAN UP ####

@@ -96,37 +96,37 @@ for (i in 1:length(d_ts))
 ### Per type, gives overview over all stations
   # Daily
   name=paste(fpath,"/daily_hist.svg", sep="")
-  svg(filename=name,  pointsize = 11, width=(16/2.54), height=(16/2.54))
+  svg(filename=name,  pointsize = 11, width=(16/2.54), height=(12/2.54))
   par(hist.par)
   for (i in 1:length(d_ts)){
    truehist(d_ts[[i]][which(d_ts[[i]]>=1)], prob=TRUE, h=5, 
-             xlim=c(-5,200), ymax=0.06,col=colors[i], main=paste(stnames[i]))
+             xlim=c(-5,200), ymax=0.06,col="#dddddd", main=paste(stnames[i])) #colors[i],
 #     rug(jitter(d_ts[[i]][which(d_ts[[i]]>=1)], amount = 0.5), lwd=0.5, line=0)
-    lines(ddensity[[i]], lwd=1, col="blue")  
+    lines(ddensity[[i]], lwd=2, col="black")  
   box(which="plot", lwd=1)
   }
   dev.off()
   #Monthly
   name=paste(fpath,"/monthly_hist.svg", sep="")
-  svg(filename=name,  pointsize = 11, width=(16/2.54), height=(16/2.54))
+  svg(filename=name,  pointsize = 11, width=(16/2.54), height=(12/2.54))
   par(hist.par)
   for (i in 1:length(m_ts)){
     truehist(m_ts[[i]], prob=TRUE, h=1.5, 
-             xlim=c(-3,26), ymax=0.15, lwd=1, col=colors[i], main=paste(stnames[i]))
+             xlim=c(-3,26), ymax=0.15, lwd=1, col="#dddddd", main=paste(stnames[i]))
     rug(m_ts[[i]], ticksize=0.1, lwd=0.5, line=0)
-     lines(mdensity[[i]], lwd=1, col="blue")
-    box(which="plot", lwd=1)
+     lines(mdensity[[i]], lwd=1, col="black")
+    box(which="plot", lwd=2)
   }
   dev.off()
   #Yearly
   name=paste(fpath,"/yearly_hist.svg", sep="")
-  svg(filename=name,  pointsize = 11, width=(16/2.54), height=(16/2.54))
+  svg(filename=name,  pointsize = 11, width=(16/2.54), height=(12/2.54))
   par(hist.par)
   for (i in 1:length(y_ts)){
-    truehist(y_ts[[i]], prob=TRUE, h=1, xlim=c(2,14),ymax=0.45, lwd=1, col=colors[i], main=paste(stnames[i]))
+    truehist(y_ts[[i]], prob=TRUE, h=1, xlim=c(2,15),ymax=0.45, lwd=1, col="#dddddd", main=paste(stnames[i]))
     rug(y_ts[[i]], ticksize=0.1, lwd=0.5, line=0)
-    lines(ydensity[[i]], lwd=1, col="blue")
-    box(which="plot", lwd=1)
+    lines(ydensity[[i]], lwd=1, col="black")
+    box(which="plot", lwd=2)
   }
   dev.off()
   #Yearly Raindays
@@ -181,7 +181,15 @@ rm(fpath)
   dev.off()
   rm(name)
 ### END COMPARE DENSITIES ###
+#### CUMULATIVE DENSITIES####
+  name=paste(fpath,"/daily_ecdf.svg", sep="")
+  cuml.plot(d.ecdf)
+  name=paste(fpath,"/monthly_ecdf.svg", sep="")
+  cuml.plot(m.ecdf)
+  name=paste(fpath,"/yearly_ecdf.svg", sep="")
+  cuml.plot(y.ecdf)
 
+### END CUMULATIVE FREQUENCY ###
 #### CUMULATIVE SUMS ####
   ### For each station ###
   # -> Virtual Appendix
@@ -281,17 +289,18 @@ dir.create(fpath) # new directory
   #### Mann-Kendall trend testing ####
   library("Kendall")
   # testing is outsourced to convenience function mk.trendtest
+  source("scripts/convenience_functions.R")
   # returns only a vector of significance of results
   ## A: seasonal Mann Kendall test. 
     ## runs on monthly values 
     ## SeasonalMannKendall likes only ts objects therefore the as.ts conversion 
     ## tau=Score/denominator, denominator=max possible value for score
-    seasonal.mk=mk.trendtest(m_ts, SeasonalMannKendall)
+    seasonal.mk=mk.trendtest(m_ts, test=SeasonalMannKendall)
     names(seasonal.mk)=paste("seasonal.",names(seasonal.mk), sep="")
   ## B: normal Mann Kendall
     ## on the rainseason and dry season seperately
       # RS
-      rs.mk=mk.trendtest(rsav_ts, MannKendall)
+      rs.mk=mk.trendtest(rsav_ts, test=MannKendall)
       names(rs.mk)=paste("rs.",names(rs.mk), sep="")
       # DS
       ds.mk=mk.trendtest(dsav_ts, MannKendall)

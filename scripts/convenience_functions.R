@@ -64,11 +64,13 @@ homogeneity.tests=function(x){
   require("Kendall")
   trendtest=lapply(x, function(x) test(as.ts(x)))
   tau=sapply(trendtest, function(x) x$tau)
-  tau=signif(tau, digits = 3) #round tau to 3 significant digits
-  sl=sapply(trendtest, function(x) x$sl)
-  sign=ifelse(sl<0.05, "*", "-")
+  sl=sapply(trendtest, function(x) x$sl) #sl:  two-sided p-value
+  sign=ifelse(sl<0.05, "*", "")
   sign=ifelse(sl<0.01, "**",sign)
-  return(as.data.frame(cbind(tau, sign)))
+  tau=round(tau, digits = 5) #round tau to 3  digits
+  sl=round(sl, digits = 5) #round sl to 3  digits
+  p.sl=paste(sl,sign, sep="")
+  return(as.data.frame(cbind(tau, p.sl)))
   }
 
 #### Reshaping of distance and correlation matrixes: ####
@@ -82,4 +84,18 @@ reshape.matrix=function(x){
   return(y)
 }
 ###
+
+#### CUMULATIVE PLOTS ####
+# x: list of ecdf objects
+cuml.plot=function(x){
+  png(filename=name, width=500, height=300, units="px")
+  par(def.par); par(mar=(c(3,3,0.8,0)+0.2)); par(cex.lab=0.7, cex.axis=0.7)
+      plot(x[[1]], do.points=FALSE, verticals=TRUE, col.01line = "black", col=colors[1], xlab="rainfall (mm/day)", main="")          
+      for (i in 2:length(x)){ 
+        lines(x[[i]], do.points=FALSE, verticals=TRUE, col=colors[i], lty=1)
+      }
+      abline(0.5,0, lty=2)
+      legend(x="bottomright", inset=c(0,0.05), legend=stnames, lty=1, col=colors, lwd=2, cex=0.7, bty="n")
+  dev.off()
+}
 ##### END convenience_functions #####
