@@ -7,22 +7,32 @@
   source("scripts/graphic_pars.R")
 ### END SET UP ###
 
-#### Box plot for station comparison ####
-  library(beeswarm)
+#### BOX PLOT STATION COMPARISON ####
   fpath="output/boxplots"
   dir.create(fpath)
-# year
+# year and # yearly raindays
   #-> main text
-    name=paste(fpath,"/yearly_boxplot.svg", sep="")
-    bplot.bswarm(ts=y_ts, df=y_df, fname=name, ylab="rainfall (mm/day)")
-# yearly raindays
-    name=paste(fpath,"/yearly_raindays_boxplot.svg", sep="")
-    bplot.bswarm(ts=y_raindays, df=y_raindays_df, fname=name, ylab="No of raindays")
+    name=paste(fpath,"/yearly_mm_rd_boxplot.png", sep="")
+    png(filename=name, pointsize = 11, width=16, height=13, units="cm", res=300)
+  par(def.par); par(mfrow=c(2,1)) 
+    bplot.bswarm(ts=y_ts, df=y_df, ylab="rainfall (mm/day)", xlabel=FALSE)
+    bplot.bswarm(ts=y_raindays, df=y_raindays_df, ylab="No. of raindays", xlabel=TRUE)
+  dev.off()
+
+  name=paste(fpath,"/yearly_boxplot.png", sep="")
+  png(filename=name, pointsize = 11, width=16, height=8, units="cm", res=300);  par(def.par)
+  bplot.bswarm(ts=y_ts, df=y_df, ylab="rainfall (mm/day)", xlabel=TRUE)
+  dev.off()
+   
+  name=paste(fpath,"/yearly_raindays_boxplot.png", sep="")
+  png(filename=name, pointsize = 11, width=16, height=8, units="cm", res=300); par(def.par)
+  bplot.bswarm(ts=y_raindays, df=y_raindays_df, ylab="No. of raindays", xlabel=TRUE)
+  dev.off()
 
 #monthly per month i.e. Jan, Feb
   # -> virtual appendix
-    name=paste(fpath,"/monthly_boxplot.svg", sep="")
-   svg(filename=name, width=(20/2.54), height=(16/2.54), pointsize = 11, family="Lato")
+    name=paste(fpath,"/monthly_boxplot.png", sep="")
+    png(filename=name, pointsize = 11, width=16, height=16, units="cm", res=300)
     par(def.par); par(mar=(c(2.8,2.8,1,0)+0.2));par(mfrow=c(4,3))
     for (j in 1:12){ #loop trough month
     month=if (j>=10){j} else {paste("0",j, sep="")}
@@ -44,7 +54,7 @@
   #-> not shown at all
   ### Monthly TS ###
   name="output/timeseries/monthly_ts.png"
-  png(filename=name, width=1000, height=700, units="px")
+  png(filename=name, pointsize = 11, width=16, height=9, units="cm", res=300)
   matplot(m_df, type = c("l"),pch=1, lwd=2, lty=c(1), col = colors, xaxt = "n", ylab="rainfall in mm/year", main="Yearly Time Series", xlab="Year")
   axis(1,1:372,labels=substr(row.names(m_df),1,7))  
   legend(x="bottomleft", legend=stnames, col=colors, lwd=3, cex=0.8)
@@ -52,14 +62,14 @@
   
   ### YEARLY TS ###
   name="output/timeseries/yearly_ts.png"
-  png(filename=name, width=1000, height=700, units="px")
+  png(filename=name, pointsize = 11, width=16, height=9, units="cm", res=300)
   matplot(y_df, type = c("b"),pch=1, lwd=2, lty=c(1), col = colors, xaxt = "n", ylab="rainfall in mm/year", main="Yearly Time Series", xlab="Year")
   axis(1,1:31,labels=substr(row.names(y_df),1,4))  
   legend(x="bottomright", legend=stnames, col=colors, lwd=3, cex=0.8)
   dev.off()
   ## Yearly raindays ##
-    name="output/timeseries/yearly_raindays.svg"
-    svg(filename=name, width=(16/2.54), height=(10/2.54), pointsize = 11, family="Lato")
+    name="output/timeseries/yearly_raindays.png"
+  png(filename=name, pointsize = 11, width=16, height=10, units="cm", res=300)
     par(def.par); par(mar=(c(2.8,2.8,0,0)+0.2));  par(cex.lab=0.7, cex.axis=0.7)
     matplot(y_raindays_df, type = c("b"),pch=1, lwd=2, lty=c(1), col = colors, xaxt = "n", ylab="rainfall in mm/year", main="Yearly Rain Days", xlab="Year")
     axis(1,1:31,labels=substr(row.names(y_df),1,4))  
@@ -134,8 +144,8 @@ source("scripts/convenience_functions.R")
   cor_y=reshape.matrix(cor.matrix_y)
 
 # Plot
-name="output/correlation/corrdist.svg"
-  svg(filename=name, width=(16/2.54), height=(9/2.54), pointsize = 11, family="Lato")
+name="output/correlation/corrdist.png"
+  png(filename=name, pointsize = 11, width=16, height=9, units="cm", res=300)
    par(def.par); par(cex.lab=0.8, cex.axis=0.7, las=1); par(mfrow=c(2,2)); par(mar=(c(2.6,2.8,1.8,0)+0.2))
   plot(cor_d$value~sp.dist$value, ylim=c(0,1.1),  xlim=c(0,280), lty=2, xlab="", ylab="r (Pearson)")
  plot(cor_m$value~sp.dist$value, ylim=c(0,1.1),  xlim=c(0,280), lty=2, ylab="", xlab="distance (km)")

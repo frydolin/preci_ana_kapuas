@@ -47,7 +47,7 @@
   ### PLOT FOR EACH STATION, FOR MEAN VALUE TS 
   tsplot.pst(d_ts, type="daily", fpath=fpath)
   tsplot.pst(w_ts, type="weekly",fpath=fpath)
-  tsplot.pst(m_ts, type="monthly",fpath=fpath)   
+  tsplot.pst(m_ts, type="monthly",fpath=fpath, ylim=c(0,24))   
   tsplot.pst(y_ts, type="yearly",fpath=fpath)
   tsplot.pst(y_raindays, type="yearly_raindays",fpath=fpath)
 rm(fpath)
@@ -78,7 +78,7 @@ rm(fpath)
 for (i in 1:length(d_ts))
 {
   name=paste(fpath,"/hist_",stnames[i],".png", sep="")
-  png(filename=name, width=700, height=1000, units="px")
+  png(filename=name, pointsize = 11, width=8, height=10, units="cm", res=300)
   par(mfrow=c(3,1))
   title=paste("histogramm and gaussian KDE for",stnames[i])
   ## daily
@@ -101,8 +101,9 @@ for (i in 1:length(d_ts))
 }
 ### Per type, gives overview over all stations
   # Daily
-  name=paste(fpath,"/daily_hist.svg", sep="")
-  svg(filename=name,  pointsize = 11, width=(16/2.54), height=(12/2.54))
+  fpath="output/histogramms"
+  name=paste(fpath,"/daily_hist.png", sep="")
+  png(filename=name, pointsize = 11, width=16, height=16, units="cm", res=300)
   par(hist.par)
   for (i in 1:length(d_ts)){
    truehist(d_ts[[i]][which(d_ts[[i]]>=1)], prob=TRUE, h=5, 
@@ -113,8 +114,8 @@ for (i in 1:length(d_ts))
   }
   dev.off()
   #Monthly
-  name=paste(fpath,"/monthly_hist.svg", sep="")
-  svg(filename=name,  pointsize = 11, width=(16/2.54), height=(12/2.54))
+  name=paste(fpath,"/monthly_hist.png", sep="")
+  png(filename=name, pointsize = 11, width=16, height=16, units="cm", res=300)
   par(hist.par)
   for (i in 1:length(m_ts)){
     truehist(m_ts[[i]], prob=TRUE, h=1.5, 
@@ -125,8 +126,8 @@ for (i in 1:length(d_ts))
   }
   dev.off()
   #Yearly
-  name=paste(fpath,"/yearly_hist.svg", sep="")
-  svg(filename=name,  pointsize = 11, width=(16/2.54), height=(12/2.54))
+  name=paste(fpath,"/yearly_hist.png", sep="")
+  png(filename=name, pointsize = 11, width=16, height=16, units="cm", res=300)
   par(hist.par)
   for (i in 1:length(y_ts)){
     truehist(y_ts[[i]], prob=TRUE, h=1, xlim=c(2,15),ymax=0.45, lwd=1, col="#dddddd", main=paste(stnames[i]))
@@ -136,8 +137,8 @@ for (i in 1:length(d_ts))
   }
   dev.off()
   #Yearly Raindays
-  name=paste(fpath,"/yearly_raindays_hist.svg", sep="")
-  svg(filename=name,  pointsize = 11, width=(16/2.54), height=(16/2.54))
+  name=paste(fpath,"/yearly_raindays_hist.png", sep="")
+png(filename=name, pointsize = 11, width=16, height=16, units="cm", res=300)
   par(hist.par)
     for (i in 1:length(y_raindays)){
   truehist(y_raindays[[i]], prob=TRUE, h=15, ylim=c(0,0.03), xlim=c(30,280),lwd=1, col=colors[i], main=paste(stnames[i]))
@@ -153,10 +154,9 @@ rm(fpath)
 #### COMPARE DENSITIES ####
   fpath="output/histogramms/comparison"
   dir.create(fpath)  
-
   ## Daily
-  name=paste(fpath,"/daily_gauss_kde_densities.svg", sep="")
-  svg(filename=name, pointsize = 11, width=(16/2.54), height=(9/2.54))
+  name=paste(fpath,"/daily_gauss_kde_densities.png", sep="")
+  png(filename=name, pointsize = 11, width=16, height=9, units="cm", res=300)
   par(def.par); par(mar=(c(3,3,0.2,0)+0.2)); par(cex.lab=0.7, cex.axis=0.7)
   plot(ddensity[[1]], xlim=c(0,250), ylim=c(0,0.05), col=colors[1], lwd=2, ylab="frequency", main="", xlab="rainfall (mm/day)")
   for (i in 2:length(ddensity)){ 
@@ -165,8 +165,8 @@ rm(fpath)
   legend(x="topright", legend=stnames, lty=(1:length(ddensity)), col=colors, lwd=2, cex=0.7, bty="n")
   dev.off()
   #Monthly
-  name=paste(fpath,"/monthly_gauss_kde_densities.svg", sep="")
-  svg(filename=name, pointsize = 11, width=(16/2.54), height=(9/2.54), family="Lato")
+  name=paste(fpath,"/monthly_gauss_kde_densities.png", sep="")
+  png(filename=name, pointsize = 11, width=16, height=9, units="cm", res=300)
   par(def.par); par(mar=(c(3,3,0.8,0)+0.2)); par(cex.lab=0.7, cex.axis=0.7)
   plot(mdensity[[1]], xlim=c(0,30), ylim=c(0,0.11), col=colors[1], lwd=2, ylab="frequency", xlab="rainfall (mm/day)", main="")
   for (i in 2:length(ddensity)){ 
@@ -175,8 +175,8 @@ rm(fpath)
   legend(x="topright", legend=stnames, lty=(1:length(mdensity)), col=colors, lwd=2, cex=0.7, bty="n")
   dev.off()
   #Yearly
-  name=paste(fpath,"/yearly_gauss_kde_densities.svg", sep="")
-  svg(filename=name, width=(16/2.54), height=(9/2.54), pointsize = 11, family="Lato")
+  name=paste(fpath,"/yearly_gauss_kde_densities.png", sep="")
+  png(filename=name, pointsize = 11, width=16, height=9, units="cm", res=300)
   par(def.par); par(mar=(c(3,3,0.8,0)+0.2)); par(cex.lab=0.7, cex.axis=0.7)
   plot(ydensity[[1]], xlim=c(0,18), ylim=c(0,0.3), col=colors[1], 
        lwd=2, ylab="frequency",xlab="rainfall (mm/day)", main="")          
@@ -188,13 +188,13 @@ rm(fpath)
   rm(name)
 ### END COMPARE DENSITIES ###
 #### CUMULATIVE DENSITIES####
-  name=paste(fpath,"/daily_ecdf.svg", sep="")
+  fpath="output/histogramms/comparison"
+  name=paste(fpath,"/daily_ecdf.png", sep="")
   cuml.plot(d.ecdf)
-  name=paste(fpath,"/monthly_ecdf.svg", sep="")
+  name=paste(fpath,"/monthly_ecdf.png", sep="")
   cuml.plot(m.ecdf)
-  name=paste(fpath,"/yearly_ecdf.svg", sep="")
+  name=paste(fpath,"/yearly_ecdf.png", sep="")
   cuml.plot(y.ecdf)
-
 ### END CUMULATIVE FREQUENCY ###
 #### CUMULATIVE SUMS ####
   ### For each station ###
@@ -209,7 +209,7 @@ dir.create(fpath)
   #warnings are usually caused by NA values and then can be ignored
   for (j in 1:length(cumlist_s.in)){
     name=paste(fpath,"/cumul_overlay_",stnames[j],".png", sep="")
-    png(filename=name, width=800, height=600, units="px")
+    png(filename=name, pointsize = 11, width=16, height=9, units="cm", res=300)
     plot(cumlist_s.in[[j]][[1]], type="l", lwd=2, lty=1, col=colors[[j]], ylim=c(0,5000))
       for (i in 2:31){
         lines(cumlist_s.in[[j]][[i]], type="l", lwd=2, lty=i, col=colors[[j]])
@@ -217,20 +217,22 @@ dir.create(fpath)
     dev.off()
   }
   rm(cumlist_s.in)
-  #long term cumulative sums
+#long term cumulative sums
+  fpath="output/cumulative"
   for (i in 1:length(cumsums_ts)) {
     name=paste(fpath,"/cumul_",stnames[i],".png", sep="")
-    png(filename=name, width=800, height=500, units="px")
-    plot(cumsums_ts[[i]], type="l",lty=1, lwd=2, col=colors[i], ylab="rainfall in mm", main=paste("Cumulative rainfall amounts for", stnames[i]), xlab="date") 
+    png(filename=name, pointsize = 11, width=16, height=5, units="cm", res=300)
+    par(def.par); par(mar=(c(2,2.8,0,0)+0.2));  par(cex.lab=0.7, cex.axis=0.7)
+    plot(cumsums_ts[[i]], ylim=c(0,3800), type="l",lty=1, lwd=1, col=colors[i], ylab="rainfall in mm", xlab="", xaxt="n") #main=paste("Cumulative rainfall amounts for", stnames[i]),
+    drawTimeAxis(dummy, tick.tstep = "years", lab.tstep = "years", lab.fmt="%Y", cex=0.7) 
     dev.off()
   }
-  rm(fpath)
 
 ## Comparison of cumsums of average daily values 
   #-> Main Text
   #Cumulative sum of average daily rainfall
-  name=paste(fpath,"/av-daily_cumsum.svg", sep="")
-  svg(filename=name, width=(16/2.54), height=(9/2.54), pointsize = 11, family="Lato")
+  name=paste(fpath,"/av-daily_cumsum.png", sep="")
+  png(filename=name, pointsize = 11, width=16, height=9, units="cm", res=300)
   par(def.par);par(mar=(c(2.8,2.8,0.3,0)+0.2)); par(cex.lab=0.7, cex.axis=0.7)
   matplot(d.cumsum_df, xaxt="n", xlim=c(0,366), type = c("l"), lty=c(1:length(d.cumsum_df)), lwd=2, col=colors, xlab="Month", ylab="Cumulative rainfall sum (mm)") 
   axis(1,at=c(0, 31,60,91,121,152,182,213,244,274,305,335,366), labels=c(row.names(davbm_df), ""))
@@ -244,8 +246,8 @@ dir.create(fpath)
 ### MONTHLY AVERAGES ###
   ## LINE PLOT
   # -> main text
-    name=paste(fpath, "/lineplot_dav_by_month.svg", sep="")
-    svg(filename=name, width=(16/2.54), height=(8/2.54), pointsize = 11, family="Lato") 
+    name=paste(fpath, "/lineplot_dav_by_month.png", sep="")
+  png(filename=name, pointsize = 11, width=16, height=8, units="cm", res=300)
     par(def.par); par(mar=(c(3,3,0,0)+0.2));  par(cex.lab=0.7, cex.axis=0.7)
     matplot(davbm_df, ylim=c(4,13), type = c("b"), pch=1, lty=(1:length(davbm_df)), lwd=2, cex=0.8, col = colors, xaxt = "n", las=1, ylab="rainfall (mm/day)", xlab="Month")
     axis(1,1:12,labels=row.names(davbm_df))
@@ -255,8 +257,8 @@ dir.create(fpath)
 ### MONTHLY VALUES FOR ALL STATIONS, PER MONTH, BOXPLOT VERSION
   ## (variation per month)
   library(beeswarm)
-  name=paste(fpath, "/monthly_season_boxplot.svg", sep="")
-  svg(filename=name, width=(16/2.54), height=(8/2.54), pointsize = 11, family="Lato") 
+  name=paste(fpath, "/monthly_season_boxplot.png", sep="")
+  png(filename=name, pointsize = 11, width=16, height=8, units="cm", res=300)
 #     title=paste("Boxplot of average daily rainfall per month for all stations")
     par(def.par); par(mar=(c(2.8,2.8,0,0)+0.2));  par(cex.lab=0.7, cex.axis=0.7)
     boxplot(bymonth_ts_all, ylim=c(0,28), xlim=c(0.8,13.3), cex=0.55, outline=FALSE, xaxt="n", ylim=c(0,28), xlab="Month", ylab="rainfall (mm/day)")
@@ -279,13 +281,14 @@ dir.create(fpath)
   library(beeswarm)
   for (i in 1:length(m_ts)) { #loop trough station
     name=paste(fpath,"/m_boxplot_",stnames[i],".png", sep="")
-    png(filename=name, width=800, height=600, units="px")
+    png(filename=name, pointsize = 11, width=16, height=9, units="cm", res=300)
     title=paste("Boxplot of average daily rainfall per month for",stnames[[i]])
     boxplot(bymonth_df_list[[i]], outline=FALSE, ylim=c(0,20), main=title, xlab="month", ylab="mm/day")
     beeswarm(bymonth_ts[[i]], corral="random", pch = 21, col=1, bg=colors[[i]], add=TRUE)
     dev.off()
   }
   rm(fpath)
+
 ### END SEASONALITY PLOTS ###
 
 ##### TREND ANALYSIS #####
@@ -328,8 +331,8 @@ dir.create(fpath) # new directory
   lin_mod=list()
   for (i in 1:length(bymonth_ts)) { #loop trough station
     lin_mod[[i]]=list()
-    name=paste(fpath,stnames[i],".svg", sep="")
-    svg(filename=name, width=(16/2.54), height=(16/2.54), pointsize = 11, family="Lato")    
+    name=paste(fpath,stnames[i],".png", sep="")
+    png(filename=name, pointsize = 11, width=16, height=16, units="cm", res=300)   
     par(def.par); par(hist.par); par(mar=(c(1.5,1.5,1,0)+0.2), cex.main=0.8, mgp=c(1.5,0.5,0)); par(mfrow=c(4,3))
     for (j in 1:12){ #loop trough month
       lin_mod[[i]][[j]]=lm(bymonth_ts[[i]][[j]]~time(bymonth_ts[[i]][[j]]))
@@ -347,8 +350,8 @@ dir.create(fpath) # new directory
   dir.create(fpath) 
   for (j in 1:12){  # loop through month
     mname=as.character(format.Date(time(bymonth_ts[[1]][[j]][1]), "%B"))
-    name=paste(fpath,"ts_",mname,".svg", sep="")
-    svg(filename=name, width=(16/2.54), height=(12/2.54), pointsize = 11, family="Lato")    
+    name=paste(fpath,"ts_",mname,".png", sep="")
+    png(filename=name, pointsize = 11, width=16, height=12, units="cm", res=300)  
     par(def.par); par(hist.par); par(mar=(c(1.5,1.5,1,0)+0.2), cex.main=0.8, mgp=c(1.5,0.5,0)); 
     par(mfrow=c(round(length(bymonth_ts)/3),3)) #a*b=length(bymonth_ts)
     for (i in 1:length(bymonth_ts)) {    #loop trough first eigth stations
@@ -370,8 +373,8 @@ dir.create(fpath) # new directory
   dir.create(fpath) # new directory
 
   for (i in 1:length(rsav_ts)) { #loop trough station
-    name=paste(fpath,"/seasonal_ts_",stnames[i],".svg", sep="")
-    svg(filename=name, width=(16/2.54), height=(8/2.54), pointsize = 11, family="Lato")
+    name=paste(fpath,"/seasonal_ts_",stnames[i],".png", sep="")
+    png(filename=name, pointsize = 11, width=16, height=9, units="cm", res=300)
     par(def.par); par(mar=(c(1.8,2.8,0,0)+0.2));  par(cex.lab=0.7, cex.axis=0.7)
 #     title=paste("TS of rainfall in wet and dry season for",stnames[i])
     plot(rsav_ts[[i]], ylim=c(0,17), xaxt="n", las=1, type="b", pch=19, cex=0.8, lty=1, lwd=2, col=colors[i], ylab="rainfall (mm/day)", xlab="")

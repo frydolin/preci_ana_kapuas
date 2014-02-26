@@ -84,11 +84,39 @@ reshape.matrix=function(x){
   return(y)
 }
 ###
+#### tsplot.pst ####
+# Make  time series plots for each station (time series plot per station)
+# creates *.svg files in output/plots/time_series/
+## make sure directory exists!
+## x: zoo time series object
+## type: is for naming e.g. daily, monthly. EXCEPTION: "yearly" also changes plot type to "b"!
+## colors and graphical paramteres need to be defined in the graphic_pars.r file
+## fpath: file path, default is fpath
+tsplot.pst=function(x, type, fpath, ...) {
+  require("hydroTSM")
+  source("scripts//graphic_pars.R")
+  # make directory
+  npath=paste(fpath,"/",type, sep="")
+  dir.create(npath)
+  # check if it is yearly ts
+  if(type=="yearly") ptype="b" else ptype="l"
+  # make graphs
+  for (i in 1:length(x)) {
+    name=paste(npath,"/",type,"_ts_",stnames[i],".png", sep="")
+    png(filename=name, pointsize = 11, width=16, height=5, units="cm", res=300)  
+    par(def.par); par(mar=(c(2,2.8,0,0)+0.2));  par(cex.lab=0.7, cex.axis=0.7, mgp=c(2.1,0.6,0))
+    plot(x[[i]], type=ptype, lty=1, lwd=1, las=1, col=colors[i], ylab="rainfall (mm/day)", xlab="", xaxt="n", ...)
+    drawTimeAxis(dummy, tick.tstep = "years", lab.tstep = "years", lab.fmt="%Y", cex=0.7)
+    #xlab=substr(type,1, (nchar(type)-2))) #main=paste("Time series of", type, "rainfall amounts for", stnames[i])
+    dev.off()
+  }
+}
+###
 #### RAINDAY/RAINFALL TS ####
 double.ts=function(x, y, fpath){
   for (i in 1:length(x)) {
-    name=paste(fpath,"/","double_ts_",stnames[i],".svg", sep="")
-    svg(filename=name, width=(16/2.54), height=(7.5/2.54), pointsize = 11, family="Lato")    
+    name=paste(fpath,"/","double_ts_",stnames[i],".png", sep="")
+    png(filename=name, pointsize = 11, width=16, height=7.5, units="cm", res=300)
     par(def.par)
     par(mar=c(4, 4, 0, 5) + 0.2)
     ## Plot rainfall amounts plot and put axis scale on right
@@ -111,7 +139,7 @@ double.ts=function(x, y, fpath){
 #### CUMULATIVE PLOTS ####
 # x: list of ecdf objects
 cuml.plot=function(x){
-  svg(filename=name, width=(16/2.54), height=(9/2.54), pointsize = 11, family="Lato")
+  png(filename=name, pointsize = 11, width=16, height=9, units="cm", res=300)
   par(def.par); par(mar=(c(3,3,0.8,0)+0.2)); par(cex.lab=0.7, cex.axis=0.7)
       plot(x[[1]], do.points=FALSE, verticals=TRUE, col.01line = "black", col=colors[1],  xlab="rainfall (mm/day)", main="")          
       for (i in 2:length(x)){ 
@@ -124,15 +152,14 @@ cuml.plot=function(x){
 
 #### Boxplot with Beeswarm ####
 
-bplot.bswarm=function(ts,df, fname, ...){
-  svg(filename=fname, width=(16/2.54), height=(8/2.54), pointsize = 11)
-  par(def.par);par(mar=(c(2.8,2.8,0.1,0)+0.2));  par(cex.lab=0.7, cex.axis=0.7)
+bplot.bswarm=function(ts,df, xlabel=TRUE, ...){
+  require("beeswarm")
+  if (xlabel==TRUE) {par(mar=(c(2.6,3.4,0,0)+0.2))} else par(mar=(c(0.8,3.4,1.8,0)+0.2))  
+  par(mgp=c(2.7, 0.6, 0), cex.lab=0.7, cex.axis=0.7, las=1)
   boxplot(df, outline=FALSE, xaxt="n", ...)
-  beeswarm(ts, pch=21, bg=colors, cex=0.8, add=TRUE)
+  beeswarm(ts, pch=21, bg=colors, cex=0.7, add=TRUE)
   abline(mean(df,  na.rm=TRUE),0, lwd=2, lty=2, col="#dd4444")
   axis(1, at=(1:length(ts)), labels = FALSE)
-  text(1:length(ts), par("usr")[3]*0.8, srt = 30, adj = 1,
-       labels = colnames(y_df), xpd = TRUE, cex=0.7)
-  dev.off()
+  if (xlabel==TRUE) {text(1:length(ts), par("usr")[3]*0.65, srt = 35, adj = 1, labels = colnames(df), xpd = TRUE, cex=0.7)}
 }
 ##### END convenience_functions #####

@@ -215,32 +215,6 @@ corgr=function(x, type, fpath){
 }
 ###
 
-#### tsplot.pst ####
-# Make  time series plots for each station (time series plot per station)
-# creates *.svg files in output/plots/time_series/
-## make sure directory exists!
-## x: zoo time series object
-## type: is for naming e.g. daily, monthly. EXCEPTION: "yearly" also changes plot type to "b"!
-## colors and graphical paramteres need to be defined in the graphic_pars.r file
-## fpath: file path, default is fpath
-tsplot.pst=function(x, type, fpath) {
-  source("scripts//graphic_pars.R")
-  # make directory
-  npath=paste(fpath,"/",type, sep="")
-  dir.create(npath)
-  # check if it is yearly ts
-  if(type=="yearly") ptype="b" else ptype="l"
-  # make graphs
-  for (i in 1:length(x)) {
-    name=paste(npath,"/",type,"_ts_",stnames[i],".svg", sep="")
-    svg(filename=name, width=(16/2.54), height=(7.5/2.54), pointsize = 11, family="Lato")    
-    par(def.par); par(mar=(c(2.8,3,0.2,0)+0.2), mgp=c(2.1,0.6,0));  par(cex.lab=0.7, cex.axis=0.7)
-    plot(x[[i]], type=ptype, lty=1, lwd=1, las=1, col=colors[i], ylab="rainfall (mm/day)", xlab="Time")
-    #xlab=substr(type,1, (nchar(type)-2))) #main=paste("Time series of", type, "rainfall amounts for", stnames[i])
-    dev.off()
-  }
-}
-###
 #### Scatterplot Matrix ####
   ### panel.2lines function ###
   # creates lines as input for a scatterplotmatrix
