@@ -14,26 +14,10 @@
 # year
   #-> main text
     name=paste(fpath,"/yearly_boxplot.svg", sep="")
-    svg(filename=name, width=(16/2.54), height=(8/2.54), pointsize = 10)
-    par(def.par);par(mar=(c(2.8,2.8,0,0)+0.2));  par(cex.lab=0.7, cex.axis=0.7)
-    boxplot(y_df, outline=FALSE, ylab="rainfall in mm/day", xaxt="n")
-    beeswarm(y_ts, pch=21, bg=colors, cex=1.3, add=TRUE)
-    abline(mean(y_df,  na.rm=TRUE),0, lwd=2.8, lty=2, col="#dd4444")
-    axis(1, at=(1:14), labels = FALSE)
-    text(1:14, par("usr")[3] - 0.25, srt = 35, adj = 1.05,
-    labels = colnames(y_df), xpd = TRUE, cex=0.95)
-    dev.off()
+    bplot.bswarm(ts=y_ts, df=y_df, fname=name, ylab="rainfall (mm/day)")
 # yearly raindays
-  name=paste(fpath,"/yearly_raindays_boxplot.svg", sep="")
-  svg(filename=name, width=(16/2.54), height=(8/2.54), pointsize = 10)
-  par(def.par);par(mar=(c(2.8,2.8,0,0)+0.2));  par(cex.lab=0.7, cex.axis=0.7)
-  boxplot(y_raindays_df, outline=FALSE, ylab="No of raindays", xaxt="n")
-  beeswarm(y_raindays, pch=21, bg=colors, cex=0.8, add=TRUE)
-  abline(mean(y_raindays_df,  na.rm=TRUE),0, lwd=2.8, lty=2, col="#dd4444")
-  axis(1, at=(1:14), labels = FALSE)
-  text(1:14, par("usr")[3] - 0.25, srt = 35, adj = 1,
-       labels = colnames(y_df), xpd = TRUE, cex=0.7)
-  dev.off()
+    name=paste(fpath,"/yearly_raindays_boxplot.svg", sep="")
+    bplot.bswarm(ts=y_raindays, df=y_raindays_df, fname=name, ylab="No of raindays")
 
 #monthly per month i.e. Jan, Feb
   # -> virtual appendix
@@ -94,7 +78,7 @@
     corgr(d_df, type="daily", fpath=fpath)
     corgr(w_df, type="weekly", fpath=fpath)
     corgr(m_df, type="monthly", fpath=fpath)
-    corgr(y_df, type="yearly", fpath=fpath)
+#     corgr(y_df, type="yearly", fpath=fpath)
 
     corgr(rs_df, type="rainseason daily", fpath=fpath)
     corgr(ds_df, type="dryseason daily", fpath=fpath)

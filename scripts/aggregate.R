@@ -197,11 +197,10 @@ for(i in (1:length(d_ts))){
   ydensity<-lapply(y_ts, function (x) density(x, from=0, bw=0.9,  na.rm=TRUE))
   y_rainday.density<-lapply(y_raindays, function (x) density(x, from=0, bw=12,  na.rm=TRUE))
 
-# Empirical Cumulative Distribution Function
-d.ecdf<-lapply(d_ts, function (x) ecdf(x[which(x>=1)]))
-m.ecdf<-lapply(m_ts, ecdf)
-y.ecdf<-lapply(y_ts, ecdf)
-
+#### Empirical Cumulative Distribution Function ####
+d.ecdf<-lapply(d_ts, function (x) ecdf(as.ts(x[which(x>=1)])))
+m.ecdf<-lapply(m_ts, function (x) ecdf(as.ts(x)))
+y.ecdf<-lapply(y_ts,  function (x) ecdf(as.ts(x)))
 ### END DENSITIES ###
 
 #### CLEAN UP ####

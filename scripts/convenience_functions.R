@@ -121,4 +121,18 @@ cuml.plot=function(x){
       legend(x="bottomright", inset=c(0,0.05), legend=stnames, lty=1, col=colors, lwd=2, cex=0.7, bty="n")
   dev.off()
 }
+
+#### Boxplot with Beeswarm ####
+
+bplot.bswarm=function(ts,df, fname, ...){
+  svg(filename=fname, width=(16/2.54), height=(8/2.54), pointsize = 11)
+  par(def.par);par(mar=(c(2.8,2.8,0.1,0)+0.2));  par(cex.lab=0.7, cex.axis=0.7)
+  boxplot(df, outline=FALSE, xaxt="n", ...)
+  beeswarm(ts, pch=21, bg=colors, cex=0.8, add=TRUE)
+  abline(mean(df,  na.rm=TRUE),0, lwd=2, lty=2, col="#dd4444")
+  axis(1, at=(1:length(ts)), labels = FALSE)
+  text(1:length(ts), par("usr")[3]*0.8, srt = 30, adj = 1,
+       labels = colnames(y_df), xpd = TRUE, cex=0.7)
+  dev.off()
+}
 ##### END convenience_functions #####
