@@ -156,7 +156,7 @@ rm(fpath)
   dir.create(fpath)  
   ## Daily
   name=paste(fpath,"/daily_gauss_kde_densities.png", sep="")
-  png(filename=name, pointsize = 11, width=16, height=9, units="cm", res=300)
+png(filename=name, pointsize = 11, width=16, height=10, units="cm", res=150)
   par(def.par); par(mar=(c(3,3,0.2,0)+0.2)); par(cex.lab=0.7, cex.axis=0.7)
   plot(ddensity[[1]], xlim=c(0,250), ylim=c(0,0.05), col=colors[1], lwd=2, ylab="frequency", main="", xlab="rainfall (mm/day)")
   for (i in 2:length(ddensity)){ 
@@ -166,7 +166,7 @@ rm(fpath)
   dev.off()
   #Monthly
   name=paste(fpath,"/monthly_gauss_kde_densities.png", sep="")
-  png(filename=name, pointsize = 11, width=16, height=9, units="cm", res=300)
+png(filename=name, pointsize = 11, width=16, height=10, units="cm", res=150)
   par(def.par); par(mar=(c(3,3,0.8,0)+0.2)); par(cex.lab=0.7, cex.axis=0.7)
   plot(mdensity[[1]], xlim=c(0,30), ylim=c(0,0.11), col=colors[1], lwd=2, ylab="frequency", xlab="rainfall (mm/day)", main="")
   for (i in 2:length(ddensity)){ 
@@ -176,7 +176,7 @@ rm(fpath)
   dev.off()
   #Yearly
   name=paste(fpath,"/yearly_gauss_kde_densities.png", sep="")
-  png(filename=name, pointsize = 11, width=16, height=9, units="cm", res=300)
+  png(filename=name, pointsize = 11, width=16, height=10, units="cm", res=150)
   par(def.par); par(mar=(c(3,3,0.8,0)+0.2)); par(cex.lab=0.7, cex.axis=0.7)
   plot(ydensity[[1]], xlim=c(0,18), ylim=c(0,0.3), col=colors[1], 
        lwd=2, ylab="frequency",xlab="rainfall (mm/day)", main="")          
@@ -320,44 +320,46 @@ dir.create(fpath) # new directory
   ### END Mann-Kendall trend testing ###
   
   #### BY MONTH time series with linear trendline ####
-  fpath="output/trendanalysis/bymonth/"
+  fpath="output/timeseries/bymonth/"
   dir.create(fpath) 
    
   #1. Per station: comparison of month within a station
   # Creates a plot matrix with all "by month" time series (Jan 1982, Jan 1983, ..) for each station
-  fpath="output/trendanalysis/bymonth/month/"
+  fpath="output/timeseries/bymonth/stations/"
   dir.create(fpath) 
   
   lin_mod=list()
   for (i in 1:length(bymonth_ts)) { #loop trough station
     lin_mod[[i]]=list()
-    name=paste(fpath,stnames[i],".png", sep="")
+    name=paste(fpath,"bymonth_ts_",stnames[i],".png", sep="")
     png(filename=name, pointsize = 11, width=16, height=16, units="cm", res=300)   
     par(def.par); par(hist.par); par(mar=(c(1.5,1.5,1,0)+0.2), cex.main=0.8, mgp=c(1.5,0.5,0)); par(mfrow=c(4,3))
     for (j in 1:12){ #loop trough month
       lin_mod[[i]][[j]]=lm(bymonth_ts[[i]][[j]]~time(bymonth_ts[[i]][[j]]))
       mname=as.character(format.Date(time(bymonth_ts[[i]][[j]][1]), "%B"))
       #title=paste("TS of mean rainfall for",stnames[i],"and month:",mname)
-      plot(bymonth_ts[[i]][[j]], ylim=c(0,25), type="b", cex=0.8, col=colors[i],ylab="", xlab="", main=mname) #ylab="rainfall (mm/day)", xlab="Time")
+      plot(bymonth_ts[[i]][[j]], ylim=c(0,25), type="b", cex=0.8, col=colors[i],ylab="", xaxt="n", xlab="", main=mname) #ylab="rainfall (mm/day)", xlab="Time")
       abline(lin_mod[[i]][[j]], lty=1,lwd=1, col=colors[i]) #trendline
+      drawTimeAxis(dummy, tick.tstep = "years", lab.tstep = "years", lab.fmt="%Y", cex=0.7) 
     }
     dev.off()
   }
 
   # 2. Per month: comparison of stations for every month
   # Creates a plot matrix for 8 stations of a particular month  of the "by month" time series (Jan 1982, Jan 1983, ..)
-  fpath="output/trendanalysis/bymonth/station/"
+  fpath="output/timeseries/bymonth/month/"
   dir.create(fpath) 
   for (j in 1:12){  # loop through month
     mname=as.character(format.Date(time(bymonth_ts[[1]][[j]][1]), "%B"))
-    name=paste(fpath,"ts_",mname,".png", sep="")
+    name=paste(fpath,"bymonth_ts_",mname,".png", sep="")
     png(filename=name, pointsize = 11, width=16, height=12, units="cm", res=300)  
     par(def.par); par(hist.par); par(mar=(c(1.5,1.5,1,0)+0.2), cex.main=0.8, mgp=c(1.5,0.5,0)); 
     par(mfrow=c(round(length(bymonth_ts)/3),3)) #a*b=length(bymonth_ts)
     for (i in 1:length(bymonth_ts)) {    #loop trough first eigth stations
       #title=paste("TS of mean rainfall for",stnames[i],"and month:",mname)
-      plot(bymonth_ts[[i]][[j]], ylim=c(0,25), type="b", cex=0.8, col=colors[i],ylab="", xlab="", main=stnames[i]) #ylab="rainfall (mm/day)", xlab="Time")
+      plot(bymonth_ts[[i]][[j]], ylim=c(0,25), type="b", cex=0.8, col=colors[i],ylab="", xaxt="n", xlab="", main=stnames[i]) #ylab="rainfall (mm/day)", xlab="Time")
       abline(lm(bymonth_ts[[i]][[j]]~time(bymonth_ts[[i]][[j]])),lty=1,lwd=1, col=colors[i]) #trendline
+      drawTimeAxis(dummy, tick.tstep = "years", lab.tstep = "years", lab.fmt="%Y", cex=0.7) 
     }
     dev.off()
   }

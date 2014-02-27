@@ -6,18 +6,18 @@
 ## initializes variables used in all scripts
 
 #Attach base packages, usually unnecessary
-  library("utils")
-  library("stats")
-  library("class")
-  library("methods")
-  library("grDevices")
-  library("graphics")
-  library("tools")
+#   library("utils")
+#   library("stats")
+#   library("class")
+#   library("methods")
+#   library("grDevices")
+#   library("graphics")
+   library("tools")
 
 #Attach other often used packages (they might call further dependencies)
-  library("zoo")
-  library("xts")
   library("hydroTSM")
+#   library("zoo")
+#   library("xts")
 
 ## load own functions, as defined in the file.
   source("scripts/functions.R")

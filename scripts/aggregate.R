@@ -179,15 +179,15 @@ for(i in (1:length(d_ts))){
   cumsums=lapply(cumlist, unlist)
   #make times series and convert that to df
   cumsums_ts=lapply(cumsums, function(x) zoo(x, order.by=time(d_ts[[1]])))
-  rm(cumsums)
   cumsums_df=mdf(cumsums_ts)
   write.csv(cumsums_df, file=paste(fpath,"/cumulative_funct.csv", sep=""),  na = "NA") 
+  rm(cumsums)
   ## with average rain on each day
   # aggregate mean daily rainfall 
-  dpd_ts=lapply(d_ts, aggregate, by=format.Date(time(d_ts[[1]]), "%m-%d"), mean, na.rm=TRUE)
+  dpd_ts=lapply(d_ts, aggregate, by=format.Date(time(d_ts[[1]]), "%m-%d"), mean, na.rm=TRUE) #daily per day time series
   d.cumsum_ts=lapply(dpd_ts, cumsum)
   d.cumsum_df=mdf(d.cumsum_ts)
-
+  rm(dpd_ts)
 ### END CUMULATIVE SUMS ###
 
 #### DENSITIES ####
@@ -204,7 +204,7 @@ y.ecdf<-lapply(y_ts,  function (x) ecdf(as.ts(x)))
 ### END DENSITIES ###
 
 #### CLEAN UP ####
-rm(fpath)
+rm(fpath,i)
 ###
 
 ##### END aggregate.R #####

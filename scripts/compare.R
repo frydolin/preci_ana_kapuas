@@ -115,10 +115,10 @@
 ### END CORRELATION###
 
 #### COMPARISON OF SPATIAL CORRELATION AND DISTANCE ####
-library("sp")
-library("maptools")
-library("raster")
-library("reshape")
+# library("sp")
+ library("maptools")
+ library("raster")
+ library("reshape")
 source("scripts/convenience_functions.R")
 # Load station data (not in long lat to get distances in meters)
   stations<-readShapePoints("input/stationmap_UTM49N//stationmap-UTM49N.shp")
@@ -144,19 +144,24 @@ source("scripts/convenience_functions.R")
   cor_y=reshape.matrix(cor.matrix_y)
 
 # Plot
-name="output/correlation/corrdist.png"
-  png(filename=name, pointsize = 11, width=16, height=9, units="cm", res=300)
-   par(def.par); par(cex.lab=0.8, cex.axis=0.7, las=1); par(mfrow=c(2,2)); par(mar=(c(2.6,2.8,1.8,0)+0.2))
-  plot(cor_d$value~sp.dist$value, ylim=c(0,1.1),  xlim=c(0,280), lty=2, xlab="", ylab="r (Pearson)")
- plot(cor_m$value~sp.dist$value, ylim=c(0,1.1),  xlim=c(0,280), lty=2, ylab="", xlab="distance (km)")
-  plot(cor_y$value~sp.dist$value, ylim=c(0,1.1),  xlim=c(0,280), lty=2, ylab="r (Pearson)", xlab="distance (km)")
+  name="output/correlation/daily_corrdist.png"
+  png(filename=name, pointsize = 11, width=10, height=5, units="cm", res=300)
+  corrdist.plot(x=sp.dist$value,y=cor_d$value)
+dev.off()
+  name="output/correlation/monthly_corrdist.png"
+  png(filename=name, pointsize = 11, width=10, height=5, units="cm", res=300)
+  corrdist.plot(x=sp.dist$value,y=cor_m$value)
+dev.off()
+  name="output/correlation/yearly_corrdist.png"
+  png(filename=name, pointsize = 11, width=10, height=5, units="cm", res=300)
+  corrdist.plot(x=sp.dist$value,y=cor_y$value)
 dev.off()
 
   rm(sp.dist.matrix, cor.matrix_d, cor.matrix_m, cor.matrix_y)
 ### END COMPARISON OF SPATIAL CORRELATION AND DISTANCE ###
 
 #### shut down ####
-rm(name, fpath)
+rm(name)
 graphics.off() #Completely shuts down the printing to file
 ### END SHUT DOWN ###
 

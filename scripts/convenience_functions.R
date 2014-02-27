@@ -139,7 +139,7 @@ double.ts=function(x, y, fpath){
 #### CUMULATIVE PLOTS ####
 # x: list of ecdf objects
 cuml.plot=function(x){
-  png(filename=name, pointsize = 11, width=16, height=9, units="cm", res=300)
+  png(filename=name, pointsize = 11, width=16, height=10, units="cm", res=150)
   par(def.par); par(mar=(c(3,3,0.8,0)+0.2)); par(cex.lab=0.7, cex.axis=0.7)
       plot(x[[1]], do.points=FALSE, verticals=TRUE, col.01line = "black", col=colors[1],  xlab="rainfall (mm/day)", main="")          
       for (i in 2:length(x)){ 
@@ -161,5 +161,13 @@ bplot.bswarm=function(ts,df, xlabel=TRUE, ...){
   abline(mean(df,  na.rm=TRUE),0, lwd=2, lty=2, col="#dd4444")
   axis(1, at=(1:length(ts)), labels = FALSE)
   if (xlabel==TRUE) {text(1:length(ts), par("usr")[3]*0.65, srt = 35, adj = 1, labels = colnames(df), xpd = TRUE, cex=0.7)}
+}
+###
+
+#### CORRDIST PLOTS ####
+
+corrdist.plot=function(x,y){
+  par(def.par); par(cex.lab=0.8, cex.axis=0.7, las=1); par(mar=(c(2.8,2.8,0,0)+0.2))
+  plot(y~x, ylim=c(0,1.1),  xlim=c(0,280), lty=2, xlab="distance (km)", ylab="r (Pearson)")
 }
 ##### END convenience_functions #####

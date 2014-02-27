@@ -13,7 +13,7 @@ par(family="Lato",
 def.par=par(no.readonly = TRUE)
 
 #### histograms ####
-par(par(mfrow=c(round(length(d_ts)/3),3)), #a*b=length(bymonth_ts)    
+par(par(mfrow=c(round(length(d_ts)/3),3)), #a*b=length(x)    
     adj=0,
     mar=(c(2,2.4,1,0)+0.1),
     col="black",
@@ -36,9 +36,10 @@ par(def.par)
 colors=rainbow(n=14, s = 1, v = 0.8, start = 0.05, end = max(1, 14 - 1)/14, alpha = 1)
 #   pal((colors))
 #   pal((desaturate(colors)))
-  # For statistical analysis
-#   colors=colors[c(-3,-8,-9,-11,-13,-14)]
-  # For spatial interpolation
-  #   colors=colors[c(-9,-13)]
+
+# For statistical analysis
+  colors=colors[c(-3,-8,-9,-11,-13,-14)]
+# For spatial interpolation
+#   colors=colors[c(-9,-13)]
 ###
 ### END graphic_pars.R ###

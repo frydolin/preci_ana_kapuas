@@ -208,8 +208,8 @@ make.smry=function(x, objnames=stnames){
 ## type: is only for naming e.g. daily, monthly 
 corgr=function(x, type, fpath){
   require("corrgram")
-  name=paste(fpath,"/",type,"_corgr.svg", sep ="")	# filename
-  svg(filename=name, width=(8/2.54), height=(8/2.54), pointsize = 11, family="Lato")	# open *.svg write
+  name=paste(fpath,"/",type,"_corgr.png", sep ="")	# filename
+  png(filename=name, pointsize = 11, width=16, height=16, units="cm", res=300)	# open *.svg write
   corrgram(x, lower.panel=panel.pie, upper.panel=panel.conf, diag.panel=panel.density, main="", oma=c(0,0,0,0))
   dev.off()							# close write
 }
@@ -231,7 +231,7 @@ corgr=function(x, type, fpath){
 ## type: is only for naming e.g. daily, monthly 
 scatterMatrix=function(x, xylim, type, fpath){
   name=paste(fpath,"/",type,"_scatter.png", sep ="")  # filename
-  png(filename=name, width=(16/2.54)*300, height=(16/2.54)*300, pointsize = 11, res=300)  # open *.svg write
+  png(filename=name, pointsize = 11, width=16, height=16, units="cm", res=300) # open *.png write
   pairs(x, upper.panel=NULL, lower.panel=panel.2lines, xlim=xylim, ylim=xylim, 
         las=1, gap=0.3, oma=c(2.5,2.5,0,0), cex.labels=1.5, family="Lato"
     )
