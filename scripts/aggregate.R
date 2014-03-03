@@ -192,15 +192,16 @@ for(i in (1:length(d_ts))){
 
 #### DENSITIES ####
 ## Compute gaussian Kernel densities
-  ddensity<-lapply(d_ts, function (x) density(x[which(x>=1)], from=0, bw=3.5,  na.rm=TRUE))
+  ddensity_rd<-lapply(d_ts, function (x) density(x[which(x>=1)], from=0, bw=3.5,  na.rm=TRUE))
+  ddensity_ad<-lapply(d_ts, function (x) density(x, from=0, bw=3.5,  na.rm=TRUE))
   mdensity<-lapply(m_ts, function (x) density(x, from=0,  bw=1.8,  na.rm=TRUE))
-  ydensity<-lapply(y_ts, function (x) density(x, from=0, bw=0.9,  na.rm=TRUE))
-  y_rainday.density<-lapply(y_raindays, function (x) density(x, from=0, bw=12,  na.rm=TRUE))
+ ydensity<-lapply(y_ts, function (x) density(x, from=0, bw=0.9,  na.rm=TRUE))
+ y_rainday.density<-lapply(y_raindays, function (x) density(x, from=0, bw=12,  na.rm=TRUE))
 
 #### Empirical Cumulative Distribution Function ####
-d.ecdf<-lapply(d_ts, function (x) ecdf(as.ts(x[which(x>=1)])))
-m.ecdf<-lapply(m_ts, function (x) ecdf(as.ts(x)))
-y.ecdf<-lapply(y_ts,  function (x) ecdf(as.ts(x)))
+  d.ecdf<-lapply(d_ts, function (x) ecdf(as.ts(x[which(x>=1)])))
+  m.ecdf<-lapply(m_ts, function (x) ecdf(as.ts(x)))
+  y.ecdf<-lapply(y_ts,  function (x) ecdf(as.ts(x)))
 ### END DENSITIES ###
 
 #### CLEAN UP ####

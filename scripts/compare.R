@@ -88,7 +88,7 @@
     corgr(d_df, type="daily", fpath=fpath)
     corgr(w_df, type="weekly", fpath=fpath)
     corgr(m_df, type="monthly", fpath=fpath)
-#     corgr(y_df, type="yearly", fpath=fpath)
+    corgr(y_df, type="yearly", fpath=fpath)
 
     corgr(rs_df, type="rainseason daily", fpath=fpath)
     corgr(ds_df, type="dryseason daily", fpath=fpath)
@@ -159,6 +159,13 @@ dev.off()
 
   rm(sp.dist.matrix, cor.matrix_d, cor.matrix_m, cor.matrix_y)
 ### END COMPARISON OF SPATIAL CORRELATION AND DISTANCE ###
+#### COMPARE AVERAGE RAINFALL TO ELEVATION ####
+stations$elevation
+stations$ID
+mean=lapply(y_ts, mean, na.rm=TRUE)
+mean=unlist(mean)
+plot(mean~stations$elevation)
+###
 
 #### shut down ####
 rm(name)

@@ -63,6 +63,7 @@ loaded via a namespace (and not attached):
 # y: 	year(ly)
 # rs:	rainy season
 # ds: 	dry season
+# rd:	rain day
 # ts: 	time series (zoo object)
 # s: 	sum
 # df: 	data frame/matrix 

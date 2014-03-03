@@ -155,7 +155,7 @@ cuml.plot=function(x){
 bplot.bswarm=function(ts,df, xlabel=TRUE, ...){
   require("beeswarm")
   if (xlabel==TRUE) {par(mar=(c(2.6,3.4,0,0)+0.2))} else par(mar=(c(0.8,3.4,1.8,0)+0.2))  
-  par(mgp=c(2.7, 0.6, 0), cex.lab=0.7, cex.axis=0.7, las=1)
+  par(mgp=c(2.7, 0.6, 0), las=1)
   boxplot(df, outline=FALSE, xaxt="n", ...)
   beeswarm(ts, pch=21, bg=colors, cex=0.7, add=TRUE)
   abline(mean(df,  na.rm=TRUE),0, lwd=2, lty=2, col="#dd4444")
