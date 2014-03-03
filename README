@@ -5,6 +5,7 @@
 ### R FILES ###
 + run.R 		executes the analysis, it calls further scripts:
 			run.R is the only file that needs to be run for a complete default analysis
+			50+ warnings do appear when running run.R. Most of them concern graphics. They should all be harmless, but of course it is advisable to check.
 
 + installpackages.R	convenience script that should install all needed packages, if they are not yet installed
 + load.R 		loads in all the data and converts to appropriate formats ##
@@ -14,9 +15,15 @@
 
 Called from within these files:
 + setup.R			loads common variables, functions and packages
++ graphic_pars.R		graphical parameters
 + homogeneity_test.R		four types of homogeneity tests
 + functions.R			contains own functions for the analysis
-+ convenience_functions.R	own functions for repeated tasks, that are specific and can't be reused.
++ convenience_functions.R	own functions for repeated tasks, that are specific and probably can't be reused.
+
+### NECESSARY ADJUSTMENTS BEFORE RUNNING THE CODE ###
+On default the analysis is run on all files within /input, for a maximum of 14 stations. The following files need adjustment if the station number is changed or the analysis should be run on a subset:
+- load.R, here you can specify to exclude certain stations from the analysis. The variables "d_ts" and "stnames" need to be subsetted.
+- graphic_pars.R, the "color" vector on default has 14 entries. It needs to be adjusted according to the station number.
 
 ### NECESSARY FOLDER STRUCTURE ###
 # /input		# contains input data
@@ -25,11 +32,13 @@ Called from within these files:
 # all other folders are created automatically
 
 ### REQUIRED INPUT DATA FORMAT###
+The following data format has to be used OR adjustments need to be made to load.R
 # times series of precipitation
 # .csv files with two columns:
 # date	rainfall
 # seperator is ; 
 # missing value flag is NA
+# decimal sign is ,
 # filenames are NNstationname.csv with NN being any two numbers
 
 ### REQUIRED PACKAGES ###
@@ -48,14 +57,14 @@ loaded via a namespace (and not attached):
 [5] intervals_0.14.0 lattice_0.20-24  reshape_0.8.4    sp_1.0-14       
 [9] spacetime_1.0-9 
 
-### VARIABLE NAME ABBREVIATIONS ###
-# d: 	day(ly) (usually not explicitly stated)
+### VARIABLE PRE-/SUFFIX ABBREVIATIONS ###
+# d: 	day(ly)
 # m: 	month(ly)
-# y: 		year(ly)
-# rs:	 	rainy season
+# y: 	year(ly)
+# rs:	rainy season
 # ds: 	dry season
 # ts: 	time series (zoo object)
-# s: 		sum
+# s: 	sum
 # df: 	data frame/matrix 
 	 
 ########## END #############
