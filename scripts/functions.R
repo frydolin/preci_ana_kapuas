@@ -200,33 +200,34 @@ make.smry=function(x, objnames=stnames){
   return(dataframe)
 }
 ###
+
+#### panel.2lines function ####
+# creates lines as input for a scatterplotmatrix
+# lm regression
+# 0,1 abline
+panel.2lines <- function(x,y,...) {
+  points(y~x, cex=0.7)
+  abline(0,1,col="blue")
+  abline(lm(y~x),col="red")
+  box(col = "lightgray")
+}
+###
 #### corgr ####
 # own version of correlograms made by corrgram
 # corgr creates *.svg files in fpath
 ## make sure directory exists!
 ## x: should be a data matrix (as in the normal corrgram() function)
 ## type: is only for naming e.g. daily, monthly 
-corgr=function(x, type, fpath){
+corgr=function(x, xylim, type, fpath){
   require("corrgram")
   name=paste(fpath,"/",type,"_corgr.png", sep ="")	# filename
   png(filename=name, pointsize = 11, width=16, height=16, units="cm", res=300)	# open *.svg write
-  corrgram(x, lower.panel=panel.pie, upper.panel=panel.conf, diag.panel=panel.density, main="", oma=c(0,0,0,0))
-  dev.off()							# close write
+  corrgram(x, lower.panel=panel.pie, upper.panel=panel.2lines, diag.panel=panel.density, xlim=xylim, ylim=xylim, main="", oma=c(0,0,0,0))
+  dev.off()	# close write
 }
 ###
 
 #### Scatterplot Matrix ####
-  ### panel.2lines function ###
-  # creates lines as input for a scatterplotmatrix
-  # lm regression
-  # 0,1 abline
-  panel.2lines <- function(x,y,...) {
-    points(y~x, cex=0.7)
-    abline(0,1,col="red")
-    abline(lm(y~x),col="darkblue")
-  }
-  ###
-### scatterMatrix###
 ## x: should be a data matrix (as in the normal corrgram() function)
 ## type: is only for naming e.g. daily, monthly 
 scatterMatrix=function(x, xylim, type, fpath){
@@ -238,5 +239,4 @@ scatterMatrix=function(x, xylim, type, fpath){
   dev.off()	# close write
 }
 ###
-
 ###### END #############

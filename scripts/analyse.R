@@ -332,45 +332,49 @@ dir.create(fpath) # new directory
   #### BY MONTH time series with linear trendline ####
   fpath="output/timeseries/bymonth/"
   dir.create(fpath) 
-   
   #1. Per station: comparison of month within a station
   # Creates a plot matrix with all "by month" time series (Jan 1982, Jan 1983, ..) for each station
+  # title=paste("TS of mean rainfall for",stnames[i],"and month:",mname)
   fpath="output/timeseries/bymonth/stations/"
   dir.create(fpath) 
-  
   lin_mod=list()
   for (i in 1:length(bymonth_ts)) { #loop trough station
     lin_mod[[i]]=list()
     name=paste(fpath,"bymonth_ts_",stnames[i],".png", sep="")
     png(filename=name, pointsize = 11, width=16, height=16, units="cm", res=300)   
-    par(def.par); par(hist.par); par(mar=(c(1.5,1.5,1,0)+0.2), cex.main=0.8, mgp=c(1.5,0.5,0)); par(mfrow=c(4,3))
+    par(def.par); par(mar=c(0,0,1.8,0.4), oma=c(4,4,0,0), las=1); par(cex.main=0.9, adj=0, mgp=c(1.5,0.5,0)); par(mfrow=c(4,3))
     for (j in 1:12){ #loop trough month
       lin_mod[[i]][[j]]=lm(bymonth_ts[[i]][[j]]~time(bymonth_ts[[i]][[j]]))
       mname=as.character(format.Date(time(bymonth_ts[[i]][[j]][1]), "%B"))
-      #title=paste("TS of mean rainfall for",stnames[i],"and month:",mname)
-      plot(bymonth_ts[[i]][[j]], ylim=c(0,25), type="b", cex=0.8, col=colors[i],ylab="", xaxt="n", xlab="", main=mname) #ylab="rainfall (mm/day)", xlab="Time")
+      if (j %in% c(1,4,7,10)){ax="s"} else {ax="n"} # axis only on the outside
+      plot(bymonth_ts[[i]][[j]], ylim=c(0,25), type="b", cex=0.8, col=colors[i], ylab="", yaxt=ax, xaxt="n", xlab="", main=mname)
       abline(lin_mod[[i]][[j]], lty=1,lwd=1, col=colors[i]) #trendline
-      drawTimeAxis(dummy, tick.tstep = "years", lab.tstep = "years", lab.fmt="%Y", cex=0.7) 
+      if (j %in% c(10,11,12)){drawTimeAxis(dummy, tick.tstep = "years", lab.tstep = "years", lab.fmt="%Y", cex=0.8)}
     }
+    mtext("rainfall (mm/day)", side = 2, line = 2.5, cex=0.8, las=0, outer = TRUE, at = NA,  adj = 0.5, padj = 0.5)
+    mtext("Time", side = 1, line =2, cex=0.8, outer = TRUE, adj = 0.5, padj = 0.5)
     dev.off()
   }
 
   # 2. Per month: comparison of stations for every month
   # Creates a plot matrix for 8 stations of a particular month  of the "by month" time series (Jan 1982, Jan 1983, ..)
-  fpath="output/timeseries/bymonth/month/"
+  #title=paste("TS of mean rainfall for",stnames[i],"and month:",mname)
+  fpath="output/timeseries/bymonth/permonth/"
   dir.create(fpath) 
   for (j in 1:12){  # loop through month
     mname=as.character(format.Date(time(bymonth_ts[[1]][[j]][1]), "%B"))
     name=paste(fpath,"bymonth_ts_",mname,".png", sep="")
-    png(filename=name, pointsize = 11, width=16, height=12, units="cm", res=300)  
-    par(def.par); par(hist.par); par(mar=(c(1.5,1.5,1,0)+0.2), cex.main=0.8, mgp=c(1.5,0.5,0)); 
+    png(filename=name, pointsize = 11, width=16, height=16, units="cm", res=300)  
+    par(def.par); par(mar=c(0,0,1.8,0.4), oma=c(4,4,0,0), las=1); par(cex.main=0.9, adj=0, mgp=c(1.5,0.5,0))
     par(mfrow=c(round(length(bymonth_ts)/3),3)) #a*b=length(bymonth_ts)
-    for (i in 1:length(bymonth_ts)) {    #loop trough first eigth stations
-      #title=paste("TS of mean rainfall for",stnames[i],"and month:",mname)
-      plot(bymonth_ts[[i]][[j]], ylim=c(0,25), type="b", cex=0.8, col=colors[i],ylab="", xaxt="n", xlab="", main=stnames[i]) #ylab="rainfall (mm/day)", xlab="Time")
+    for (i in 1:length(bymonth_ts)) {    #loop trough stations
+      if (i %in% seq(1, length(bymonth_ts),3)){ax="s"} else {ax="n"} # axis only on the outside
+      plot(bymonth_ts[[i]][[j]], ylim=c(0,25), type="b", cex=0.8, col=colors[i], yaxt=ax,ylab="", xaxt="n", xlab="", main=stnames[i]) #ylab="rainfall (mm/day)", xlab="Time")
       abline(lm(bymonth_ts[[i]][[j]]~time(bymonth_ts[[i]][[j]])),lty=1,lwd=1, col=colors[i]) #trendline
-      drawTimeAxis(dummy, tick.tstep = "years", lab.tstep = "years", lab.fmt="%Y", cex=0.7) 
+      if (i %in% c((round(length(bymonth_ts)/3)*3-3):length(bymonth_ts))){drawTimeAxis(dummy, tick.tstep = "years", lab.tstep = "years", lab.fmt="%Y", cex=0.7)} # x axis only on the bottom
     }
+    mtext("rainfall (mm/day)", side = 2, line = 2.5, cex=0.8, las=0, outer = TRUE, at = NA,  adj = 0.5, padj = 0.5)
+    mtext("Time", side = 1, line =2, cex=0.8, outer = TRUE, adj = 0.5, padj = 0.5)
     dev.off()
   }
   ### END BY MONTH TS ###

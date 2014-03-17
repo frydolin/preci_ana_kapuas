@@ -84,11 +84,11 @@
   # -> main text
     fpath="output/correlation/correlograms"
     dir.create(fpath)
-    
-    corgr(d_df, type="daily", fpath=fpath)
-    corgr(w_df, type="weekly", fpath=fpath)
-    corgr(m_df, type="monthly", fpath=fpath)
-    corgr(y_df, type="yearly", fpath=fpath)
+
+    corgr(d_df, xylim=c(0,150), type="daily", fpath=fpath)
+    corgr(w_df, xylim=c(0,45), type="weekly", fpath=fpath)
+    corgr(m_df, xylim=c(0,25), type="monthly", fpath=fpath)
+    corgr(y_df, xylim=c(3,15), type="yearly", fpath=fpath)
 
     corgr(rs_df, type="rainseason daily", fpath=fpath)
     corgr(ds_df, type="dryseason daily", fpath=fpath)
