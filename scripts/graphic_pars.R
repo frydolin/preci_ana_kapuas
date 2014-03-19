@@ -12,19 +12,6 @@ par(family="Lato",
     cex.lab=0.7)
 def.par=par(no.readonly = TRUE)
 
-#### histograms ####
-par(par(mfrow=c(round(length(d_ts)/3),3)), #a*b=length(x)    
-    adj=0,
-    mar=(c(2,2.4,1,0)+0.1),
-    col="black",
-    mgp=c(3,0.5,0),
-    oma=c(2,2,0,0),
-    lwd=1,
-    las=1
-    )
-hist.par=par(no.readonly = TRUE)
-par(def.par)
-
 #### legend outside ####
 par(xpd=TRUE,
      mar=(c(4,3,2,6.3))+0.15)

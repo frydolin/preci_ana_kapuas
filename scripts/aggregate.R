@@ -173,6 +173,8 @@ for(i in (1:length(d_ts))){
 ### END SEASONAL AGGREGATION ###
 
 #### CUMULATIVE DAILY SUMS ####
+  fpath="output/cumulative"
+  dir.create(fpath)
   ## for each year
   cumlist=lapply(d_ts, cumul) #make sums 
   #convert to one connected TS per station
@@ -195,7 +197,7 @@ for(i in (1:length(d_ts))){
   ddensity_rd<-lapply(d_ts, function (x) density(x[which(x>=1)], from=0, bw=3.5,  na.rm=TRUE))
   ddensity_ad<-lapply(d_ts, function (x) density(x, from=0, bw=3.5,  na.rm=TRUE))
   mdensity<-lapply(m_ts, function (x) density(x, from=0,  bw=1.8,  na.rm=TRUE))
- ydensity<-lapply(y_ts, function (x) density(x, from=0, bw=0.9,  na.rm=TRUE))
+ ydensity<-lapply(y_ts, function (x) density(x, from=0, bw=0.75,  na.rm=TRUE))
  y_rainday.density<-lapply(y_raindays, function (x) density(x, from=0, bw=12,  na.rm=TRUE))
 
 #### Empirical Cumulative Distribution Function ####

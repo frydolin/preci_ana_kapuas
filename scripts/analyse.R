@@ -75,77 +75,52 @@ rm(fpath)
   dir.create(fpath) # new directory
   library("MASS")
 ### Per station
+# depreceated!!
 for (i in 1:length(d_ts))
 {
   name=paste(fpath,"/hist_",stnames[i],".png", sep="")
-  png(filename=name, pointsize = 11, width=8, height=10, units="cm", res=300)
-  par(mfrow=c(3,1))
+  png(filename=name, pointsize = 11, width=8, height=16, units="cm", res=300)
+  par(def.par); par(mfrow=c(3,1), cex.main=0.7)
   title=paste("histogramm and gaussian KDE for",stnames[i])
   ## daily
   truehist(d_ts[[i]][which(d_ts[[i]]>=1)], prob=TRUE, h=5, 
            xlim=c(0,200), ymax=0.05, bty="o", col=colors[i], main=paste("Daily",title))
   rug(jitter(d_ts[[i]][which(d_ts[[i]]>=1)], amount = 0.5))
-  lines(ddensity[[i]], lwd=3, col="blue")  
+  lines(ddensity_rd[[i]], lwd=2, col="blue")  
   ## monthly
   truehist(m_ts[[i]], prob=TRUE, h=1.5, 
            xlim=c(0,26), ymax=0.15, bty="o", col=colors[i],  main=paste("Monthly",title))
   rug(m_ts[[i]])
-  lines(mdensity[[i]], lwd=3, col="blue")  
+  lines(mdensity[[i]], lwd=2, col="blue")  
   ## yearly
   truehist(y_ts[[i]], prob=TRUE, h=1, 
            xlim=c(2,14),ymax=0.45, lwd=2, col=colors[i], 
            bty="o", main=paste("Yearly",title))
   rug(y_ts[[i]])
-  lines(ydensity[[i]], lwd=3, col="blue")
+  lines(ydensity[[i]], lwd=2, col="blue")
   dev.off()
 }
 ### Per type, gives overview over all stations
   # Daily
   fpath="output/histogramms"
   name=paste(fpath,"/daily_hist.png", sep="")
-  png(filename=name, pointsize = 11, width=16, height=16, units="cm", res=300)
-  par(hist.par)
-  for (i in 1:length(d_ts)){
-   truehist(d_ts[[i]][which(d_ts[[i]]>=1)], prob=TRUE, h=5, 
-             xlim=c(-5,200), ymax=0.06,col="#dddddd", main=paste(stnames[i])) #colors[i],
-#     rug(jitter(d_ts[[i]][which(d_ts[[i]]>=1)], amount = 0.5), lwd=0.5, line=0)
-    lines(ddensity[[i]], lwd=2, col="black")  
-  box(which="plot", lwd=1)
-  }
+  png(filename=name, pointsize = 11, width=16, height=10, units="cm", res=300)
+  hist.kde.plot(hist.x=d_ts, onlyraindays=TRUE, h=5, xlim=c(-5,190), ymax=0.065, kde.x=ddensity_rd, rug=FALSE)
   dev.off()
   #Monthly
   name=paste(fpath,"/monthly_hist.png", sep="")
-  png(filename=name, pointsize = 11, width=16, height=16, units="cm", res=300)
-  par(hist.par)
-  for (i in 1:length(m_ts)){
-    truehist(m_ts[[i]], prob=TRUE, h=1.5, 
-             xlim=c(-3,26), ymax=0.15, lwd=1, col="#dddddd", main=paste(stnames[i]))
-    rug(m_ts[[i]], ticksize=0.1, lwd=0.5, line=0)
-     lines(mdensity[[i]], lwd=1, col="black")
-    box(which="plot", lwd=2)
-  }
+  png(filename=name, pointsize = 11, width=16, height=10, units="cm", res=300)
+  hist.kde.plot(hist.x=m_ts, h=1.5, xlim=c(-2,27), ymax=0.13, kde.x=mdensity,rug=TRUE)
   dev.off()
   #Yearly
   name=paste(fpath,"/yearly_hist.png", sep="")
-  png(filename=name, pointsize = 11, width=16, height=16, units="cm", res=300)
-  par(hist.par)
-  for (i in 1:length(y_ts)){
-    truehist(y_ts[[i]], prob=TRUE, h=1, xlim=c(2,15),ymax=0.45, lwd=1, col="#dddddd", main=paste(stnames[i]))
-    rug(y_ts[[i]], ticksize=0.1, lwd=0.5, line=0)
-    lines(ydensity[[i]], lwd=1, col="black")
-    box(which="plot", lwd=2)
-  }
+  png(filename=name, pointsize = 11, width=16, height=10, units="cm", res=300)
+  hist.kde.plot(hist.x=y_ts, h=1, xlim=c(2.5,15.5), ymax=0.45, kde.x=ydensity, rug=TRUE)
   dev.off()
   #Yearly Raindays
   name=paste(fpath,"/yearly_raindays_hist.png", sep="")
-png(filename=name, pointsize = 11, width=16, height=16, units="cm", res=300)
-  par(hist.par)
-    for (i in 1:length(y_raindays)){
-  truehist(y_raindays[[i]], prob=TRUE, h=15, ylim=c(0,0.03), xlim=c(30,280),lwd=1, col=colors[i], main=paste(stnames[i]))
-    rug(y_raindays[[i]], ticksize=0.1, lwd=0.5, line=0)
-    lines(y_rainday.density[[i]], lwd=1, col="blue")
-    box(which="plot", lwd=1)
-  }
+  png(filename=name, pointsize = 11, width=16, height=10, units="cm", res=300)
+  hist.kde.plot(hist.x=y_raindays, h=15, xlim=c(30,280), ylim=c(0,0.028), kde.x=y_rainday.density, rug=TRUE)
   dev.off()
 
 rm(fpath)
@@ -177,7 +152,7 @@ png(filename=name, pointsize = 11, width=16, height=10, units="cm", res=150)
   #Monthly
   name=paste(fpath,"/monthly_gauss_kde_densities.png", sep="")
 png(filename=name, pointsize = 11, width=16, height=10, units="cm", res=150)
-  par(def.par); par(mar=(c(3,3,0.8,0)+0.2)); par(cex.lab=0.7, cex.axis=0.7)
+  par(def.par); par(mar=(c(3,3,0.8,0)+0.2))
   plot(mdensity[[1]], xlim=c(0,30), ylim=c(0,0.11), col=colors[1], lwd=2, ylab="frequency", xlab="rainfall (mm/day)", main="")
   for (i in 2:length(ddensity)){ 
     lines(mdensity[[i]], col=colors[i], lwd=2, lty=i)
@@ -187,13 +162,13 @@ png(filename=name, pointsize = 11, width=16, height=10, units="cm", res=150)
   #Yearly
   name=paste(fpath,"/yearly_gauss_kde_densities.png", sep="")
   png(filename=name, pointsize = 11, width=16, height=10, units="cm", res=150)
-  par(def.par); par(mar=(c(3,3,0.8,0)+0.2)); par(cex.lab=0.7, cex.axis=0.7)
+  par(def.par); par(mar=(c(3,3,0,0)+0.2))
   plot(ydensity[[1]], xlim=c(0,18), ylim=c(0,0.3), col=colors[1], 
        lwd=2, ylab="frequency",xlab="rainfall (mm/day)", main="")          
-  for (i in 2:length(ddensity)){ 
+  for (i in 2:length(ydensity)){ 
     lines(ydensity[[i]], col=colors[i], lwd=2, lty=i)
   }
-  legend(x="topright", legend=stnames, lty=(1:length(mdensity)), col=colors, lwd=2, cex=0.7, bty="n")
+  legend(x="topright", legend=stnames, lty=(1:length(ydensity)), col=colors, lwd=2, cex=0.7, bty="n")
   dev.off()
   rm(name)
 ### END COMPARE DENSITIES ###
@@ -359,7 +334,7 @@ dir.create(fpath) # new directory
   # 2. Per month: comparison of stations for every month
   # Creates a plot matrix for 8 stations of a particular month  of the "by month" time series (Jan 1982, Jan 1983, ..)
   #title=paste("TS of mean rainfall for",stnames[i],"and month:",mname)
-  fpath="output/timeseries/bymonth/permonth/"
+  fpath="output/timeseries/bymonth/per_month/"
   dir.create(fpath) 
   for (j in 1:12){  # loop through month
     mname=as.character(format.Date(time(bymonth_ts[[1]][[j]][1]), "%B"))

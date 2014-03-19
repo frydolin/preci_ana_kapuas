@@ -149,7 +149,26 @@ cuml.plot=function(x){
       legend(x="bottomright", inset=c(0,0.05), legend=stnames, lty=1, col=colors, lwd=2, cex=0.7, bty="n")
   dev.off()
 }
-
+###
+#### HISTOGRAMM KDE COMPARISON ####
+hist.kde.plot=function(hist.x, onlyraindays=FALSE, h, kde.x, rug=TRUE, ...){
+  require("MASS")
+  source("scripts//graphic_pars.R")
+  par(def.par); par(mfrow=c(round(length(hist.x)/3),3)); par(cex.axis=1.1, cex.lab=1.1); par(mar=c(0.5,0,1,0.4), oma=c(3.5,4,0,0), adj=0, las=1, lwd=1); par(mgp=c(1.5,0.5,0))
+  for (i in 1:length(hist.x)){
+    # axis only on the outside
+    if (i %in% seq(1, length(hist.x),3)){yax="s"} else {yax="n"}
+    if (i %in% c((length(hist.x)-2):length(hist.x))){xax="s"} else {xax="n"}
+    #plot
+    if (onlyraindays==TRUE){hist.x[[i]]=hist.x[[i]][which(hist.x[[i]]>=1)]} #selects only raindays
+    truehist(hist.x[[i]], prob=TRUE, h=h,col="#eeeeee", main=paste(stnames[i]), yaxt=yax, xaxt=xax, ...)
+    if (rug==TRUE) {rug(hist.x[[i]], ticksize=0.1, lwd=0.5, line=0)}
+    lines(kde.x[[i]], lwd=1.5, col="black")
+    box(which="plot")
+  }
+  mtext("Frequency", side = 2, line = 2.8, cex=0.8, las=0, outer = TRUE, at = NA,  adj = 0.5, padj = 0.5)
+  mtext("rainfall (mm/day)", side = 1, line =1, cex=0.8, outer = TRUE, adj = 0.5, padj = 0.5)
+}
 #### Boxplot with Beeswarm ####
 
 bplot.bswarm=function(ts,df, xlabel=TRUE, ...){
@@ -165,7 +184,6 @@ bplot.bswarm=function(ts,df, xlabel=TRUE, ...){
 ###
 
 #### CORRDIST PLOTS ####
-
 corrdist.plot=function(x,y){
   par(def.par); par(cex.lab=0.8, cex.axis=0.7, las=1); par(mar=(c(2.8,2.8,0,0)+0.2))
   plot(y~x, ylim=c(0,1.1),  xlim=c(0,280), lty=2, xlab="distance (km)", ylab="r (Pearson)")
