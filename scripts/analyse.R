@@ -1,12 +1,13 @@
 ###### SPATIO-TEMPORAL RAINFALL PATTERNS IN KAPUAS BASIN ######
-### Analysis and comparison of station data ###
+	### ANALYSIS AND COMPARISON OF GAUGE DATA ###
 
-## analyse.R plots summaries to output files ##
+## analyse.R
+## plots summaries to output files
 
 #### SET UP ####
   source("scripts/setup.R")
   source("scripts/graphic_pars.R")     
-### END SET UP ###
+###
 
 #### TESTING FOR NORMALITY ####
   # because it is a requirement of some of the homogeneity tests
@@ -175,11 +176,11 @@ png(filename=name, pointsize = 11, width=16, height=10, units="cm", res=150)
 #### CUMULATIVE DENSITIES####
   fpath="output/histogramms/comparison"
   name=paste(fpath,"/daily_ecdf.png", sep="")
-  cuml.plot(d.ecdf)
+  cuml.plot(d.ecdf, fname=name)
   name=paste(fpath,"/monthly_ecdf.png", sep="")
-  cuml.plot(m.ecdf)
+  cuml.plot(m.ecdf, fname=name)
   name=paste(fpath,"/yearly_ecdf.png", sep="")
-  cuml.plot(y.ecdf)
+  cuml.plot(y.ecdf, fname=name)
 ### END CUMULATIVE FREQUENCY ###
 #### CUMULATIVE SUMS ####
   ### For each station ###
@@ -288,7 +289,6 @@ dir.create(fpath) # new directory
   ## A: seasonal Mann Kendall test. 
     ## runs on monthly values 
     ## SeasonalMannKendall likes only ts objects therefore the as.ts conversion 
-    ## tau=Score/denominator, denominator=max possible value for score
     seasonal.mk=mk.trendtest(m_ts, test=SeasonalMannKendall)
     names(seasonal.mk)=paste("seasonal.",names(seasonal.mk), sep="")
   ## B: normal Mann Kendall
@@ -386,6 +386,6 @@ dir.create(fpath) # new directory
 #### CLEAN UP ####
   rm(name, fpath)
   graphics.off() #Completely shuts down the printing to file
-### END CLEAN UP ###
+###
 
-########## END OF analyse.R #############
+###### END analyse.R ######

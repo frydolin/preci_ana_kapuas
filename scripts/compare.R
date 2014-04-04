@@ -5,6 +5,7 @@
 #### SET UP ####
   source("scripts/setup.R")
   source("scripts/graphic_pars.R")
+  source("scripts//convenience_functions.R")
 ### END SET UP ###
 
 #### BOX PLOT STATION COMPARISON ####
@@ -90,17 +91,16 @@
     corgr(m_df, xylim=c(0,25), type="monthly", fpath=fpath)
     corgr(y_df, xylim=c(3,15), type="yearly", fpath=fpath)
 
-    corgr(rs_df, type="rainseason daily", fpath=fpath)
-    corgr(ds_df, type="dryseason daily", fpath=fpath)
-    corgr(mrs_df, type="rainseason monthly", fpath=fpath)
-    corgr(mds_df, type="dryseason monthly", fpath=fpath)
+    corgr(rs_df, type="rainseason daily",xylim=c(0,150), fpath=fpath)
+    corgr(ds_df, type="dryseason daily",xylim=c(0,150), fpath=fpath)
+    corgr(mrs_df, type="rainseason monthly",xylim=c(5,25), fpath=fpath)
+    corgr(mds_df, type="dryseason monthly",xylim=c(0,25), fpath=fpath)
     rm(fpath)
   ### END CORRGRAMS ###
-  #### SCATTERPLOT MATRIX ####
-  # -> main text
+#### SCATTERPLOT MATRIX ####
+# obsolete
     fpath="output/correlation/scatterplotmatrix"
     dir.create(fpath)
-    
     scatterMatrix(d_df, xylim=c(0,150), type="daily", fpath=fpath)
     scatterMatrix(w_df, xylim=c(0,45), type="weekly", fpath=fpath)
     scatterMatrix(m_df, xylim=c(0,25),type="monthly", fpath=fpath)
@@ -111,15 +111,14 @@
     scatterMatrix(mrs_df, xylim=c(0,25),type="rainseason monthly", fpath=fpath)
     scatterMatrix(mds_df, xylim=c(0,25),type="dryseason monthly", fpath=fpath)    
     rm(fpath)
-  ### END SCATTERPLOT MATRIX ###
+### END SCATTERPLOT MATRIX ###
 ### END CORRELATION###
 
 #### COMPARISON OF SPATIAL CORRELATION AND DISTANCE ####
 # library("sp")
  library("maptools")
  library("raster")
- library("reshape")
-source("scripts/convenience_functions.R")
+ source("scripts/convenience_functions.R")
 # Load station data (not in long lat to get distances in meters)
   stations<-readShapePoints("input/stationmap_UTM49N//stationmap-UTM49N.shp")
 # Subset stations 
@@ -159,6 +158,7 @@ dev.off()
 
   rm(sp.dist.matrix, cor.matrix_d, cor.matrix_m, cor.matrix_y)
 ### END COMPARISON OF SPATIAL CORRELATION AND DISTANCE ###
+
 #### COMPARE AVERAGE RAINFALL TO ELEVATION ####
 stations$elevation
 stations$ID

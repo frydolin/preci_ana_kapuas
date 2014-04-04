@@ -1,11 +1,12 @@
 ###### SPATIO-TEMPORAL RAINFALL PATTERNS IN KAPUAS BASIN ######
-### Analysis and comparison of station data ###
+	### ANALYSIS AND COMPARISON OF GAUGE DATA ###
 
 ## setup.R:
 ## loads important packages used in all scripts
 ## initializes variables used in all scripts
+## called from within the analysis
 
-#Attach base packages, usually unnecessary
+## Attach base packages, usually unnecessary
 #   library("utils")
 #   library("stats")
 #   library("class")
@@ -14,15 +15,15 @@
 #   library("graphics")
    library("tools")
 
-#Attach other often used packages (they might call further dependencies)
-  library("hydroTSM")
+## Attach other often used packages (they might call further dependencies)
 #   library("zoo")
 #   library("xts")
+  library("hydroTSM")
 
-## load own functions, as defined in the file.
+## Load own functions, as defined in the file.
   source("scripts/functions.R")
 
-## set up time locale to get English time format
+## Set up time locale to get English time format
   Sys.setlocale("LC_TIME", "en_US.UTF-8") 
 
-###### END SET UP ######
+###### END setup.R ######

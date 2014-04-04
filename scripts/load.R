@@ -1,33 +1,34 @@
 ###### SPATIO-TEMPORAL RAINFALL PATTERNS IN KAPUAS BASIN ######
-### Analysis and comparison of station data ###
+	### ANALYSIS AND COMPARISON OF GAUGE DATA ###
 
-## load.R loads in all the data and converts to appropriate formats ##
+## load.R 
+## loads in all the data and converts to appropriate formats
 
 ### SET UP ###
-source("scripts/setup.R")
+	source("scripts/setup.R")
 ###
 
 #### LOAD IN ALL GROUND DATA ####
 # You need to be in the correct working directory 
 
 # Get file names
-  fpath='input/'
-  fnames = list.files(path=fpath, pattern="[0-9]+.+.csv+", full.names=TRUE)
+	fpath='input/'
+	fnames = list.files(path=fpath, pattern="[0-9]+.+.csv+", full.names=TRUE)
   
-# Read in
-  gdata=lapply(fnames, read.csv, sep=";", dec=",", na.strings = "NA")
+# Read in of data, output is a list where each entry contains the data of one station
+	# make sure input file uses same seperator, comma and missing data sign
+	gdata=lapply(fnames, read.csv, sep=";", dec=",", na.strings = "NA")
 
-# Convert format to date and numeric
-  # please not the structure of the input files as described in the README, or
-  # modify the code here and later accordingly
+# Convert format of entries to date and numeric
+  # please note the structure of the input files as described in the README
+  # or modify the code here and later accordingly
   for (i in 1:length(gdata)) gdata[[i]]$date=as.Date(gdata[[i]]$date)
   for (j in 1:length(gdata)) gdata[[j]]$rainfall=as.numeric(gdata[[j]]$rainfall)
-
 ### END LOAD DATA ###
 
 #### MAKE STATION NAME LIST ####
 # needs to be modified if file names convention changes
-  stnames<-basename(file_path_sans_ext(fnames)) #get filename without extension and path
+  stnames<-basename(file_path_sans_ext(fnames)) # get filename without extension and path
   stnames<-toupper(stnames) # convert to uppercase
   stnames<-substr(stnames,3, length(stnames)) # get rid of prefix ordering numbers
 ### END STATION NAME LIST ###
@@ -35,20 +36,20 @@ source("scripts/setup.R")
 #### CONVERT TO ZOO (TIME SERIES) OBJECTS ####
   d_ts=lapply(gdata, function(x) zoo(x$rain, order.by=as.Date(x$date)))
   names(d_ts)=stnames
-#   str(d_ts) #just to check
   #create dummy timeseries, for example for labeling
   dummy=d_ts[[1]]
   dummy[1:length(dummy)]=1
-### END ZOO OBJECTS ###
+### END CONVERT TO ZOO OBJECTS ###
 
 #### PRESELECTION OF STATIONS ####
+	# As not all stations are used for each application, here stations can be excluded from the analysis
+	# !Also the color vector in graphic_pars.R needs to be adjusted!
 # For statistical analysis
   d_ts=d_ts[c(-3,-8,-9,-11,-13,-14)]
   stnames=stnames[c(-3,-8,-9,-11,-13,-14)]
 # For spatial interpolation
-#   d_ts=d_ts[c(-9,-13)]
-#   stnames=stnames[c(-9,-13)]
-#   colors=colors[c(-9,-13)]
+#   d_ts=d_ts[c(-8,-9,-13)]
+#   stnames=stnames[c(-8,-9,-13)]
 ### END PRESELECTION ###
 
 #### CLEAN UP ####
@@ -58,4 +59,4 @@ source("scripts/setup.R")
   rm(gdata)
 ### END CLEAN UP ###
 
-##### END load.R ######
+###### END load.R ######

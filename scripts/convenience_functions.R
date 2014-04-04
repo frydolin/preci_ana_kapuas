@@ -1,9 +1,10 @@
 ###### SPATIO-TEMPORAL RAINFALL PATTERNS IN KAPUAS BASIN ######
-### Analysis and comparison of station data ###
+	### ANALYSIS AND COMPARISON OF GAUGE DATA ###
 
-## convenience_functions.R: functions for repeated tasks, that are very specific
-## for this analysis so they are just for convenience and can't be recycled
-## for other purposes
+## convenience_functions.R:
+## Functions for repeated tasks, that are quite specific for this analysis;
+## So they are just for convenience and can hardly be recycled for other analysis
+## List of functions in alphabetical order: 
 
 #### TESTING FOR NORMALITY ####
 # x: dataframe
@@ -55,28 +56,35 @@ homogeneity.tests=function(x){
 }
 ###
 
-#### Mann-Kendall-Trend Testing ####
-  ## tau=Score/denominator, denominator=max possible value for score
-  # x: list of zoo objects
-  # test: type of test (SeasonalMannKendall, or MannKendall)
-  # returns kendall's tau and significance (p value coded with -,*,**)
+#### mk.trendtest ####
+# Mann-Kendall-Trend testing 
+# returns a data frame with Kendall'stau and significance values (p value and coded with -,*,**)
+# tau=Score/denominator, denominator=max possible value for score
+## x: list of zoo objects to be tested
+## test: type of test (SeasonalMannKendall or MannKendall)
   mk.trendtest=function(x, test){
   require("Kendall")
   trendtest=lapply(x, function(x) test(as.ts(x)))
+  # Extract values:
   tau=sapply(trendtest, function(x) x$tau)
-  sl=sapply(trendtest, function(x) x$sl) #sl:  two-sided p-value
+  sl=sapply(trendtest, function(x) x$sl) #sl=two-sided p-value
+  # Code p-values with * and **
   sign=ifelse(sl<0.05, "*", "")
   sign=ifelse(sl<0.01, "**",sign)
   tau=round(tau, digits = 5) #round tau to 3  digits
   sl=round(sl, digits = 5) #round sl to 3  digits
-  p.sl=paste(sl,sign, sep="")
+  p.sl=paste(sl, sign, sep="")
   return(as.data.frame(cbind(tau, p.sl)))
   }
+###
 
-#### Reshaping of distance and correlation matrixes: ####
+#### reshape.matrix ####
+# Reshaping of distance and correlation matrixes
+## x: matrix
 reshape.matrix=function(x){
-  x=x[order(rownames(x)),order(colnames(x))]
-  x[upper.tri(x, diag=FALSE)]=NA
+	require("reshape")
+  x=x[order(rownames(x)),order(colnames(x))] #reorder
+  x[upper.tri(x, diag=FALSE)]=NA # set redundant entries to NA
   y= melt(x) #melt
   y=y[!is.na(y$value),] #remove NA entries (they are duplicates of the quadratic matrix)
   y=y[with(y, order(X1, X2)), ] #reorder
@@ -84,63 +92,69 @@ reshape.matrix=function(x){
   return(y)
 }
 ###
+
 #### tsplot.pst ####
-# Make  time series plots for each station (time series plot per station)
-# creates *.svg files in output/plots/time_series/
-## make sure directory exists!
-## x: zoo time series object
+# Make time series plots for each station (time series plot per station)
+## x: list of zoo time series objects
 ## type: is for naming e.g. daily, monthly. EXCEPTION: "yearly" also changes plot type to "b"!
+## fpath: file path
 ## colors and graphical paramteres need to be defined in the graphic_pars.r file
-## fpath: file path, default is fpath
 tsplot.pst=function(x, type, fpath, ...) {
   require("hydroTSM")
   source("scripts//graphic_pars.R")
-  # make directory
+  # make directory, depending on type:
   npath=paste(fpath,"/",type, sep="")
   dir.create(npath)
-  # check if it is yearly ts
-  if(type=="yearly") ptype="b" else ptype="l"
-  # make graphs
+  # if it is yearly time series lines and points are plotted, else only lines:
+  if(type=="yearly") ptype="b" else ptype="l" 
+  # make graphs:
   for (i in 1:length(x)) {
     name=paste(npath,"/",type,"_ts_",stnames[i],".png", sep="")
     png(filename=name, pointsize = 11, width=16, height=5, units="cm", res=300)  
     par(def.par); par(mar=(c(2,2.8,0,0)+0.2));  par(cex.lab=0.7, cex.axis=0.7, mgp=c(2.1,0.6,0))
     plot(x[[i]], type=ptype, lty=1, lwd=1, las=1, col=colors[i], ylab="rainfall (mm/day)", xlab="", xaxt="n", ...)
     drawTimeAxis(dummy, tick.tstep = "years", lab.tstep = "years", lab.fmt="%Y", cex=0.7)
-    #xlab=substr(type,1, (nchar(type)-2))) #main=paste("Time series of", type, "rainfall amounts for", stnames[i])
     dev.off()
   }
 }
 ###
-#### RAINDAY/RAINFALL TS ####
+
+#### double.ts ####
+# Plots time series of rainy days and rainfall on top of each other (a double time series)
+## x: list of zoo time series of rainfall amounts 
+## y: list of zoo time series of number of rainy days
+## fpath: outpur file path
 double.ts=function(x, y, fpath){
   for (i in 1:length(x)) {
     name=paste(fpath,"/","double_ts_",stnames[i],".png", sep="")
     png(filename=name, pointsize = 11, width=16, height=7.5, units="cm", res=300)
-    par(def.par)
-    par(mar=c(4, 4, 0, 5) + 0.2)
-    ## Plot rainfall amounts plot and put axis scale on right
+    par(def.par); par(mar=c(4, 4, 0, 5) + 0.2)
+    ## Plot rainfall amounts plot and put axis scale on right side:
     plot(x[[i]], xlab="", ylab="", xaxt = "n", yaxt = "n", type="b", col=colors[i], pch=19, cex=0.8, lty=1)
     axis(4,col=colors[i],las=1)
     mtext("rainfall (mm/day)",side=4,col=colors[i],line=3)
-    ## Plot rainfall data and draw its axis
+    ## Plot rainday data and draw its axis:
     par(new=TRUE)
-    ymid=mean(y[[i]], na.rm=TRUE)
+    ymid=mean(y[[i]], na.rm=TRUE) # mean in the middle of the axis
     plot(y[[i]], ylim=c(ymid-50,ymid+50),xaxt = "n", yaxt = "n", xlab="", ylab="", type="b", col="black", cex=0.8, lty=3)
     axis(2, ylim=c(ymid-50,ymid+50),col="black",las=1) 
-    mtext("no. of raindays",side=2,line=2.5)
-    ## Draw the time axis
+    mtext("No. of raindays",side=2,line=2.5)
+    ## Draw the time axis:
     axis(1,at=time(y_ts[[1]]), labels=format.Date(time(y_ts[[1]]), "%Y"))
     box()
     dev.off()
   }
 }
+###
 
-#### CUMULATIVE PLOTS ####
-# x: list of ecdf objects
-cuml.plot=function(x){
+#### cuml.plot ####
+# Plots empirical cumulative distribution functions in one plot
+## x: list of ecdf objects, as created by stats::ecdf
+## fname: filename
+cuml.plot=function(x, fname){
   png(filename=name, pointsize = 11, width=16, height=10, units="cm", res=150)
   par(def.par); par(mar=(c(3,3,0.8,0)+0.2)); par(cex.lab=0.7, cex.axis=0.7)
+  	# Plot first one
       plot(x[[1]], do.points=FALSE, verticals=TRUE, col.01line = "black", col=colors[1],  xlab="rainfall (mm/day)", main="")          
       for (i in 2:length(x)){ 
         lines(x[[i]], do.points=FALSE, verticals=TRUE, col=colors[i], lty=1)
@@ -150,28 +164,46 @@ cuml.plot=function(x){
   dev.off()
 }
 ###
-#### HISTOGRAMM KDE COMPARISON ####
+
+#### hist.kde.plot ####
+# Comparative plots of histogramms with kernel density estimate overlaid.
+# Arranged in one single figure in 3*x layout.
+## hist.x: data to be used to calculate histogramms from
+## onlyraindays: TRUE or FALSE, if TRUE only days with rainfall>1mm are considered
+## h: bin width of histogramms
+## kde.x: Kernel density estimate as created by stats::density
+## rug: plot a rug plot, TRUE or FALSE
+## ...: further parameters passed on
 hist.kde.plot=function(hist.x, onlyraindays=FALSE, h, kde.x, rug=TRUE, ...){
   require("MASS")
   source("scripts//graphic_pars.R")
+  # set parameters:
   par(def.par); par(mfrow=c(round(length(hist.x)/3),3)); par(cex.axis=1.1, cex.lab=1.1); par(mar=c(0.5,0,1,0.4), oma=c(3.5,4,0,0), adj=0, las=1, lwd=1); par(mgp=c(1.5,0.5,0))
   for (i in 1:length(hist.x)){
-    # axis only on the outside
-    if (i %in% seq(1, length(hist.x),3)){yax="s"} else {yax="n"}
-    if (i %in% c((length(hist.x)-2):length(hist.x))){xax="s"} else {xax="n"}
-    #plot
+    # axis should only plotted on the outside plots:
+    if (i %in% seq(1, length(hist.x),3)){yax="s"} else {yax="n"} # axes on left side
+    if (i %in% c((length(hist.x)-2):length(hist.x))){xax="s"} else {xax="n"} # axes on the bottom
+    # plot histogramm:
     if (onlyraindays==TRUE){hist.x[[i]]=hist.x[[i]][which(hist.x[[i]]>=1)]} #selects only raindays
     truehist(hist.x[[i]], prob=TRUE, h=h,col="#eeeeee", main=paste(stnames[i]), yaxt=yax, xaxt=xax, ...)
+    # plot rug plot:
     if (rug==TRUE) {rug(hist.x[[i]], ticksize=0.1, lwd=0.5, line=0)}
+    # add KDE plot:
     lines(kde.x[[i]], lwd=1.5, col="black")
     box(which="plot")
   }
   mtext("Frequency", side = 2, line = 2.8, cex=0.8, las=0, outer = TRUE, at = NA,  adj = 0.5, padj = 0.5)
   mtext("rainfall (mm/day)", side = 1, line =1, cex=0.8, outer = TRUE, adj = 0.5, padj = 0.5)
 }
-#### Boxplot with Beeswarm ####
+###
 
-bplot.bswarm=function(ts,df, xlabel=TRUE, ...){
+#### bplot.bswarm ####
+# Create a boxplot with overlaid beeswarm plot
+## ts: list(?????????) of zoo time series objects
+## df: same data as ts in one single data frame
+## xlabel: TRUE or FALSE (default: TRUE)
+## ...: further arguments passed on
+bplot.bswarm=function(ts, df, xlabel=TRUE, ...){
   require("beeswarm")
   if (xlabel==TRUE) {par(mar=(c(2.6,3.4,0,0)+0.2))} else par(mar=(c(0.8,3.4,1.8,0)+0.2))  
   par(mgp=c(2.7, 0.6, 0), las=1)
@@ -183,9 +215,14 @@ bplot.bswarm=function(ts,df, xlabel=TRUE, ...){
 }
 ###
 
-#### CORRDIST PLOTS ####
+#### corrdist.plot ####
+# Makes plots comparing correlation values with distance
+## x: distance values
+## y:	correlation values
 corrdist.plot=function(x,y){
   par(def.par); par(cex.lab=0.8, cex.axis=0.7, las=1); par(mar=(c(2.8,2.8,0,0)+0.2))
   plot(y~x, ylim=c(0,1.1),  xlim=c(0,280), lty=2, xlab="distance (km)", ylab="r (Pearson)")
 }
-##### END convenience_functions #####
+###
+
+###### END convenience_functions.R ######
