@@ -147,21 +147,37 @@ double.ts=function(x, y, fpath){
 }
 ###
 
+#### mult.plot ####
+# Plots multiple functions in one plot
+## x: list of plottable objects
+mult.plot=function(x, ...){
+  # Plot first one
+  par(mar=(c(1.4,3,1.6,0)+0.2));
+  plot(x[[1]], col=colors[1],...)          
+  for (i in 2:length(x)){ 
+    lines(x[[i]], col=colors[i], lty=i, ...)
+  }
+  abline(0.5,0, lty=2)
+  legend(x="topright", inset=c(0,0.05), legend=stnames, lty=(1:length(x)), col=colors, lwd=1, cex=0.7, bty="n")
+  mtext("A", side = 3, line = 0, cex=1, las=1, adj=0, padj=0)
+  }
+###
+
 #### cuml.plot ####
 # Plots empirical cumulative distribution functions in one plot
 ## x: list of ecdf objects, as created by stats::ecdf
 ## fname: filename
-cuml.plot=function(x, fname){
-  png(filename=name, pointsize = 11, width=16, height=10, units="cm", res=150)
-  par(def.par); par(mar=(c(3,3,0.8,0)+0.2)); par(cex.lab=0.7, cex.axis=0.7)
+cuml.plot=function(x, ...){
+  par(mar=(c(3,3,0,0)+0.2));
   	# Plot first one
-      plot(x[[1]], do.points=FALSE, verticals=TRUE, col.01line = "black", col=colors[1],  xlab="rainfall (mm/day)", main="")          
+      plot(x[[1]], do.points=FALSE, verticals=TRUE, col.01line = "black", col=colors[1],  xlab="rainfall (mm/day)", main="",...)          
       for (i in 2:length(x)){ 
         lines(x[[i]], do.points=FALSE, verticals=TRUE, col=colors[i], lty=1)
       }
       abline(0.5,0, lty=2)
       legend(x="bottomright", inset=c(0,0.05), legend=stnames, lty=1, col=colors, lwd=2, cex=0.7, bty="n")
-  dev.off()
+  mtext("B", side = 3, line = 0, cex=1, las=1, adj=0, padj=0)
+
 }
 ###
 

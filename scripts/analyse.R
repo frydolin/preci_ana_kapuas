@@ -127,61 +127,43 @@ for (i in 1:length(d_ts))
 rm(fpath)
 ### END HISTOGRAMMS and DENSITY ###
 
-#### COMPARE DENSITIES ####
+#### COMPARE DENSITIES AND CUMULATIVE DENSITIES ####
   fpath="output/histogramms/comparison"
   dir.create(fpath)  
-  ## Daily raindays
-  name=paste(fpath,"/daily_rd_gauss_kde_densities.png", sep="")
-png(filename=name, pointsize = 11, width=16, height=10, units="cm", res=150)
-  par(def.par); par(mar=(c(3,3,0.2,0)+0.2))
-  plot(ddensity_rd[[1]], xlim=c(0,250), ylim=c(0,0.05), col=colors[1], lwd=2, ylab="frequency", main="", xlab="rainfall (mm/day)")
-  for (i in 2:length(ddensity_rd)){ 
-    lines(ddensity_rd[[i]], lty=i, col=colors[i], lwd=2)
-  }
-  legend(x="topright", legend=stnames, lty=(1:length(ddensity_rd)), col=colors, lwd=2, cex=0.7, bty="n")
+  ## Daily only raindays
+  name=paste(fpath,"/daily-rd_kde_ecdf.png", sep="")
+  png(filename=name, pointsize = 11, width=16, height=17, units="cm", res=225) # open the png write
+    par(def.par); par(mfrow=c(2,1)); par(cex.lab=0.7, cex.axis=0.7) # set parameters
+    mult.plot(ddensity_rd, xlim=c(0,200), ylim=c(0,0.05), lwd=2, ylab="frequency", main="", xaxt="n", xlab="") # see convenience_functions.R for details of the plotting function
+    cuml.plot(d.ecdf, xlim=c(0,200)) # see convenience_functions.R for details of the plotting function
   dev.off()
-## Daily all days
+  ## Daily all days
   name=paste(fpath,"/daily_ad_gauss_kde_densities.png", sep="")
   png(filename=name, pointsize = 11, width=16, height=10, units="cm", res=150)
-  par(def.par); par(mar=(c(3,3,0.2,0)+0.2))
-  plot(ddensity_ad[[1]], xlim=c(0,250), ylim=c(0,0.085), col=colors[1], lwd=2, ylab="frequency", main="", xlab="rainfall (mm/day)")
-  for (i in 2:length(ddensity_ad)){ 
-    lines(ddensity_ad[[i]], lty=i, col=colors[i], lwd=2)
-  }
-  legend(x="topright", legend=stnames, lty=(1:length(ddensity_ad)), col=colors, lwd=2, cex=0.7, bty="n")
+    par(def.par); par(mar=(c(3,3,0.2,0)+0.2))
+    plot(ddensity_ad[[1]], xlim=c(0,200), ylim=c(0,0.085), col=colors[1], lwd=2, ylab="frequency", main="", xlab="rainfall (mm/day)")
+    for (i in 2:length(ddensity_ad)){ 
+      lines(ddensity_ad[[i]], lty=i, col=colors[i], lwd=2)
+    }
+    legend(x="topright", legend=stnames, lty=(1:length(ddensity_ad)), col=colors, lwd=2, cex=0.7, bty="n")
   dev.off()
-  #Monthly
-  name=paste(fpath,"/monthly_gauss_kde_densities.png", sep="")
-png(filename=name, pointsize = 11, width=16, height=10, units="cm", res=150)
-  par(def.par); par(mar=(c(3,3,0.8,0)+0.2))
-  plot(mdensity[[1]], xlim=c(0,30), ylim=c(0,0.11), col=colors[1], lwd=2, ylab="frequency", xlab="rainfall (mm/day)", main="")
-  for (i in 2:length(ddensity)){ 
-    lines(mdensity[[i]], col=colors[i], lwd=2, lty=i)
-  }
-  legend(x="topright", legend=stnames, lty=(1:length(mdensity)), col=colors, lwd=2, cex=0.7, bty="n")
+  ## Monthly
+  name=paste(fpath,"/monthly_kde_ecdf.png", sep="")
+  png(filename=name, pointsize = 11, width=16, height=17, units="cm", res=225)
+    par(def.par); par(mfrow=c(2,1)); par(cex.lab=0.7, cex.axis=0.7)
+    mult.plot(mdensity, xlim=c(0,30), ylim=c(0,0.11), lwd=2, ylab="frequency", main="", xaxt="n", xlab="")
+    cuml.plot(m.ecdf, xlim=c(0,30))
   dev.off()
-  #Yearly
-  name=paste(fpath,"/yearly_gauss_kde_densities.png", sep="")
-  png(filename=name, pointsize = 11, width=16, height=10, units="cm", res=150)
-  par(def.par); par(mar=(c(3,3,0,0)+0.2))
-  plot(ydensity[[1]], xlim=c(0,18), ylim=c(0,0.3), col=colors[1], 
-       lwd=2, ylab="frequency",xlab="rainfall (mm/day)", main="")          
-  for (i in 2:length(ydensity)){ 
-    lines(ydensity[[i]], col=colors[i], lwd=2, lty=i)
-  }
-  legend(x="topright", legend=stnames, lty=(1:length(ydensity)), col=colors, lwd=2, cex=0.7, bty="n")
+  ## Yearly
+  name=paste(fpath,"/yearly_kde_ecdf.png", sep="")
+  png(filename=name, pointsize = 11, width=16, height=17, units="cm", res=225)
+    par(def.par); par(mfrow=c(2,1)); par(cex.lab=0.7, cex.axis=0.7)
+    mult.plot(ydensity, xlim=c(2,18), ylim=c(0,0.32), lwd=2, ylab="frequency", main="", xaxt="n", xlab="")
+    cuml.plot(y.ecdf, xlim=c(2,18))
   dev.off()
   rm(name)
 ### END COMPARE DENSITIES ###
-#### CUMULATIVE DENSITIES####
-  fpath="output/histogramms/comparison"
-  name=paste(fpath,"/daily_ecdf.png", sep="")
-  cuml.plot(d.ecdf, fname=name)
-  name=paste(fpath,"/monthly_ecdf.png", sep="")
-  cuml.plot(m.ecdf, fname=name)
-  name=paste(fpath,"/yearly_ecdf.png", sep="")
-  cuml.plot(y.ecdf, fname=name)
-### END CUMULATIVE FREQUENCY ###
+
 #### CUMULATIVE SUMS ####
   ### For each station ###
   # -> Virtual Appendix

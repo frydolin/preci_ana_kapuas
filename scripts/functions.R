@@ -115,7 +115,7 @@ daily2season=function(x, season, FUN, na.rm){
     	# time series of NA values in the original coded as 1, 0
 				na.bin=ifelse(is.na(s), 1,0)
 			# aggregation of this series gives NA counts per timestep (season)
-				na.counts <- aggregate(na.bin, by=list(syears), sum) 
+				na.counts <- aggregate(na.bin, by=list(format(time(s), "%Y")), sum) 
 			# index of the seasons with  too high NA counts
 				na.index=which(na.counts$x>limit)
 			# replace values where there are too many NA in the input
