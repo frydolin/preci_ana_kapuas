@@ -6,45 +6,13 @@
 
 #### SET UP ####
   source("scripts/setup.R")
-  source("scripts/graphic_pars.R")     
+  source("scripts/graphic_pars.R")
 ###
-
-#### TESTING FOR NORMALITY ####
-  # because it is a requirement of some of the homogeneity tests
-  source("scripts/convenience_functions.R")
-  fpath=("output/quality control")
-  dir.create(fpath)
-  m.norm.test=norm.test(m_ts)
-  write.csv (m.norm.test, file=paste(fpath,"/m.norm.test.csv", sep=""))
-  y.norm.test=norm.test(y_ts)
-  write.csv (y.norm.test, file=paste(fpath,"/y.norm.test.csv", sep=""))
-  y_raindays.norm.test=norm.test(y_raindays)
-  write.csv (y_raindays.norm.test, file=paste(fpath,"/y_raindays.norm.test.csv", sep=""))
-
-  rm(fpath, m.norm.test, y.norm.test, y_raindays.norm.test)
-###
-
-#### HOMOGENEITY TESTING ####
-  source("scripts/convenience_functions.R")
-  fpath=("output/quality control")
-  dir.create(fpath)
-  rd_hom=homogeneity.tests(y_raindays)
-  ys_hom=homogeneity.tests(y_ts)
-  # make a data frame
-  rd_hom=as.data.frame(rd_hom)
-  colnames(rd_hom)=paste("rd.",colnames(rd_hom), sep="")
-  ys_hom=as.data.frame(ys_hom)
-  colnames(ys_hom)=paste("ys.",colnames(ys_hom), sep="")
-  hom.tests=cbind(rd_hom[1], ys_hom[1], rd_hom[2], ys_hom[2], rd_hom[3], ys_hom[3],
-                  rd_hom[4], ys_hom[4])
-  row.names(hom.tests)=stnames
-  write.csv(hom.tests, file=paste(fpath,"/homogeneity_tests.csv", sep=""))
-  rm(rd_hom, ys_hom)
-### END HOMOGENEITY TESTING ###
 
 #### SIMPLE TS PLOTS AND SUMMARY STATISTICS ####
   fpath="output/timeseries"
   dir.create(fpath)
+  source("scripts/convenience_functions.R") 
   ### PLOT FOR EACH STATION, FOR MEAN VALUE TS 
   tsplot.pst(d_ts, type="daily", fpath=fpath)
   tsplot.pst(w_ts, type="weekly",fpath=fpath)
@@ -53,7 +21,7 @@
   tsplot.pst(y_raindays, type="yearly_raindays",fpath=fpath)
 rm(fpath)
 ### TS PLOT of yearly values and raindays ###
-  fpath="output/timeseries/double"
+  fpath="output/timeseries/raindays_and_amounts"
   dir.create(fpath)
   double.ts(y_ts, y_raindays, fpath=fpath)
 ### 
@@ -75,28 +43,22 @@ rm(fpath)
   fpath="output/histogramms"
   dir.create(fpath) # new directory
   library("MASS")
-### Per station
-# depreceated!!
+### Histogramm and with overlaid gaussian Kernel density estimates for each station individually
 for (i in 1:length(d_ts))
 {
-  name=paste(fpath,"/hist_",stnames[i],".png", sep="")
+  name=paste(fpath,"/hist_kde_",stnames[i],".png", sep="")
   png(filename=name, pointsize = 11, width=8, height=16, units="cm", res=300)
-  par(def.par); par(mfrow=c(3,1), cex.main=0.7)
-  title=paste("histogramm and gaussian KDE for",stnames[i])
+  par(def.par); par(mfrow=c(3,1), mar=c(3,3.5,1.5,1))
   ## daily
-  truehist(d_ts[[i]][which(d_ts[[i]]>=1)], prob=TRUE, h=5, 
-           xlim=c(0,200), ymax=0.05, bty="o", col=colors[i], main=paste("Daily",title))
+  truehist(d_ts[[i]][which(d_ts[[i]]>=1)], prob=TRUE, h=5, xlim=c(0,200), ymax=0.05, bty="o", col=colors[i], ylab="Frequency", xlab="rainfall (mm/day)", main="Daily")
   rug(jitter(d_ts[[i]][which(d_ts[[i]]>=1)], amount = 0.5))
   lines(ddensity_rd[[i]], lwd=2, col="blue")  
   ## monthly
-  truehist(m_ts[[i]], prob=TRUE, h=1.5, 
-           xlim=c(0,26), ymax=0.15, bty="o", col=colors[i],  main=paste("Monthly",title))
+  truehist(m_ts[[i]], prob=TRUE, h=1.5, xlim=c(0,26), ymax=0.15, bty="o", col=colors[i], ylab="Frequency", xlab="rainfall (mm/day)", main="Monthly")
   rug(m_ts[[i]])
   lines(mdensity[[i]], lwd=2, col="blue")  
   ## yearly
-  truehist(y_ts[[i]], prob=TRUE, h=1, 
-           xlim=c(2,14),ymax=0.45, lwd=2, col=colors[i], 
-           bty="o", main=paste("Yearly",title))
+  truehist(y_ts[[i]], prob=TRUE, h=1, xlim=c(2,14),ymax=0.45, lwd=2, col=colors[i], ylab="Frequency", xlab="rainfall (mm/day)", bty="o", main="Yearly")
   rug(y_ts[[i]])
   lines(ydensity[[i]], lwd=2, col="blue")
   dev.off()
@@ -165,41 +127,39 @@ rm(fpath)
 ### END COMPARE DENSITIES ###
 
 #### CUMULATIVE SUMS ####
-  ### For each station ###
-  # -> Virtual Appendix
 fpath="output/cumulative"
 dir.create(fpath)
-
-#create overlapping graphs for all years
-  #create common single index, here the year 2000 is used (leap year)
+  ### For each station ###
+# create lineplot graph cobmbining years
+  # create common index for the years, here the year 2000 is used (leap year)
   cumlist_s.in=rapply(cumlist, how="list", function(x) zoo(x, order.by=time(cumlist[[1]][[19]])) )
   #plot
   #warnings are usually caused by NA values and then can be ignored
   for (j in 1:length(cumlist_s.in)){
     name=paste(fpath,"/cumul_overlay_",stnames[j],".png", sep="")
     png(filename=name, pointsize = 11, width=16, height=9, units="cm", res=300)
-    plot(cumlist_s.in[[j]][[1]], type="l", lwd=2, lty=1, col=colors[[j]], ylim=c(0,5000))
+    par(def.par); par(mar=(c(2.2,2.8,0.1,0)+0.2));  par(cex.lab=0.7, cex.axis=0.7)
+    plot(cumlist_s.in[[j]][[1]], type="l", lwd=1, lty=1, col=colors[[j]], ylim=c(0,4500), xlab="", ylab="cumulative rainfall (mm)")
       for (i in 2:31){
-        lines(cumlist_s.in[[j]][[i]], type="l", lwd=2, lty=i, col=colors[[j]])
-              }
+        lines(cumlist_s.in[[j]][[i]], type="l", lwd=1, lty=i, col=colors[[j]]) }
     dev.off()
   }
   rm(cumlist_s.in)
-#long term cumulative sums
+
+# cumulative sums over the whole period
   fpath="output/cumulative"
   for (i in 1:length(cumsums_ts)) {
     name=paste(fpath,"/cumul_",stnames[i],".png", sep="")
     png(filename=name, pointsize = 11, width=16, height=5, units="cm", res=300)
-    par(def.par); par(mar=(c(2,2.8,0,0)+0.2));  par(cex.lab=0.7, cex.axis=0.7)
-    plot(cumsums_ts[[i]], ylim=c(0,3800), type="l",lty=1, lwd=1, col=colors[i], ylab="rainfall in mm", xlab="", xaxt="n") #main=paste("Cumulative rainfall amounts for", stnames[i]),
+    par(def.par); par(mar=(c(2,2.8,0.4,0)+0.2));  par(cex.lab=0.7, cex.axis=0.7)
+    plot(cumsums_ts[[i]], ylim=c(0,3900), type="l",lty=1, lwd=1, col=colors[i], ylab="cumulative rainfall (mm)", xlab="", xaxt="n")
     drawTimeAxis(dummy, tick.tstep = "years", lab.tstep = "years", lab.fmt="%Y", cex=0.7) 
     dev.off()
   }
 
-## Comparison of cumsums of average daily values 
-  #-> Main Text
+## Comparison of cumulative sums of average daily values between stations
   #Cumulative sum of average daily rainfall
-  name=paste(fpath,"/av-daily_cumsum.png", sep="")
+  name=paste(fpath,"/cumulsum_daily_average.png", sep="")
   png(filename=name, pointsize = 11, width=16, height=9, units="cm", res=300)
   par(def.par);par(mar=(c(2.8,2.8,0.3,0)+0.2)); par(cex.lab=0.7, cex.axis=0.7)
   matplot(d.cumsum_df, xaxt="n", xlim=c(0,366), type = c("l"), lty=c(1:length(d.cumsum_df)), lwd=2, col=colors, xlab="Month", ylab="Cumulative rainfall sum (mm)") 
@@ -213,15 +173,14 @@ dir.create(fpath)
   dir.create(fpath)
 ### MONTHLY AVERAGES ###
   ## LINE PLOT
-  # -> main text
     name=paste(fpath, "/lineplot_dav_by_month.png", sep="")
   png(filename=name, pointsize = 11, width=16, height=8, units="cm", res=300)
     par(def.par); par(mar=(c(3,3,0,0)+0.2));  par(cex.lab=0.7, cex.axis=0.7)
-    matplot(davbm_df, ylim=c(4,13), type = c("b"), pch=1, lty=(1:length(davbm_df)), lwd=2, cex=0.8, col = colors, xaxt = "n", las=1, ylab="rainfall (mm/day)", xlab="Month")
+    matplot(davbm_df, xlim=c(1.2,13.8), type = c("b"), pch=1, lty=(1:length(davbm_df)), lwd=2, cex=0.8, col = colors, xaxt = "n", las=1, ylab="rainfall (mm/day)", xlab="Month")
     axis(1,1:12,labels=row.names(davbm_df))
   legend(x="bottomright", legend=stnames, lty=(1:length(mdensity)), col=colors, lwd=2, cex=0.7, bty="n")
     dev.off()
-
+###
 ### MONTHLY VALUES FOR ALL STATIONS, PER MONTH, BOXPLOT VERSION
   ## (variation per month)
   library(beeswarm)
@@ -237,27 +196,49 @@ dir.create(fpath)
         for (j in 1:ncol(bymonth_ts_all[[1]])){  # add as many entries per color (per station) into the vector as there are observations
         col.vector=c(col.vector, rep(colors[j], nrow(bymonth_ts_all[[1]])))} 
     }
+    # beeswarm plot
     beeswarm(bymonth_ts_all, corral="random", cex=0.5, pwcol=col.vector, add=TRUE)
     axis(1,1:12,labels=row.names(davbm_df))
  legend("topright", legend=stnames, pch=1, col=colors, pt.cex=0.6, cex=0.6, bty="n")
     dev.off()
-
-### SEASONALITY PER STATION
-  # -> Virtual Appendix
+###
+### BOXPLOTS PER MONTH FOR EACH STATION
   fpath="output/seasonality/boxplots"
   dir.create(fpath)
   library(beeswarm)
   for (i in 1:length(m_ts)) { #loop trough station
     name=paste(fpath,"/m_boxplot_",stnames[i],".png", sep="")
-    png(filename=name, pointsize = 11, width=16, height=9, units="cm", res=300)
-    title=paste("Boxplot of average daily rainfall per month for",stnames[[i]])
-    boxplot(bymonth_df_list[[i]], outline=FALSE, ylim=c(0,20), main=title, xlab="month", ylab="mm/day")
+    png(filename=name, pointsize = 11, width=16, height=8, units="cm", res=300)
+    par(def.par); par(mar=c(3,3,2,1), cex.main=0.7)
+    boxplot(bymonth_df_list[[i]], outline=FALSE, xlab="Month", ylab="rainfall (mm/day)", main=paste("Station", stnames[i]))
     beeswarm(bymonth_ts[[i]], corral="random", pch = 21, col=1, bg=colors[[i]], add=TRUE)
     dev.off()
   }
   rm(fpath)
-
+  ###
 ### END SEASONALITY PLOTS ###
+
+#### SEASONAL TIME SERIES ####
+# Comparison of seasonal rainfall amounts within a station
+# Creates a plot with the season time series (RS 1982, DS 1983, ..) for each station  
+  fpath="output/seasonality/timeseries"
+  dir.create(fpath) # new directory
+
+for (i in 1:length(rsav_ts)) { #loop trough station
+  name=paste(fpath,"/seasonal_ts_",stnames[i],".png", sep="")
+  png(filename=name, pointsize = 11, width=16, height=9, units="cm", res=300)
+  par(def.par); par(mar=(c(1.8,2.8,0,0)+0.2))
+  plot(rsav_ts[[i]], ylim=c(0,18), xaxt="n", las=1, type="b", pch=19, cex=0.8, lty=1, lwd=2, col=colors[i], ylab="rainfall (mm/day)", xlab="")
+  abline(mean(rsav_ts[[i]], na.rm=TRUE),0,lty=1, lwd=1, col=colors[i]) #mean line
+  #abline(lm(rsav_ts[[i]]~time(rsav_ts[[i]])),lty=1, lwd=2) #trendline
+  lines(dsav_ts[[i]], type="b", cex=0.8, lty=3, lwd=2, col=colors[i])
+  abline(mean(dsav_ts[[i]], na.rm=TRUE),0,lty=3, lwd=2, col=colors[i]) #mean line
+  #abline(lm(dsav_ts[[i]]~time(dsav_ts[[i]])), lty=3, lwd=2) #trendline 
+  drawTimeAxis(dummy, tick.tstep = "years", lab.tstep = "years", lab.fmt="%Y", cex=0.7) 
+  legend("bottomright", legend=c("rainy season (Nov-Jan)", "dry season (Jun-Aug)"), lty=c(1,3), col=colors[i], lwd=2, cex=0.7, bty="n") 
+  dev.off()
+}
+### END BY SEASON TS ###
 
 ##### TREND ANALYSIS #####
 fpath="output/trendanalysis"
@@ -286,7 +267,7 @@ dir.create(fpath) # new directory
     write.csv(mk.test, file=paste(fpath,"/mann_kendall_test", sep=""))
   ### END Mann-Kendall trend testing ###
   
-  #### BY MONTH time series with linear trendline ####
+  #### Time Series for indiviudal months with linear trendline ####
   fpath="output/timeseries/bymonth/"
   dir.create(fpath) 
   #1. Per station: comparison of month within a station
@@ -312,7 +293,6 @@ dir.create(fpath) # new directory
     mtext("Time", side = 1, line =2, cex=0.8, outer = TRUE, adj = 0.5, padj = 0.5)
     dev.off()
   }
-
   # 2. Per month: comparison of stations for every month
   # Creates a plot matrix for 8 stations of a particular month  of the "by month" time series (Jan 1982, Jan 1983, ..)
   #title=paste("TS of mean rainfall for",stnames[i],"and month:",mname)
@@ -336,34 +316,6 @@ dir.create(fpath) # new directory
   }
   ### END BY MONTH TS ###
 ### END TREND ANALYSIS ### 
-
-#### BY SEASON TIME SERIES ####
-  # -> virtual appendix
-  # Per station: comparison of Seasons within a station
-  # Creates a plot with the season time series (RS 1982, DS 1983, ..)
-  # for each station  
-  fpath="output/seasonality"
-  dir.create(fpath) # new directory
-
-  for (i in 1:length(rsav_ts)) { #loop trough station
-    name=paste(fpath,"/seasonal_ts_",stnames[i],".png", sep="")
-    png(filename=name, pointsize = 11, width=16, height=9, units="cm", res=300)
-    par(def.par); par(mar=(c(1.8,2.8,0,0)+0.2))
-#     title=paste("TS of rainfall in wet and dry season for",stnames[i])
-    plot(rsav_ts[[i]], ylim=c(0,17), xaxt="n", las=1, type="b", pch=19, cex=0.8, lty=1, lwd=2, col=colors[i], ylab="rainfall (mm/day)", xlab="")
-    abline(mean(rsav_ts[[i]], na.rm=TRUE),0,lty=1, lwd=1, 
-           col=colors[i]) #mean line
-    #abline(lm(rsav_ts[[i]]~time(rsav_ts[[i]])),lty=1, lwd=2) #trendline
-    lines(dsav_ts[[i]], type="b", cex=0.8, lty=3, lwd=2, col=colors[i])
-    abline(mean(dsav_ts[[i]], na.rm=TRUE),0,lty=3, lwd=2, 
-           col=colors[i]) #mean line
-    #abline(lm(dsav_ts[[i]]~time(dsav_ts[[i]])), lty=3, lwd=2) #trendline 
-    drawTimeAxis(dummy, tick.tstep = "years", lab.tstep = "years", lab.fmt="%Y", cex=0.7) 
-    legend("bottomright", legend=c("rainy season (Nov-Jan)", "dry season (Jun-Aug)"), lty=c(1,3), col=colors[i], lwd=2, cex=0.7, bty="n")
-    
-    dev.off()
-  }
-  ### END BY SEASON TS ###
 
 #### CLEAN UP ####
   rm(name, fpath)

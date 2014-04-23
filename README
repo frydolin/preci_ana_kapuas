@@ -1,6 +1,6 @@
 ###### 	R code for: 
 ###### SPATIO-TEMPORAL RAINFALL PATTERNS IN KAPUAS BASIN ######
-### Analysis and comparison of station data ###
+	### Analysis and comparison of station data ###
 
 ### R FILES ###
 + run.R 		executes the analysis, it calls further scripts:
@@ -26,20 +26,20 @@ On default the analysis is run on all files within /input, for a maximum of 14 s
 - graphic_pars.R, the "color" vector on default has 14 entries. It needs to be adjusted according to the station number.
 
 ### NECESSARY FOLDER STRUCTURE ###
-# /input		# contains input data
-# /output		# where output is written to
-# /scripts		# all R scripts
-# all other folders are created automatically
+ /input		# contains input data
+ /output		# where output is written to
+ /scripts		# all R scripts
+ all other folders are created automatically
 
 ### REQUIRED INPUT DATA FORMAT###
 The following data format has to be used OR adjustments need to be made to load.R
-# times series of precipitation
-# .csv files with two columns:
-# date	rainfall
-# seperator is ; 
-# missing value flag is NA
-# decimal sign is ,
-# filenames are NNstationname.csv with NN being any two numbers
+ times series of precipitation
+ .csv files with two columns:
+ date	rainfall
+ seperator is ; 
+ missing value flag is NA
+ decimal sign is ,
+ filenames are NNstationname.csv with NN being any two numbers
 
 ### REQUIRED PACKAGES ###
 attached base packages:
@@ -58,14 +58,14 @@ loaded via a namespace (and not attached):
 [9] spacetime_1.0-9 
 
 ### VARIABLE PRE-/SUFFIX ABBREVIATIONS ###
-# d: 	day(ly)
-# m: 	month(ly)
-# y: 	year(ly)
-# rs:	rainy season
-# ds: 	dry season
-# rd:	rain day
-# ts: 	time series (zoo object)
-# s: 	sum
-# df: 	data frame/matrix 
+ d: 	day(ly)
+ m: 	month(ly)
+ y: 	year(ly)
+ rs:	rainy season
+ ds: 	dry season
+ rd:	rain day
+ ts: 	time series (zoo object)
+ s: 	sum
+ df: 	data frame/matrix 
 	 
-########## END #############
+###### END README ######

@@ -106,7 +106,7 @@ tsplot.pst=function(x, type, fpath, ...) {
   npath=paste(fpath,"/",type, sep="")
   dir.create(npath)
   # if it is yearly time series lines and points are plotted, else only lines:
-  if(type=="yearly") ptype="b" else ptype="l" 
+  if(type %in% c("yearly","yearly_raindays") ) ptype="b" else ptype="l" 
   # make graphs:
   for (i in 1:length(x)) {
     name=paste(npath,"/",type,"_ts_",stnames[i],".png", sep="")
@@ -126,20 +126,20 @@ tsplot.pst=function(x, type, fpath, ...) {
 ## fpath: outpur file path
 double.ts=function(x, y, fpath){
   for (i in 1:length(x)) {
-    name=paste(fpath,"/","double_ts_",stnames[i],".png", sep="")
+    name=paste(fpath,"/","y_double_ts_",stnames[i],".png", sep="")
     png(filename=name, pointsize = 11, width=16, height=7.5, units="cm", res=300)
-    par(def.par); par(mar=c(4, 4, 0, 5) + 0.2)
+    par(def.par); par(mar=c(2.5, 4, 0, 5) + 0.2)
     ## Plot rainfall amounts plot and put axis scale on right side:
-    plot(x[[i]], xlab="", ylab="", xaxt = "n", yaxt = "n", type="b", col=colors[i], pch=19, cex=0.8, lty=1)
+    plot(x[[i]], xlab="", ylab="", xaxt = "n", yaxt = "n", type="b", col=colors[i], pch=19, cex=0.8, lty=1, ylim=c(2,13))
     axis(4,col=colors[i],las=1)
-    mtext("rainfall (mm/day)",side=4,col=colors[i],line=3)
+    mtext("annual rainfall (mm/day)",side=4,col=colors[i],line=3)
     ## Plot rainday data and draw its axis:
     par(new=TRUE)
     ymid=mean(y[[i]], na.rm=TRUE) # mean in the middle of the axis
     plot(y[[i]], ylim=c(ymid-50,ymid+50),xaxt = "n", yaxt = "n", xlab="", ylab="", type="b", col="black", cex=0.8, lty=3)
     axis(2, ylim=c(ymid-50,ymid+50),col="black",las=1) 
-    mtext("No. of raindays",side=2,line=2.5)
-    ## Draw the time axis:
+    mtext("annual no. of raindays",side=2,line=2.5)
+    ## Draw time axis:
     axis(1,at=time(y_ts[[1]]), labels=format.Date(time(y_ts[[1]]), "%Y"))
     box()
     dev.off()
@@ -215,7 +215,7 @@ hist.kde.plot=function(hist.x, onlyraindays=FALSE, h, kde.x, rug=TRUE, ...){
 
 #### bplot.bswarm ####
 # Create a boxplot with overlaid beeswarm plot
-## ts: list(?????????) of zoo time series objects
+## ts: list of zoo time series objects
 ## df: same data as ts in one single data frame
 ## xlabel: TRUE or FALSE (default: TRUE)
 ## ...: further arguments passed on
