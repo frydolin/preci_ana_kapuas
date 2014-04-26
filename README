@@ -3,43 +3,42 @@
 	### Analysis and comparison of station data ###
 
 ### R FILES ###
-+ run.R 		executes the analysis, it calls further scripts:
-			run.R is the only file that needs to be run for a complete default analysis
-			50+ warnings do appear when running run.R. Most of them concern graphics. They should all be harmless, but of course it is advisable to check.
+Also see the project scheme diagram to get an overview over the file structure.
 
-+ installpackages.R	convenience script that should install all needed packages, if they are not yet installed
-+ load.R 		loads in all the data and converts to appropriate formats ##
-+ aggregate.R 		creates all necessary summaries and variables to be analysed ##
-+ analyse.R 		plots summaries to output ##
-+ compare.R		plots comparative plots to output
++ run.R	executes the analysis, it calls further scripts. run.R is the only file that needs to be run for a complete default analysis.
+	50+ warnings can appear when running run.R. Most of them concern graphics. They should all be harmless, but of course it is advisable to check.
+
++ load.R			loads in all the data and converts to appropriate formats
++ aggregate.R		creates all necessary summaries and variables to be analysed
++ analyse.R			plots summaries to output
++ compare.R			plots comparative plots to output
 
 Called from within these files:
-+ setup.R			loads common variables, functions and packages
-+ graphic_pars.R		graphical parameters
-+ homogeneity_test.R		four types of homogeneity tests
-+ functions.R			contains own functions for the analysis
-+ convenience_functions.R	own functions for repeated tasks, that are specific and probably can't be reused.
++ setup.R				loads common variables, functions and packages
++ graphic_pars.R			graphical parameters
++ functions.R			self-written functions for the analysis
++ convenience_functions.R	self-written functions for repeated tasks. They are specific and probably can't be reused.
 
 ### NECESSARY ADJUSTMENTS BEFORE RUNNING THE CODE ###
 On default the analysis is run on all files within /input, for a maximum of 14 stations. The following files need adjustment if the station number is changed or the analysis should be run on a subset:
-- load.R, here you can specify to exclude certain stations from the analysis. The variables "d_ts" and "stnames" need to be subsetted.
-- graphic_pars.R, the "color" vector on default has 14 entries. It needs to be adjusted according to the station number.
+	- load.R, here you can specify to exclude certain stations from the analysis. The variables "d_ts" and "stnames" need to be subsetted.
+	- graphic_pars.R, the "color" vector on default has 14 entries. It needs to be adjusted according to the station number.
 
 ### NECESSARY FOLDER STRUCTURE ###
- /input		# contains input data
- /output		# where output is written to
- /scripts		# all R scripts
+ /input	# contains input data
+ /output	# where output is written to
+ /scripts	# contains all R scripts
  all other folders are created automatically
 
 ### REQUIRED INPUT DATA FORMAT###
-The following data format has to be used OR adjustments need to be made to load.R
- times series of precipitation
- .csv files with two columns:
- date	rainfall
- seperator is ; 
- missing value flag is NA
- decimal sign is ,
- filenames are NNstationname.csv with NN being any two numbers
+The following data format has to be used, OR adjustments need to be made to load.R
+Times series of precipitation:
+	 .csv files with two columns:
+	 date and rainfall
+	 seperator:	;
+	 missing value flag:	NA
+	 decimal sign:	,
+	 filenames:	NNstationname.csv with NN being any two numbers
 
 ### REQUIRED PACKAGES ###
 attached base packages:

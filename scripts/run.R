@@ -9,7 +9,7 @@
 # Maybe you need to set the correct correct working directory: set.wd() or adjust file paths before analysis
 # source("scripts/installpackages.R") ## checks if necessary packages are installed, if not installs them
 source("scripts/load.R")	## loads in all the data from /input and converts it to appropriate formats ##
-source("scripts/aggregate.R")	## creates all necessary aggregates, summaries and variables to be analyzed ##
+source("scripts/aggregate.R")	## creates all necessary aggregates, summaries and variables to be analyzed, writes aggregated datasets to output ##
 source("scripts/analyse.R")	## plots/writes analysis and summaries to /output ##
 source("scripts/compare.R")	## plots/writes comparative analysis and summaries to /output ##
 

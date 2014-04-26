@@ -319,6 +319,7 @@ dir.create(fpath) # new directory
 
 #### CLEAN UP ####
   rm(name, fpath)
+  rm(i,j,ax,mname)
   graphics.off() #Completely shuts down the printing to file
 ###
 
